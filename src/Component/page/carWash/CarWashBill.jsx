@@ -1,14 +1,19 @@
 import React, { useEffect, useRef, useState } from "react";
 import { Formik, Form } from "formik";
 import * as Yup from "yup";
-import CustomInput from "../common/CustomInput";
-import CustomButton from "../common/CustomButton";
+import CustomInput from "../../common/CustomInput";
+import CustomButton from "../../common/CustomButton";
 import { IoCloseSharp } from "react-icons/io5";
 import { IoIosPrint } from "react-icons/io";
 import { useReactToPrint } from "react-to-print";
-import CustomSelect from "../common/CustomSelect";
+import CustomSelect from "../../common/CustomSelect";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchUsers } from "../../features/createSlice";
+import { fetchUsers } from "../../../features/createSlice";
+import {
+  useGetAllBillsQuery,
+  useSubmitCarWashBillMutation,
+  useUpdateBillMutation,
+} from "../../../features/Api";
 
 const SignupSchema = Yup.object().shape({
   carName: Yup.string().required("car name is required"),
@@ -18,19 +23,40 @@ const SignupSchema = Yup.object().shape({
   commission: Yup.string().required("commission is required"),
 });
 
-function CarWashBill() {
+const updateRecordValidationSchema = Yup.object().shape({
+  carName: Yup.string().required("car name is required"),
+  carWasher: Yup.string().required("car washer is required"),
+  bill: Yup.string().required("bill is required"),
+  commission: Yup.string().required("commission is required"),
+});
+
+function CarWashBill({ isOpenUpdateRecod, record, setIsOpenUpdateRecod }) {
   const [pageContent, setPageContent] = useState("");
   const [printBill, setPrintBill] = useState(false);
 
+  const { data: allBills = [], refetch } = useGetAllBillsQuery();
   const dispatch = useDispatch();
   const componentRef = useRef();
   const { users, loading, error } = useSelector((state) => state.user);
+  const [submitCarWashBill, { data, error: submitError, isLoading }] =
+    useSubmitCarWashBillMutation();
+  const [
+    updateBill,
+    { data: updateResponse, error: updateError, isLoading: isLoadingUpdate },
+  ] = useUpdateBillMutation();
 
   useEffect(() => {
     dispatch(fetchUsers());
   }, [dispatch]);
 
-  
+  const initialValueUpdate = {
+    carName: record?.CarName || "",
+    carWasher: record?.CarWasher || "",
+    bill: record?.Price || "",
+    phoneNumber: record?.phoneNumber || "",
+    commission: record?.Commission || "",
+  };
+
   const initialValuesForm = {
     carName: "",
     carWasher: "",
@@ -40,24 +66,12 @@ function CarWashBill() {
   };
 
   const submitHandler = async (values) => {
-    console.log(values);
     try {
-      const response = await fetch("http://localhost:5000/carWash-bill", {
-        method: "POST", // or "GET" depending on your backend
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(values), // Send the form data
-      });
-      console.log("response", response);
-
-      const data = await response.json();
-      setPageContent(data?.bill);
+      const response = await submitCarWashBill(values).unwrap();
+      setPageContent(response?.bill);
       setPrintBill(true);
-      console.log("Response from server:", data);
-      console.log("pageContent", pageContent);
-    } catch (error) {
-      console.log("Error:", error);
+    } catch (err) {
+      console.error("Submission error:", err);
     }
   };
 
@@ -69,50 +83,76 @@ function CarWashBill() {
     content: () => componentRef.current,
   });
 
-  const carWasherOptions = users.map((user) => {
-    console.log("userName", user.name);
-    return {
-      value: user.name,
-      label: user.name,
-    };
-  });
+  const carWasherOptions = users
+  .filter(user => user.role === "user") 
+  .map(user => ({
+    value: user.name,
+    label: user.name
+  }));
 
- 
+
+  const updateHandler = async (values) => {
+    try {
+      await updateBill({ id: record.Id, ...values }).unwrap();
+      setIsOpenUpdateRecod(false);
+      refetch();
+    } catch (error) {
+      console.error("Update error:", error);
+    }
+  };
+
   return (
-    <div className="px-4 w-[80%]  mx-auto">
+    <div>
       <div>
-        <h1 className="text-[#daa520] font-[700] text-2xl mx-auto w-full flex justify-center my-16">
-          Generate Bill
+        <h1 className="text-[#262626] font-[700] text-2xl mx-auto w-full flex justify-center ">
+          {isOpenUpdateRecod ? "Update Record " : "Generate Bill"}
         </h1>
       </div>
       <Formik
-        initialValues={initialValuesForm}
-        validationSchema={SignupSchema}
-        onSubmit={submitHandler}
+        initialValues={
+          isOpenUpdateRecod && record ? initialValueUpdate : initialValuesForm
+        }
+        validationSchema={
+          isOpenUpdateRecod && record
+            ? updateRecordValidationSchema
+            : SignupSchema
+        }
+        onSubmit={isOpenUpdateRecod ? updateHandler : submitHandler}
       >
         <Form>
-          <div className=" grid grid-cols-2 gap-8">
-          <CustomInput name="carName" type="text" label="Car Name" />
+          <div>
+            <CustomInput name="carName" type="text" label="Car Name" />
             <CustomSelect
               name="carWasher"
               type="text"
               label="Car Washer"
               option={carWasherOptions}
             />
-          
+
             <CustomInput name="bill" type="text" label="Bill" />
-            <CustomInput name="phoneNumber" type="text" label="Phone Number" />
+
+            {!isOpenUpdateRecod && (
+              <CustomInput
+                name="phoneNumber"
+                type="text"
+                label="Phone Number"
+              />
+            )}
+
             <CustomInput name="commission" type="text" label="Commission" />
           </div>
-          <div className="mt-8 w-[50%]">
-            <CustomButton type="submit" title="Submit" />
+          <div className="mt-8 w-full">
+            <CustomButton
+              type="submit"
+              title={isOpenUpdateRecod ? "Update" : "Submit"}
+            />
           </div>
         </Form>
       </Formik>
       <div>
         {printBill && (
           <div className="fixed h-[100vh] w-full top-0 left-0 bg-[rgba(0,0,0,0.7)] flex items-center justify-center z-40">
-            <div className="w-[20%] px-4 py-11 h-auto border-2 rounded-[10px] border-[#daa520] bg-white z-50">
+            <div className="w-[20%] px-4 py-11 h-auto border-2 rounded-[10px] border-[#262626] bg-white z-50">
               <div className="flex justify-end m-2 ">
                 <IoCloseSharp size={20} onClick={printModelCloseHandler} />
               </div>
