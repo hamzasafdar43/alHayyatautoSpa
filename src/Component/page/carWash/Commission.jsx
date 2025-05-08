@@ -1,16 +1,14 @@
 import React, { useEffect, useState } from 'react'
-import CustomTable from '../common/CustomTable'
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchUsers } from '../../features/createSlice';
-import { current } from '@reduxjs/toolkit';
+import { fetchUsers } from '../../../features/createSlice';
+import { useGetAllBillsQuery } from '../../../features/Api';
+import CustomTable from '../../common/CustomTable';
 
 function Commission() {
-  const [allBills , setAllBills] = useState([])
+
   const [selectedcarWasher , setSelectedcarWasher] = useState("")
 
-  useEffect(() => {
-    console.log('selected car washer:', selectedcarWasher);
-  }, [selectedcarWasher]);
+ const {data :allBills = [] } = useGetAllBillsQuery()
 
 
   const dispatch = useDispatch();
@@ -20,29 +18,6 @@ function Commission() {
     dispatch(fetchUsers());
   }, [dispatch]);
 
-  useEffect(()=>{
-      const getAllBillHandler = async() => {
-          try {
-              const response = await fetch("http://localhost:5000/carWash-bills" , {
-                  method:"GET",
-                  headers:{
-                      "Content-Type": "application/json"
-  
-                  }
-  
-              })
-  
-              const data = await response.json()
-              
-              if(data){
-                  setAllBills(data)
-              }
-          } catch (error) {
-              console.log("Error" , error)
-          }
-      }
-      getAllBillHandler()
-  },[])
   
 
   const columns = ["Sr_No","Date" , "Name" , "Commission"]
