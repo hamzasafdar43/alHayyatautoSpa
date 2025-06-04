@@ -1,4 +1,5 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
+import AddProduct from '../Component/page/olishop/AddProduct';
 
 export const carWashBillApi = createApi({
   reducerPath: 'carWashApi',
@@ -29,7 +30,35 @@ export const carWashBillApi = createApi({
           body
         };
       }
-    })
+    }),
+    AddProduct: builder.mutation({
+      query: (body) => ({
+        url: 'add-product',
+        method: 'POST',
+        body,
+      }),
+    }),
+    getAllProduct: builder.query({
+      query: () => 'all-product',
+    }),
+    saleProduct: builder.mutation({
+      query: (body) => ({
+        url: 'sale-product',
+        method: 'POST',
+        body,
+      }),
+    }),
+    getSaleProductRecord: builder.mutation({
+      query: ({ id }) => {
+        return {
+          url: `sale-product/${id}`,
+          method: "GET"
+        };
+      }
+    }),
+    getAllSales: builder.query({
+      query: () => 'all-sales',
+    }),
   }),
 });
 
@@ -38,4 +67,11 @@ export const {
   useDeleteBillMutation,
   useUpdateBillMutation,
   useGetAllBillsQuery,
+  useGetAllProductQuery,
+  useAddProductMutation,
+  useGetAllSalesQuery,
+  useSaleProductMutation,
+  useGetSaleProductRecordMutation
+  
+
 } = carWashBillApi;

@@ -5,6 +5,7 @@ import CustomButton from "../../common/CustomButton";
 import { Link, useNavigate } from "react-router-dom";
 import { registerUser } from "../../../features/createSlice";
 import { useDispatch } from "react-redux";
+import { registerUserFormValidationSchema } from "../validations/FormValidation";
 
 function SignUp() {
   const dispatch = useDispatch();
@@ -17,9 +18,11 @@ function SignUp() {
   };
 
   const singupHandler = async (values) => {
+   
     try {
+
       const response = await dispatch(registerUser(values));
-      console.log("sign up response" , response)
+      
       if (response.payload.message === "User registered successfully") {
         navigate("/");
       }
@@ -41,11 +44,11 @@ function SignUp() {
           </h1>
         </div>
         <div className="mt-4">
-          <Formik initialValues={initialValuesForm} onSubmit={singupHandler}>
+          <Formik initialValues={initialValuesForm} onSubmit={singupHandler} validationSchema={registerUserFormValidationSchema}>
             <Form>
               <div>
                 <CustomInput name="name" type="text" label="Name" />
-                <CustomInput name="email" type="text" label="Email" />
+                <CustomInput name="email" type="email" label="Email" />
                 <CustomInput
                   name="phoneNumber"
                   type="text"
