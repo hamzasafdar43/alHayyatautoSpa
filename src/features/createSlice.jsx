@@ -16,10 +16,10 @@ export const registerUser = createAsyncThunk('registerUser', async (userData, th
     if (!response.ok) {
       throw new Error('Failed to register user');
     }
-
+    
     const data = await response.json();
-    console.log("data" , data)
     return data;
+
   } catch (error) {
     return thunkAPI.rejectWithValue(error.message);
   }
@@ -77,6 +77,26 @@ export const fetchUsers = createAsyncThunk('fetchUsers', async () => {
   });
 
 
+  export const updateUser = createAsyncThunk('updateUser', async ({ values, userId }, thunkAPI) => {
+    try {
+      const response = await fetch(`${BASE_URL}/updateUser/${userId}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(values),
+      });
+  
+      if (!response.ok) {
+        throw new Error('Failed to update user');
+      }
+  
+      const data = await response.json();
+      return data;
+    } catch (error) {
+      return thunkAPI.rejectWithValue(error.message);
+    }
+  });
   
 
 export const counterSlice = createSlice({
@@ -87,7 +107,12 @@ export const counterSlice = createSlice({
     loading: false,
     error: null,
   },
-  reducers: {},
+  reducers: {
+    logout: (state) => {
+      state.user = null; 
+    }
+  },
+  
   extraReducers: (builder) => {
     builder
       .addCase(fetchUsers.pending, (state) => {
@@ -114,9 +139,23 @@ export const counterSlice = createSlice({
       .addCase(registerUser.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
+      })
+      .addCase(updateUser.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(updateUser.fulfilled, (state, action) => {
+        state.user = action.payload;
+        state.loading = false;
+      })
+      .addCase(updateUser.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
       });
       
   },
 });
+
+export const { logout } = counterSlice.actions;
 
 export default counterSlice.reducer;

@@ -1,0 +1,77 @@
+import React, { useEffect, useState } from 'react';
+import { useGetAllSalesQuery } from '../../../features/Api';
+import CustomTable from '../../common/CustomTable';
+
+
+function TodaySale() {
+  const [groupedSales, setGroupedSales] = useState([]);
+  const { data: allSales = {}, isSuccess } = useGetAllSalesQuery();
+
+  useEffect(() => {
+    if (isSuccess && allSales?.allSale) {
+
+        const today = new Date().toISOString().split("T")[0];
+
+        const filterTodaySale = allSales?.allSale.filter((record) => {
+          if (!record.createdAt) return false; 
+        
+          const billDate = new Date(record.createdAt);
+          if (isNaN(billDate)) return false; 
+        
+          const isToday = billDate.toISOString().split("T")[0] === today;
+          
+          return isToday 
+        });
+
+       
+
+      const grouped = {};
+
+     
+
+      filterTodaySale.forEach((sale) => {
+        const date = sale.createdAt.split("T")[0];
+        const productId = sale.productId?._id;
+        const key = `${date}_${productId}`;
+
+        if (!grouped[key]) {
+          grouped[key] = {
+            Sr_No: 0, // will be added later
+            Date: date,
+            Id: sale._id,
+            Product_Name: sale.productId?.productName,
+            Product_Image: `http://localhost:5000/uploads/${sale.productId?.image}`,
+            Quantity: sale.quantitySold,
+            Price: sale.sellingPrice,
+          };
+        } else {
+          grouped[key].Quantity += sale.quantitySold;
+          grouped[key].Price += sale.sellingPrice; // optional: total price
+        }
+      });
+
+      const rows = Object.values(grouped).map((item, index) => ({
+        ...item,
+        Sr_No: index + 1,
+      }));
+
+      setGroupedSales(rows);
+    }
+  }, [allSales, isSuccess]);
+
+  const columns = ["Sr_No", "Date", "Id", "Product_Name", "Product_Image", "Quantity", "Price", "Actions"];
+
+  return (
+    <div className='w-[90%]'>
+      <div>
+        <h1 className='my-4 font-[500] text-[24px]'>Today Sale Record ...</h1>
+      </div>
+      <div>
+        <CustomTable rows={groupedSales} columns={columns} />
+      </div>
+    </div>
+  );
+}
+
+
+export default TodaySale;

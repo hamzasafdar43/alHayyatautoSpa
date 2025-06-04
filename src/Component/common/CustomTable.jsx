@@ -1,8 +1,8 @@
 import React, { useState } from "react";
-import { MdDelete } from "react-icons/md";
+import { AiFillDelete } from "react-icons/ai";
 import { FaEdit } from "react-icons/fa";
 
-function CustomTable({ rows, columns, onClick , onClickDelete }) {
+function CustomTable({ rows, columns, onClick, onClickDelete }) {
   const rowsPerPage = 5; // Define how many rows per page you want
   const [currentPage, setCurrentPage] = useState(1);
 
@@ -29,13 +29,13 @@ function CustomTable({ rows, columns, onClick , onClickDelete }) {
     <div className="w-full">
       {/* Wrapping table with scrollable container for smaller screens */}
       <div className="overflow-x-auto">
-        <table className="w-full table-auto border-collapse border border-[#262626]">
+        <table className="w-full table-auto border-collapse">
           <thead>
             <tr>
               {columns.map((column, index) => (
                 <th
                   key={index}
-                  className="border border-[#d2626] px-4 py-2 text-left"
+                  className=" border-b-[1px]  bg-gray-100 border-b-gray-300 px-4 py-5 text-gray-600  text-sm text-center"
                 >
                   {column}
                 </th>
@@ -48,28 +48,49 @@ function CustomTable({ rows, columns, onClick , onClickDelete }) {
                 {columns.map((column, colIndex) => (
                   <td
                     key={colIndex}
-                    className={`border border-[#262626] px-4 py-2 ${
-                      rowIndex % 2 === 0 ? "bg-gray-100" : "bg-white"
+                    className={` px-4 text-center border-b-[1px] border-b-gray-300 py-2 text-gray-600 text-sm font-[500] ${
+                      rowIndex % 2 === 0 ? "bg-white" : "bg-white"
                     }`}
                   >
                     {column === "Actions" ? (
-                      <div className="flex gap-2">
+                      <div className="flex items-center h-20 gap-2 mx-auto justify-center w-[50px]">
                         <div
-                          className="bg-[#D17C16] flex p-1 text-white rounded-[5px] w-[70px] cursor-pointer"
+                          className=" flex text-red-600 text-sm rounded-[5px]  cursor-pointer"
                           onClick={() => onClickDelete(row)}
                         >
-                          <MdDelete size={20} />
-                          <h1 className="text-sm">Delete</h1>
+                          <AiFillDelete size={20} />
+                          
                         </div>
                         <div
-                          className="bg-[#2563ea] flex gap-1 items-center justify-center p-1 text-white rounded-[5px] w-[70px] cursor-pointer"
+                          className="text-[#2563ea]  flex gap-1 items-center justify-center p-1 rounded-[5px]  cursor-pointer"
                           onClick={() => onClick(row)}
                         >
                           <FaEdit size={20} />
-                          <h1 className="text-sm">Edit</h1>
+                          
                         </div>
                       </div>
-                    ) : (
+                    ) : column === "Product_Image" ? (
+                      <div className="w-[50px] h-[50px]  mx-auto ">
+                        <img
+                          src={row?.Product_Image}
+                          alt="product"
+                          className="w-full h-full  object-cover rounded"
+                          onError={(e) => (e.target.src = "/fallback.jpg")}
+                        />
+                      </div>
+                    ) : column === "Product_Quantity"  ? (
+                      row.Product_Quantity < 2 ? (
+                        
+                            <div className="text-red-600  text-sm">
+                            Stock running low –  ({row[column]})  available Item
+                            </div>
+                      
+                      ) : (
+                        row[column]
+                      )
+                    ): column === "Id" ? (
+                      `00${row[column]?.toString().slice(0, 3)}`
+                    ):(
                       row[column]
                     )}
                   </td>

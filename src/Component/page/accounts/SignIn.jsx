@@ -5,6 +5,7 @@ import CustomButton from "../../common/CustomButton";
 import { Link, useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { loginUser } from "../../../features/createSlice";
+import { loginrUserFormValidationSchema } from "../validations/FormValidation";
 
 function SignIn() {
   const dispatch = useDispatch();
@@ -41,10 +42,10 @@ function SignIn() {
         </h1>
       </div>
         <div className="mt-4">
-          <Formik initialValues={initialValuesForm} onSubmit={singInHandler}>
+          <Formik initialValues={initialValuesForm} onSubmit={singInHandler} validationSchema={loginrUserFormValidationSchema}>
             <Form>
               <div>
-                <CustomInput name="email" type="text" label="Email" />
+                <CustomInput name="email" type="email" label="Email" />
                 <CustomInput name="password" type="text" label="Password" />
               </div>
               <div className="mt-8 w-full">

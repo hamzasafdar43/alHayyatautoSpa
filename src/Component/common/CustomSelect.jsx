@@ -1,7 +1,7 @@
 import React from 'react';
 import { useField } from 'formik';
 
-const CustomSelect = ({ label, option = [], ...props }) => {
+const CustomSelect = ({ label, onChange , option = [], ...props }) => {
   const [field, meta] = useField(props);
 
 
@@ -11,6 +11,7 @@ const CustomSelect = ({ label, option = [], ...props }) => {
       <select
         {...field}
         {...props}
+        onChange={onChange}
         className="w-full p-2 border border-[#2626262] rounded-[8px]"
       >
         <option value="">Select an option</option>
