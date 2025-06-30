@@ -28,7 +28,7 @@ function AllProduct({onClick}) {
     <div className="w-[90%] ">
         <div>
             <h1 className="text-lg font-[500] my-4 ">
-                All Product ......
+                All OilShop Product ......
             </h1>
         </div>
         <div>

@@ -89,7 +89,7 @@ function CustomTable({ rows, columns, onClick, onClickDelete }) {
                         row[column]
                       )
                     ): column === "Id" ? (
-                      `00${row[column]?.toString().slice(0, 3)}`
+                      `00${row[column]?.toString().slice(0, 8)}`
                     ):(
                       row[column]
                     )}

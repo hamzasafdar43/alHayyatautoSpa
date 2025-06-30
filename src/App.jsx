@@ -9,15 +9,16 @@ import PublicRoute from "./Component/protectRoutes/PublicRoute";
 import ProtectedRoute from "./Component/protectRoutes/ProtectedRoute";
 import Olishop from "./Component/page/olishop/Olishop";
 import UserProfile from "./Component/page/accounts/UserProfile";
-import SaleProduct from "./Component/page/salerecord/SaleProduct"
 import History from "./Component/page/history/History";
-import { ToastContainer } from "react-toastify";
 import CustomToast from "./Component/common/CustomToast";
 import CarDetailing from "./Component/page/cardetailing/CarDetailing"
 import AccessoriesShop  from "./Component/page/accessories/AccessoriesShop"
-import AccessoriesShopRecord from "./Component/page/accessories/AccessoriesShopRecord";
 import CarWashRecord from "./Component/page/carWash/CarWashRecord";
-
+import SaleProductOilShop from "./Component/page/salerecord/SaleProductOilShop";
+import Expense from "./Component/page/expense/Expense"
+import TaxiStand from "./Component/page/taxiStand/TaxiStand";
+import Rents from "./Component/page/shopRent/Rents";
+import AccessoriesSaleRecord from "./Component/page/accessoriesSales/AccessoriesSaleRecord";
 
 
 
@@ -37,12 +38,15 @@ function App() {
          <Route path="oil-shop" element={<Olishop />} />
          <Route path="car-detailing" element={< CarDetailing />} />
          <Route path="accessories-shop" element={<AccessoriesShop />} />
-         <Route path="accessories-shop-record" element={<AccessoriesShopRecord />} />
+         <Route path="accessories-shop-record" element={<AccessoriesSaleRecord />} />
          <Route path="oil-shop" element={<Olishop />} />
          <Route path="car-wash-record" element={<CarWashRecord />} />
          <Route path="user-profile" element={<UserProfile />} />
-         <Route path="sale-product" element={< SaleProduct/>} />
+         <Route path="sale-product" element={< SaleProductOilShop/>} />
          <Route path="history" element={< History/>} />
+         <Route path="expense" element={< Expense/>} />
+          <Route path="taxi_stand" element={< TaxiStand/>} />
+           <Route path="rents" element={< Rents/>} />
         </Route>
       </Routes>
     </Router>
