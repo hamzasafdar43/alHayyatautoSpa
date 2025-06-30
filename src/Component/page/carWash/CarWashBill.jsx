@@ -22,6 +22,8 @@ function CarWashBill({
   record,
   setIsOpenUpdateRecod,
   setIsOpen,
+  setCarWashBill,
+  setSelectBillForm,
 }) {
   const [pageContent, setPageContent] = useState("");
 
@@ -49,6 +51,7 @@ function CarWashBill({
   };
 
   const initialValuesForm = {
+    category: "",
     carName: "",
     carWasher: "",
     bill: "",
@@ -57,24 +60,27 @@ function CarWashBill({
   };
 
   const submitHandler = async (values) => {
-    try {
-      const response = await submitCarWashBill(values).unwrap();
-      setPageContent(response?.bill);
+    setCarWashBill((prev) => [...prev, values]);
+    setSelectBillForm("");
 
-      if(response.message === "Car wash bill generated successfully"){
-        showToast(response?.message, "success");
+    //   try {
+    //     const response = await submitCarWashBill(values).unwrap();
+    //     setPageContent(response?.bill);
 
-        setTimeout(() => {
-          reactToPrintFn();
-          setIsOpen(false)
-        }, 1000);
+    //     if(response.message === "Car wash bill generated successfully"){
+    //       showToast(response?.message, "success");
 
-      }
-   refetch()
-    } catch (err) {
-      const errorMessage = error?.data?.message || "Something went wrong!";
-      showToast(errorMessage, "error");
-    }
+    //       setTimeout(() => {
+    //         // reactToPrintFn();
+    //         setIsOpen(false)
+    //       }, 1000);
+
+    //     }
+    //  refetch()
+    //   } catch (err) {
+    //     const errorMessage = error?.data?.message || "Something went wrong!";
+    //     showToast(errorMessage, "error");
+    //   }
   };
 
   const reactToPrintFn = useReactToPrint({ contentRef });
@@ -97,8 +103,8 @@ function CarWashBill({
       }
       refetch();
     } catch (error) {
-       const errorMessage = error?.data?.message || "Something went wrong!";
-          showToast(errorMessage, "error");
+      const errorMessage = error?.data?.message || "Something went wrong!";
+      showToast(errorMessage, "error");
     }
   };
 
@@ -110,49 +116,56 @@ function CarWashBill({
         </h1>
       </div>
       <Formik
-  initialValues={
-    isOpenUpdateRecod && record ? initialValueUpdate : initialValuesForm
-  }
-  validationSchema={
-    isOpenUpdateRecod && record
-      ? updateRecordValidationSchema
-      : SignupSchema
-  }
-  onSubmit={isOpenUpdateRecod ? updateHandler : submitHandler}
->
-  {({ setFieldValue }) => (
-    <Form>
-      <div>
-        <CustomInput name="carName" type="text" label="Car Name" />
-        <CustomSelect
-          name="carWasher"
-          label="Car Washer"
-          option={carWasherOptions}
-          onChange={(e) => setFieldValue("carWasher", e.target.value)}
-        />
+        initialValues={
+          isOpenUpdateRecod && record ? initialValueUpdate : initialValuesForm
+        }
+        validationSchema={
+          isOpenUpdateRecod && record
+            ? updateRecordValidationSchema
+            : SignupSchema
+        }
+        onSubmit={isOpenUpdateRecod ? updateHandler : submitHandler}
+      >
+        {({ setFieldValue, values }) => {
+          useEffect(() => {
+            setFieldValue("category", "CarWash");
+          }, [setFieldValue]);
 
-        <CustomInput name="bill" type="text" label="Bill" />
-
-        {!isOpenUpdateRecod && (
-          <CustomInput
-            name="phoneNumber"
-            type="text"
-            label="Phone Number"
-          />
-        )}
-
-        <CustomInput name="commission" type="text" label="Commission" />
-      </div>
-      <div className="mt-8 w-full">
-        <CustomButton
-          type="submit"
-          title={isOpenUpdateRecod ? "Update" : "Submit"}
-        />
-      </div>
-    </Form>
-  )}
-</Formik>
-
+          return (
+            <Form>
+              <CustomInput
+                name="category"
+                type="text"
+                label="Category"
+                value={values.category}
+                disabled
+              />
+              <CustomInput name="carName" type="text" label="Car Name" />
+              <CustomSelect
+                name="carWasher"
+                label="Car Washer"
+                option={carWasherOptions}
+                onChange={(e) => setFieldValue("carWasher", e.target.value)}
+              />
+              <CustomInput name="bill" type="text" label="Bill" />
+              {!isOpenUpdateRecod && (
+                <CustomInput
+                  name="phoneNumber"
+                  type="text"
+                  label="Phone Number"
+                />
+              )}
+              <CustomInput name="commission" type="text" label="Commission" />
+              <div className="mt-8 w-full">
+                <CustomButton
+                  type="submit"
+                  title={isOpenUpdateRecod ? "Update" : "Submit"}
+                />
+              </div>
+            </Form>
+          );
+        }}
+      </Formik>
 
       <div className="hidden">
         <div ref={contentRef}>

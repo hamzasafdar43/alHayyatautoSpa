@@ -13,7 +13,7 @@ import { FaCarOn } from "react-icons/fa6";
 function LayOut() {
   const [isOpenSidebar, setIsOpenSidebar] = useState(false);
   const sideBarList = [
-     {
+    {
       name: "Home",
       url: "/dashbord/home",
       icon: <IoIosHome />,
@@ -23,8 +23,8 @@ function LayOut() {
       url: "/dashbord/car-wash-record",
       icon: <FaCarOn />,
     },
-      {
-      name: " Car Detailing",
+    {
+      name: " Detailing Studio",
       url: "/dashbord/car-detailing",
       icon: <FaCarAlt />,
     },
@@ -38,14 +38,29 @@ function LayOut() {
       url: "/dashbord/sale-product",
       icon: <FcSalesPerformance />,
     },
-       {
+    {
       name: " Accessories Shop",
       url: "/dashbord/accessories-shop",
       icon: <FaCarCrash />,
     },
-         {
+    {
       name: " Accessories  Sale",
       url: "/dashbord/accessories-shop-record",
+      icon: <FcSalesPerformance />,
+    },
+    {
+      name: "Texi Stand",
+      url: "/dashbord/taxi_stand",
+      icon: <FcSalesPerformance />,
+    },
+    {
+      name: "Gernal Expense",
+      url: "/dashbord/expense",
+      icon: <FcSalesPerformance />,
+    },
+     {
+      name: "Rent",
+      url: "/dashbord/rents",
       icon: <FcSalesPerformance />,
     },
     {
@@ -58,7 +73,6 @@ function LayOut() {
       url: "/dashbord/history",
       icon: <AiOutlineHistory />,
     },
-   
   ];
 
   const sidebarIsOpenHandler = () => {
@@ -104,7 +118,7 @@ function LayOut() {
                     : " hover:bg-[#257aea] flex items-center w-[100%] h-11 gap-5 px-4"
                 }
               >
-                <span >{sidebar.icon}</span>
+                <span>{sidebar.icon}</span>
                 <span className={`${isOpenSidebar && "hidden"}`}>
                   {sidebar.name}
                 </span>

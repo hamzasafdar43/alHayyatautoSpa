@@ -1,28 +1,35 @@
 import React, { useEffect, useState } from 'react';
-import { useGetAllSalesQuery } from '../../../features/Api';
+import { useGetAllSaleAccessoriesItemQuery } from '../../../features/Api';
 import CustomTable from '../../common/CustomTable';
 
-function MonthlySale() {
-  const [groupedSales, setGroupedSales] = useState([]);
-  const { data: allSales = {}, isSuccess } = useGetAllSalesQuery();
 
-  console.log("sales oilShop" , allSales)
+function TodaySale() {
+  const [groupedSales, setGroupedSales] = useState([]);
+    const { data: allSales = {}, isSuccess } = useGetAllSaleAccessoriesItemQuery();
 
   useEffect(() => {
     if (isSuccess && allSales?.allSale) {
 
-      const getCurrentMonthSale = allSales.allSale.filter((item) => {
-        const createdDate = new Date(item.createdAt);
-        const now = new Date();
-        return (
-          createdDate.getMonth() === now.getMonth() &&
-          createdDate.getFullYear() === now.getFullYear()
-        );
-      });
+        const today = new Date().toISOString().split("T")[0];
+
+        const filterTodaySale = allSales?.allSale.filter((record) => {
+          if (!record.createdAt) return false; 
+        
+          const billDate = new Date(record.createdAt);
+          if (isNaN(billDate)) return false; 
+        
+          const isToday = billDate.toISOString().split("T")[0] === today;
+          
+          return isToday 
+        });
+
+       
 
       const grouped = {};
 
-      getCurrentMonthSale.forEach((sale) => {
+     
+
+      filterTodaySale.forEach((sale) => {
         const date = sale.createdAt.split("T")[0];
         const productId = sale.productId?._id;
         const key = `${date}_${productId}`;
@@ -57,7 +64,7 @@ function MonthlySale() {
   return (
     <div className='w-[90%]'>
       <div>
-        <h1 className='my-4 font-[500] text-[24px]'>Monthly Sale Record ...</h1>
+        <h1 className='my-4 font-[500] text-[24px]'>Today Sale Record ...</h1>
       </div>
       <div>
         <CustomTable rows={groupedSales} columns={columns} />
@@ -66,4 +73,5 @@ function MonthlySale() {
   );
 }
 
-export default MonthlySale;
+
+export default TodaySale;

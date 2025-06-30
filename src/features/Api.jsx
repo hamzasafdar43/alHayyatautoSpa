@@ -7,9 +7,9 @@ export const carWashBillApi = createApi({
   endpoints: (builder) => ({
     submitCarWashBill: builder.mutation({
       query: (body) => ({
-        url: 'carWash-bill',
+        url: 'generate-bill',
         method: 'POST',
-        body,
+        body: { records: body }
       }),
     }),
     getAllBills: builder.query({
@@ -59,6 +59,22 @@ export const carWashBillApi = createApi({
     getAllSales: builder.query({
       query: () => 'all-sales',
     }),
+     AddAccessoriesItem: builder.mutation({
+      query: (body) => ({
+        url: 'add-accessories-item',
+        method: 'POST',
+        body,
+      }),
+    }),
+       getAllAccessoriesItem: builder.query({
+      query: () => 'all-accessories',
+    }),
+        getAllSaleAccessoriesItem: builder.query({
+      query: () => 'all-sale-accessories',
+    }),
+
+    
+    
   }),
 });
 
@@ -71,7 +87,11 @@ export const {
   useAddProductMutation,
   useGetAllSalesQuery,
   useSaleProductMutation,
-  useGetSaleProductRecordMutation
+  useGetSaleProductRecordMutation,
+  useGetAllAccessoriesItemQuery,
+  useAddAccessoriesItemMutation,
+  useGetAllSaleAccessoriesItemQuery
+
   
 
 } = carWashBillApi;

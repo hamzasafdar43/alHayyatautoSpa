@@ -1,7 +1,7 @@
 import React from 'react';
 import { useField } from 'formik';
 
-const CustomInput = ({ label,  ...props  }) => {
+const CustomInput = ({ label, className , ...props  }) => {
   const [field, meta] = useField(props);
   const isFileInput = props.type === "file"
 
@@ -9,6 +9,7 @@ const CustomInput = ({ label,  ...props  }) => {
     <div className="mb-2">
       <label className="block mb-1 font-medium text-[#262626] ">{label}</label>
       <input
+      
         {...field}
         {...props}
         value={isFileInput ? undefined : field.value}
@@ -16,7 +17,7 @@ const CustomInput = ({ label,  ...props  }) => {
           field.onChange(e); 
           if (props.onChange) props.onChange(e); // trigger custom logic
         }}
-        className="w-full p-2 border border-[#262626] rounded-[8px] "
+        className={`w-full p-2 border border-[#262626] rounded-[8px] ${className}`}
       />
       {meta.touched && meta.error ? (
         <div className="text-red-700  mt-1 text-sm">{meta.error}</div>

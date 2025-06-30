@@ -1,13 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import { useGetAllSalesQuery } from '../../../features/Api';
+import { useGetAllSaleAccessoriesItemQuery, useGetAllSalesQuery } from '../../../features/Api';
 import CustomTable from '../../common/CustomTable';
 
 function MonthlySale() {
   const [groupedSales, setGroupedSales] = useState([]);
-  const { data: allSales = {}, isSuccess } = useGetAllSalesQuery();
+  const { data: allSales = {}, isSuccess } = useGetAllSaleAccessoriesItemQuery();
 
-  console.log("sales oilShop" , allSales)
-
+  console.log("allSales" , allSales)
   useEffect(() => {
     if (isSuccess && allSales?.allSale) {
 
