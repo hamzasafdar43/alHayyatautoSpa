@@ -1,29 +1,38 @@
 import React from 'react';
 import { useField } from 'formik';
 
-const CustomInput = ({ label, className , ...props  }) => {
+const CustomInput = ({ label, className = "", ...props }) => {
   const [field, meta] = useField(props);
-  const isFileInput = props.type === "file"
+  const isFileInput = props.type === "file";
 
   return (
-    <div className="mb-2">
-      <label className="block mb-1 font-medium text-[#262626] ">{label}</label>
+    <div className="mb-4">
+      {label && (
+        <label className="block text-sm font-semibold text-gray-700 mb-2">
+          {label}
+        </label>
+      )}
+
       <input
-      
         {...field}
         {...props}
         value={isFileInput ? undefined : field.value}
         onChange={(e) => {
-          field.onChange(e); 
-          if (props.onChange) props.onChange(e); // trigger custom logic
+          field.onChange(e);
+          if (props.onChange) props.onChange(e);
         }}
-        className={`w-full p-2 border border-[#262626] rounded-[8px] ${className}`}
+        className={`w-full px-4 py-2 text-sm rounded-md border border-gray-300 outline-none transition duration-150 ease-in-out
+        ${className} 
+        ${meta.touched && meta.error ? "border-red-500" : ""} 
+        ${props.disabled ? "bg-gray-100 cursor-not-allowed" : ""}`}
       />
-      {meta.touched && meta.error ? (
-        <div className="text-red-700  mt-1 text-sm">{meta.error}</div>
-      ) : null}
+
+      {meta.touched && meta.error && (
+        <div className="text-red-600 text-xs mt-1">{meta.error}</div>
+      )}
     </div>
   );
 };
 
 export default CustomInput;
+

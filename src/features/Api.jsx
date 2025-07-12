@@ -72,6 +72,9 @@ export const carWashBillApi = createApi({
         getAllSaleAccessoriesItem: builder.query({
       query: () => 'all-sale-accessories',
     }),
+       getAlldetailingStudioBil: builder.query({
+      query: () => '/detailing-studio-bills',
+    }),
 
     
     
@@ -90,7 +93,8 @@ export const {
   useGetSaleProductRecordMutation,
   useGetAllAccessoriesItemQuery,
   useAddAccessoriesItemMutation,
-  useGetAllSaleAccessoriesItemQuery
+  useGetAllSaleAccessoriesItemQuery,
+  useGetAlldetailingStudioBilQuery
 
   
 

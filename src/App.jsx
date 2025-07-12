@@ -19,6 +19,7 @@ import Expense from "./Component/page/expense/Expense"
 import TaxiStand from "./Component/page/taxiStand/TaxiStand";
 import Rents from "./Component/page/shopRent/Rents";
 import AccessoriesSaleRecord from "./Component/page/accessoriesSales/AccessoriesSaleRecord";
+import DetailingRecords from "./Component/page/detailingStudio/DetailingRecords";
 
 
 
@@ -47,6 +48,8 @@ function App() {
          <Route path="expense" element={< Expense/>} />
           <Route path="taxi_stand" element={< TaxiStand/>} />
            <Route path="rents" element={< Rents/>} />
+           <Route path="detailing-records" element={<  DetailingRecords/>} />
+          
         </Route>
       </Routes>
     </Router>
