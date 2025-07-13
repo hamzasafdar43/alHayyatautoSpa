@@ -3,136 +3,298 @@ import { IoIosHome } from "react-icons/io";
 import { NavLink, Outlet } from "react-router-dom";
 import { FaListUl } from "react-icons/fa6";
 import { RiOilFill } from "react-icons/ri";
-import { FaUserLarge } from "react-icons/fa6";
+import { FaUserLarge, FaCarOn } from "react-icons/fa6";
 import { FcSalesPerformance } from "react-icons/fc";
 import { AiOutlineHistory } from "react-icons/ai";
-import { FaCarAlt } from "react-icons/fa";
-import { FaCarCrash } from "react-icons/fa";
-import { FaCarOn } from "react-icons/fa6";
+import { FaCarAlt, FaCarCrash } from "react-icons/fa";
+import { MdKeyboardArrowDown } from "react-icons/md";
+import { MdKeyboardArrowUp } from "react-icons/md";
 
 function LayOut() {
   const [isOpenSidebar, setIsOpenSidebar] = useState(false);
-  const sideBarList = [
-    {
-      name: "Home",
-      url: "/dashbord/home",
-      icon: <IoIosHome />,
-    },
-    {
-      name: "Car Wash",
-      url: "/dashbord/car-wash-record",
-      icon: <FaCarOn />,
-    },
-    {
-      name: " Detailing Studio",
-      url: "/dashbord/car-detailing",
-      icon: <FaCarAlt />,
-    },
-    {
-      name: "OilShop",
-      url: "/dashbord/oil-shop",
-      icon: <RiOilFill />,
-    },
-    {
-      name: " OilShop Sales",
-      url: "/dashbord/sale-product",
-      icon: <FcSalesPerformance />,
-    },
-    {
-      name: " Accessories Shop",
-      url: "/dashbord/accessories-shop",
-      icon: <FaCarCrash />,
-    },
-    {
-      name: " Accessories  Sale",
-      url: "/dashbord/accessories-shop-record",
-      icon: <FcSalesPerformance />,
-    },
-    {
-      name: "Texi Stand",
-      url: "/dashbord/taxi_stand",
-      icon: <FcSalesPerformance />,
-    },
-    {
-      name: "Gernal Expense",
-      url: "/dashbord/expense",
-      icon: <FcSalesPerformance />,
-    },
-     {
-      name: "Rent",
-      url: "/dashbord/rents",
-      icon: <FcSalesPerformance />,
-    },
-    {
-      name: "Profile",
-      url: "/dashbord/user-profile",
-      icon: <FaUserLarge />,
-    },
-    {
-      name: "History",
-      url: "/dashbord/history",
-      icon: <AiOutlineHistory />,
-    },
-  ];
+  const [dropdowns, setDropdowns] = useState({
+    oilShop: false,
+    accessories: false,
+    rent: false,
+  });
+
+  const toggleDropdown = (key) => {
+    setDropdowns((prev) => ({ ...prev, [key]: !prev[key] }));
+  };
 
   const sidebarIsOpenHandler = () => {
     setIsOpenSidebar(!isOpenSidebar);
   };
 
+  const mainMenu = [
+    {
+      name: "Dashboard",
+      url: "/dashbord/home",
+      icon: <IoIosHome />,
+    },
+    {
+      name: "Car Wash Records",
+      url: "/dashbord/car-wash-record",
+      icon: <FaCarOn />,
+    },
+    {
+      name: "Detailing Studio",
+      url: "/dashbord/detailing-records",
+      icon: <FaCarAlt />,
+    },
+  ];
+
+  const oilShopGroup = [
+    {
+      name: "Oil Shop Inventory",
+      url: "/dashbord/oil-shop",
+      icon: <RiOilFill />,
+    },
+    {
+      name: "Oil Shop Sales",
+      url: "/dashbord/sale-product",
+      icon: <FcSalesPerformance />,
+    },
+  ];
+
+  const accessoriesGroup = [
+    {
+      name: "Accessories Inventory",
+      url: "/dashbord/accessories-shop",
+      icon: <FaCarCrash />,
+    },
+    {
+      name: "Accessories Sales",
+      url: "/dashbord/accessories-shop-record",
+      icon: <FcSalesPerformance />,
+    },
+  ];
+
+  const rentGroup = [
+    {
+      name: "Rental Records",
+      url: "/dashbord/rents",
+      icon: <FcSalesPerformance />,
+    },
+  ];
+
+  const bottomMenu = [
+    {
+      name: "Taxi Stand Logs",
+      url: "/dashbord/taxi_stand",
+      icon: <FcSalesPerformance />,
+    },
+    {
+      name: "General Expenses",
+      url: "/dashbord/expense",
+      icon: <FcSalesPerformance />,
+    },
+    {
+      name: "User Profile",
+      url: "/dashbord/user-profile",
+      icon: <FaUserLarge />,
+    },
+    {
+      name: "Activity History",
+      url: "/dashbord/history",
+      icon: <AiOutlineHistory />,
+    },
+  ];
+
   return (
     <div className="flex w-full">
       {/* Sidebar */}
       <div
-        className={` h-[100vh] lg:block hidden bg-[#262626] text-white ${
-          isOpenSidebar ? "w-[5%] " : "w-[15%] "
-        }`}
+        className={`h-screen lg:block hidden bg-[#1F2937] text-white shadow-lg transition-all duration-300 ${
+          isOpenSidebar ? "w-[70px]" : "w-[230px]"
+        } flex flex-col justify-between`}
       >
-        <div className="text-white mx-5">
-          <FaListUl
-            size={20}
-            className="cursor-pointer mt-[80px]"
-            onClick={sidebarIsOpenHandler}
-          />
-        </div>
+        {/* Header */}
         <div>
-          <h1
-            className={`text-white font-[700] text-2xl mx-auto w-full flex justify-center mt-5 ${
-              isOpenSidebar && "hidden"
-            }`}
-          >
-            ALHAYYAT
-          </h1>
-        </div>
-        <div className="mt-11">
-          {sideBarList.map((sidebar, index) => (
-            <div key={index}>
+          <div className="p-4 flex items-center justify-between mt-8">
+            {!isOpenSidebar && (
+              <h1 className="text-2xl font-bold tracking-wider text-white">
+                ALHAYYAT
+              </h1>
+            )}
+            <FaListUl
+              size={20}
+              className="cursor-pointer"
+              onClick={sidebarIsOpenHandler}
+            />
+          </div>
+
+          {/* Top Menu Items */}
+          <div className="mt-6">
+            {mainMenu.map((item, index) => (
               <NavLink
-                to={sidebar.url}
+                key={index}
+                to={item.url}
                 className={({ isActive }) =>
-                  isActive
-                    ? ` h-11 bg-[#4c4646] w-full text-white text-md  ${
-                        isOpenSidebar
-                          ? "flex items-center justify-center w-[70%]"
-                          : "flex items-center w-[90%]"
-                      }  px-4 gap-5 text-[#262626]  text-md font-[500] `
-                    : " hover:bg-[#257aea] flex items-center w-[100%] h-11 gap-5 px-4"
+                  `flex items-center px-5 py-3 transition-all duration-200 ${
+                    isActive ? "bg-[#374151]" : "hover:bg-[#2563EB]"
+                  } ${isOpenSidebar ? "justify-center" : "gap-4"}`
                 }
               >
-                <span>{sidebar.icon}</span>
-                <span className={`${isOpenSidebar && "hidden"}`}>
-                  {sidebar.name}
-                </span>
+                <span className="text-lg">{item.icon}</span>
+                {!isOpenSidebar && (
+                  <span className="text-sm font-medium tracking-wide">
+                    {item.name}
+                  </span>
+                )}
               </NavLink>
+            ))}
+
+            {/* OilShop Dropdown */}
+            <div
+              className="cursor-pointer flex items-center gap-5 px-5 py-3 hover:bg-[#2563EB]"
+              onClick={() => toggleDropdown("oilShop")}
+            >
+              <span>
+                <RiOilFill />
+              </span>
+              {!isOpenSidebar && (
+                <span className="text-sm font-medium">OilShop</span>
+              )}
+              <span className="ml-auto">
+                {dropdowns.oilShop ? (
+                  <MdKeyboardArrowUp size={25} />
+                ) : (
+                  <MdKeyboardArrowDown size={25} />
+                )}
+              </span>
             </div>
+            {dropdowns.oilShop && !isOpenSidebar && (
+              <div>
+                {oilShopGroup.map((item, i) => (
+                  <NavLink
+                    key={i}
+                    to={item.url}
+                    className={({ isActive }) =>
+                      isActive
+                        ? "text-white bg-[#4c4646] block  py-2 rounded"
+                        : "text-white hover:text-blue-300 block px-4 py-2"
+                    }
+                  >
+                    <div className="flex mx-4 text-sm font-[500]">
+                      <span className="mr-2">{item.icon}</span>{" "}
+                      <span>{item.name}</span>
+                    </div>
+                  </NavLink>
+                ))}
+              </div>
+            )}
+
+            {/* Accessories Dropdown */}
+            <div
+              className="cursor-pointer flex items-center gap-5 px-5 py-3 hover:bg-[#2563EB]"
+              onClick={() => toggleDropdown("accessories")}
+            >
+              <span>
+                <FaCarCrash />
+              </span>
+              {!isOpenSidebar && (
+                <span className="text-sm font-medium">Accessories</span>
+              )}
+              <span className="ml-auto">
+                {dropdowns.accessories ? (
+                  <MdKeyboardArrowUp size={25} />
+                ) : (
+                  <MdKeyboardArrowDown size={25} />
+                )}
+              </span>
+            </div>
+            {dropdowns.accessories && !isOpenSidebar && (
+              <div>
+                {accessoriesGroup.map((item, i) => (
+                  <NavLink
+                    key={i}
+                    to={item.url}
+                    className={({ isActive }) =>
+                      isActive
+                        ? "text-white bg-[#4c4646] block px-4 py-2 rounded"
+                        : "text-white hover:text-blue-300 block px-4 py-2"
+                    }
+                  >
+                    <div className="flex mx-4 text-sm font-[500]">
+                      <span className="mr-2">{item.icon}</span>{" "}
+                      <span>{item.name}</span>
+                    </div>
+                  </NavLink>
+                ))}
+              </div>
+            )}
+
+            {/* Rent Dropdown */}
+            <div
+              className="cursor-pointer flex items-center gap-5 px-5 py-3 hover:bg-[#2563EB]"
+              onClick={() => toggleDropdown("rent")}
+            >
+              <span>
+                <FcSalesPerformance />
+              </span>
+              {!isOpenSidebar && (
+                <span className="text-sm font-medium">Rent</span>
+              )}
+              <span className="ml-auto">
+                {dropdowns.rent ? (
+                  <MdKeyboardArrowUp size={25} />
+                ) : (
+                  <MdKeyboardArrowDown size={25} />
+                )}
+              </span>
+            </div>
+            {dropdowns.rent && !isOpenSidebar && (
+              <div>
+                {rentGroup.map((item, i) => (
+                  <NavLink
+                    key={i}
+                    to={item.url}
+                    className={({ isActive }) =>
+                      isActive
+                        ? "text-white bg-[#4c4646] block px-4 py-2 rounded"
+                        : "text-white hover:text-blue-300 block px-4 py-2"
+                    }
+                  >
+                    <div className="flex mx-4 text-sm font-[500]">
+                      <span className="mr-2">{item.icon}</span>{" "}
+                      <span>{item.name}</span>
+                    </div>
+                  </NavLink>
+                ))}
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* Bottom Menu */}
+        <div className="mb-5">
+          {bottomMenu.map((item, index) => (
+            <NavLink
+              key={index}
+              to={item.url}
+              className={({ isActive }) =>
+                `flex items-center px-5 py-3 transition-all duration-200 ${
+                  isActive ? "bg-[#374151]" : "hover:bg-[#2563EB]"
+                } ${isOpenSidebar ? "justify-center" : "gap-4"}`
+              }
+            >
+              <span className="text-lg">{item.icon}</span>
+              {!isOpenSidebar && (
+                <span className="text-sm font-medium tracking-wide">
+                  {item.name}
+                </span>
+              )}
+            </NavLink>
           ))}
         </div>
       </div>
 
-      {/* Main content */}
+      {/* Main Content */}
       <div
-        className={`  bg-gray-100 overflow-y-auto h-[100vh]  ${
-          isOpenSidebar ? "lg:w-[95%] w-full " : "lg:w-[85%] w-full "
-        } `}
+        className={`bg-gray-100 overflow-y-auto h-screen ${
+          isOpenSidebar ? "lg:w-[95%] w-full" : "lg:w-[85%] w-full"
+        }`}
       >
         <Outlet />
       </div>

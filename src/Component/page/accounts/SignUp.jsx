@@ -20,9 +20,7 @@ function SignUp() {
   const singupHandler = async (values) => {
    
     try {
-
       const response = await dispatch(registerUser(values));
-      
       if (response.payload.message === "User registered successfully") {
         navigate("/");
       }

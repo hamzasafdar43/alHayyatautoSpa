@@ -3,6 +3,7 @@ import CustomTable from "../../common/CustomTable";
 
 
 function TodayCarWashbill({filteredBills}) {
+  
     const columns = ["Sr_No" , "Time" , "CarName" ,"CarWasher" ,"Commission" , "Bill"]
     const rows = filteredBills.map((record, index) => ({
         Sr_No: index + 1,

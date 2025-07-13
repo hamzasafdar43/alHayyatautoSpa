@@ -1,6 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
 import { FcSalesPerformance } from "react-icons/fc";
-import { IoCloseSharp } from "react-icons/io5";
 import { useDispatch, useSelector } from "react-redux";
 import { GiProfit } from "react-icons/gi";
 import { HiUsers } from "react-icons/hi";
@@ -11,20 +10,13 @@ import CarWashbillRecordMonthly from "./CarWashbillRecordMonthly.jsx";
 import TodayCarWashbill from "./TodayCarWashbill.jsx";
 import AllUsers from "../accounts/AllUsers.jsx";
 import Commission from "./Commission.jsx";
-import CarWashBill from "./CarWashBill.jsx";
 
 function CarWashRecord() {
   const [record, setRecord] = useState("all-carWash-bill");
-  const [isOpen, setIsOpen] = useState(false);
-
-  const items = [
-    { name: "Milk", quantity: 2, price: 50 },
-    { name: "Bread", quantity: 1, price: 40 },
-  ];
 
   const dispatch = useDispatch();
   const { data: allBills = [] } = useGetAllBillsQuery();
-  const { users, loading, error } = useSelector((state) => state.user);
+  const { users } = useSelector((state) => state.user);
 
   useEffect(() => {
     dispatch(fetchUsers());
@@ -88,25 +80,11 @@ function CarWashRecord() {
     },
   ];
 
-  const newbillgenerateHandler = () => {
-    setIsOpen(true);
-  };
-
-  const generateBillCloseHandler = () => {
-    setIsOpen(false);
-  };
-
   return (
     <div>
       <div className="h-[80px] w-full bg-white mt-[70px] mb-8 flex items-center justify-between px-8">
         <div className="flex gap-8">
-          <h1 className="text-lg font-[500] ">Generate Bill</h1>
-          <h1
-            className="text-lg font-[500] cursor-pointer "
-            onClick={newbillgenerateHandler}
-          >
-            + Add new Bill
-          </h1>
+          <h1 className="text-lg font-[500] ">Car Wash Records</h1>
         </div>
         <div className="border-[1px] border-[#262626] p-1 sm:block hidden w-[300px] font-[500] rounded-[8px]">
           <form action="">
@@ -150,23 +128,8 @@ function CarWashRecord() {
           <Commission />
         )}
       </div>
-      {isOpen && (
-        <div className="fixed h-[100vh] w-full top-0 left-0 bg-[rgba(0,0,0,0.7)] flex items-center z-50 justify-center ">
-          <div className="lg:w-[40%] sm:w-[60%] w-[90%] px-4  h-auto border-2 rounded-[10px] border-[#262626]  bg-white  py-8">
-            <div className="m-2 flex justify-end ">
-              <IoCloseSharp size={20} onClick={generateBillCloseHandler} />
-            </div>
-            <div>
-              <CarWashBill setIsOpen={setIsOpen} />
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   );
 }
 
-
-
-
-export default CarWashRecord
+export default CarWashRecord;

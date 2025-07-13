@@ -1,12 +1,13 @@
 import React from 'react';
 
-const CustomButton = ({ type = 'button', onClick,title , className }) => {
+const CustomButton = ({ type = 'button', onClick, title, className }) => {
   return (
     <button
       type={type}
       onClick={onClick}
-      
-      className={`bg-[#262626] w-[100%] h-10 cursor-pointer rounded-[10px] text-white font-[500] text-[20px] ${className}`}
+      className={`w-full h-10 bg-[#1F2937] text-white text-sm font-semibold rounded-md 
+        hover:bg-[#1f1f1f] active:scale-[0.98] transition-all duration-150 ease-in-out 
+        shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-1 focus:ring-[#444] ${className}`}
     >
       {title}
     </button>

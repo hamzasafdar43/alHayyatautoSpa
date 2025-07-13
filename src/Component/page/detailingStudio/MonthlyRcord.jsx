@@ -3,19 +3,22 @@ import CustomTable from "../../common/CustomTable";
 import {
   useDeleteBillMutation,
   useGetAllBillsQuery,
+  useGetAlldetailingStudioBilQuery,
 } from "../../../features/Api";
 import { IoCloseSharp } from "react-icons/io5";
-import CarWashBill from "./CarWashBill";
 import CustomButton from "../../common/CustomButton";
 import { showToast } from "../../common/CustomToast";
+import CarWashBill from "../carWash/CarWashBill";
 
-function CarWashbillRecordMonthly() {
+function MonthlyRcord() {
   const [isOpenDeleteeRecod, setIsOpenDeleteeRecod] = useState(false);
   const [isOpenUpdateRecod, setIsOpenUpdateRecod] = useState(false);
   const [selectRecordIndex, setSelectRecordIndex] = useState(null);
 
-  const { data: allBills = [], refetch } = useGetAllBillsQuery();
+  const { data: allBills = [], refetch } = useGetAlldetailingStudioBilQuery();
   const [deleteBill] = useDeleteBillMutation();
+
+  console.log("allBills" , allBills)
 
   const getCurrentMonthBill = allBills.filter((item) => {
     const createdDate = new Date(item.createdAt);
@@ -32,9 +35,9 @@ function CarWashbillRecordMonthly() {
     Date: new Date(bills.createdAt).toLocaleDateString("en-GB", {
       timeZone: "Asia/Karachi",
     }),
-    CarName: bills.carName,
-    CarWasher: bills.carWasher,
-    Price: bills.bill,
+    CarName: bills?.carName,
+    Detailing_Master: bills?.detailingMaster,
+    Price: bills?.detailingBill,
     Commission: bills?.commission,
   }));
 
@@ -74,7 +77,7 @@ function CarWashbillRecordMonthly() {
     "Id",
     "Date",
     "CarName",
-    "CarWasher",
+    "Detailing_Master",
     "Price",
     "Commission",
     "Actions",
@@ -135,4 +138,7 @@ function CarWashbillRecordMonthly() {
   );
 }
 
-export default CarWashbillRecordMonthly;
+
+
+
+export default MonthlyRcord

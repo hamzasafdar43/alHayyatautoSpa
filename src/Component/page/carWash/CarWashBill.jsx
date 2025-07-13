@@ -1,16 +1,11 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect } from "react";
 import { Formik, Form } from "formik";
 import CustomInput from "../../common/CustomInput";
 import CustomButton from "../../common/CustomButton";
-import { useReactToPrint } from "react-to-print";
 import CustomSelect from "../../common/CustomSelect";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchUsers } from "../../../features/createSlice";
-import {
-  useGetAllBillsQuery,
-  useSubmitCarWashBillMutation,
-  useUpdateBillMutation,
-} from "../../../features/Api";
+import { useUpdateBillMutation } from "../../../features/Api";
 import {
   SignupSchema,
   updateRecordValidationSchema,
@@ -21,22 +16,13 @@ function CarWashBill({
   isOpenUpdateRecod,
   record,
   setIsOpenUpdateRecod,
-  setIsOpen,
   setCarWashBill,
   setSelectBillForm,
 }) {
-  const [pageContent, setPageContent] = useState("");
-
-  const { data: allBills = [], refetch } = useGetAllBillsQuery();
   const dispatch = useDispatch();
-  const contentRef = useRef(null);
-  const { users, loading, error } = useSelector((state) => state.user);
-  const [submitCarWashBill, { data, error: submitError, isLoading }] =
-    useSubmitCarWashBillMutation();
-  const [
-    updateBill,
-    { data: updateResponse, error: updateError, isLoading: isLoadingUpdate },
-  ] = useUpdateBillMutation();
+  const { users } = useSelector((state) => state.user);
+
+  const [updateBill] = useUpdateBillMutation();
 
   useEffect(() => {
     dispatch(fetchUsers());
@@ -62,28 +48,7 @@ function CarWashBill({
   const submitHandler = async (values) => {
     setCarWashBill((prev) => [...prev, values]);
     setSelectBillForm("");
-
-    //   try {
-    //     const response = await submitCarWashBill(values).unwrap();
-    //     setPageContent(response?.bill);
-
-    //     if(response.message === "Car wash bill generated successfully"){
-    //       showToast(response?.message, "success");
-
-    //       setTimeout(() => {
-    //         // reactToPrintFn();
-    //         setIsOpen(false)
-    //       }, 1000);
-
-    //     }
-    //  refetch()
-    //   } catch (err) {
-    //     const errorMessage = error?.data?.message || "Something went wrong!";
-    //     showToast(errorMessage, "error");
-    //   }
   };
-
-  const reactToPrintFn = useReactToPrint({ contentRef });
 
   const carWasherOptions = users
     .filter((user) => user)
@@ -166,44 +131,6 @@ function CarWashBill({
           );
         }}
       </Formik>
-
-      <div className="hidden">
-        <div ref={contentRef}>
-          <div>
-            <h1 className="font-[600] ">AlHayyat Aut Spa</h1>
-          </div>
-          <div>
-            <h1 className="my-5 flex justify-between">
-              Date :{" "}
-              <span>
-                {new Date().toLocaleString("en-PK", {
-                  timeZone: "Asia/Karachi",
-                })}
-              </span>
-            </h1>
-            <h1 className="my-5 flex justify-between">
-              Car Name: <span>{pageContent?.carName}</span>
-            </h1>
-            <h1 className="my-5 flex justify-between">
-              Bill: <span>{pageContent?.bill}</span>
-            </h1>
-            <h1 className="my-5 flex justify-between">
-              Discount: <span>5%</span>
-            </h1>
-            {pageContent?.bill && (
-              <h1 className="my-5 flex justify-between">
-                Total after 5% discount:
-                <span>
-                  {(
-                    Number(pageContent.bill) -
-                    Number(pageContent.bill) * 0.05
-                  ).toFixed(2)}
-                </span>
-              </h1>
-            )}
-          </div>
-        </div>
-      </div>
     </div>
   );
 }
