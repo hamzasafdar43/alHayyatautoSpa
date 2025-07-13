@@ -176,7 +176,7 @@ function LayOut() {
                         : "text-white hover:text-blue-300 block px-4 py-2"
                     }
                   >
-                    <div className="flex mx-4">
+                    <div className="flex mx-4 text-sm font-[500]">
                       <span className="mr-2">{item.icon}</span>{" "}
                       <span>{item.name}</span>
                     </div>
@@ -216,7 +216,7 @@ function LayOut() {
                         : "text-white hover:text-blue-300 block px-4 py-2"
                     }
                   >
-                    <div className="flex mx-4">
+                    <div className="flex mx-4 text-sm font-[500]">
                       <span className="mr-2">{item.icon}</span>{" "}
                       <span>{item.name}</span>
                     </div>
@@ -256,7 +256,7 @@ function LayOut() {
                         : "text-white hover:text-blue-300 block px-4 py-2"
                     }
                   >
-                    <div className="flex mx-4">
+                    <div className="flex mx-4 text-sm font-[500]">
                       <span className="mr-2">{item.icon}</span>{" "}
                       <span>{item.name}</span>
                     </div>
