@@ -39,7 +39,7 @@ function AccessoriesShop({ onClick }) {
   const rows = items.map((product, index) => ({
     Sr_No: index + 1,
     Id: product?._id,
-    Product_Image: `http://localhost:5000/uploads/${product?.image}`,
+    Product_Image: `https://alhayyat-backend.onrender.com/uploads/${product?.image}`,
     Product_Name: product?.productName,
     Product_Quantity: product?.quantity,
     Price: product?.price,

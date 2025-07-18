@@ -3,7 +3,7 @@ import AddProduct from '../Component/page/olishop/AddProduct';
 
 export const carWashBillApi = createApi({
   reducerPath: 'carWashApi',
-  baseQuery: fetchBaseQuery({ baseUrl: 'http://localhost:5000/' }),
+  baseQuery: fetchBaseQuery({ baseUrl: 'https://alhayyat-backend.onrender.com/' }),
   endpoints: (builder) => ({
     submitCarWashBill: builder.mutation({
       query: (body) => ({

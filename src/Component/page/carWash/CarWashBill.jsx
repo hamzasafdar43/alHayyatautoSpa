@@ -84,11 +84,11 @@ function CarWashBill({
         initialValues={
           isOpenUpdateRecod && record ? initialValueUpdate : initialValuesForm
         }
-        validationSchema={
-          isOpenUpdateRecod && record
-            ? updateRecordValidationSchema
-            : SignupSchema
-        }
+        // validationSchema={
+        //   isOpenUpdateRecod && record
+        //     ? updateRecordValidationSchema
+        //     : SignupSchema
+        // }
         onSubmit={isOpenUpdateRecod ? updateHandler : submitHandler}
       >
         {({ setFieldValue, values }) => {
