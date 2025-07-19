@@ -20,17 +20,20 @@ import TaxiStand from "./Component/page/taxiStand/TaxiStand";
 import Rents from "./Component/page/shopRent/Rents";
 import AccessoriesSaleRecord from "./Component/page/accessoriesSales/AccessoriesSaleRecord";
 import DetailingRecords from "./Component/page/detailingStudio/DetailingRecords";
+import { useSelector } from "react-redux";
 
 
 
 
 
 function App() {
+  const user = useSelector((user)=>user.user)
+
   return (
     <div>
        <CustomToast/>
        <Router>
-   <Menue/>
+   {user?.user?.token && (<Menue/>)}
        <Routes>
        <Route path="/sign-up" element={<PublicRoute><SignUp /></PublicRoute>} />
        <Route path="/" element={<PublicRoute><SignIn /></PublicRoute>} />
