@@ -36,6 +36,7 @@ function Menue() {
 
   const logOutUserHandler = async () => {
     const response = await dispatch(logout());
+    localStorage.clear()
     console.log("logout response", response);
     navigate("/");
   };

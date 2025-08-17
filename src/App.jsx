@@ -21,6 +21,8 @@ import Rents from "./Component/page/shopRent/Rents";
 import AccessoriesSaleRecord from "./Component/page/accessoriesSales/AccessoriesSaleRecord";
 import DetailingRecords from "./Component/page/detailingStudio/DetailingRecords";
 import { useSelector } from "react-redux";
+import CheckMonthlyReport from "./Component/page/history/CheckMonthlyReport";
+import DetailingMonthlyReport from "./Component/page/history/DetailingMonthlyReport";
 
 
 
@@ -35,6 +37,8 @@ function App() {
        <Router>
    {user?.user?.token && (<Menue/>)}
        <Routes>
+        <Route path="/detailing-monthly-report/:month" element={<DetailingMonthlyReport />} />
+        <Route path="/monthly-report/:month" element={<CheckMonthlyReport/>} />
        <Route path="/sign-up" element={<PublicRoute><SignUp /></PublicRoute>} />
        <Route path="/" element={<PublicRoute><SignIn /></PublicRoute>} />
          <Route path="/dashbord" element={<ProtectedRoute><LayOut /></ProtectedRoute>}>
