@@ -1,6 +1,7 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 
-const BASE_URL = 'https://alhayyat-backend.onrender.com';
+// const BASE_URL = 'https://alhayyat-backend.onrender.com';
+const BASE_URL = 'http://localhost:5000';
 
 
 export const registerUser = createAsyncThunk('registerUser', async (userData, thunkAPI) => {
@@ -18,6 +19,7 @@ export const registerUser = createAsyncThunk('registerUser', async (userData, th
     }
     
     const data = await response.json();
+    localStorage.setItem("token" , data.token)
     return data;
 
   } catch (error) {
@@ -38,9 +40,10 @@ export const loginUser = createAsyncThunk('registerUser', async (userData, thunk
     if (!response.ok) {
       throw new Error('Failed to register user');
     }
-
+   
     const data = await response.json();
-    console.log("data" , data)
+    localStorage.setItem("token" , data.token)
+
     return data;
   } catch (error) {
     return thunkAPI.rejectWithValue(error.message);
@@ -67,7 +70,12 @@ export const deleteUser = createAsyncThunk('deleteUser', async (id, thunkAPI) =>
 });
 
 export const fetchUsers = createAsyncThunk('fetchUsers', async () => {
-    const response = await fetch(`${BASE_URL}/getallUser`);
+    const token = localStorage.getItem('token');
+    const response = await fetch(`${BASE_URL}/getallUser`,{
+      headers : {
+        'Authorization': `Bearer ${token}`,
+      }
+    });
   
     if (!response.ok) throw new Error('Failed to fetch users');
   
@@ -104,6 +112,7 @@ export const counterSlice = createSlice({
   initialState: {
     user:null,
     users: [],
+    token: localStorage.getItem('token') || null,
     loading: false,
     error: null,
   },
