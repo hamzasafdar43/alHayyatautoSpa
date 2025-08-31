@@ -1,7 +1,7 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 
-// const BASE_URL = 'https://alhayyat-backend.onrender.com';
-const BASE_URL = 'http://localhost:5000';
+const BASE_URL = 'https://alhayyat-backend.onrender.com';
+//const BASE_URL = 'http://localhost:5000';
 
 
 export const registerUser = createAsyncThunk('registerUser', async (userData, thunkAPI) => {
@@ -19,7 +19,7 @@ export const registerUser = createAsyncThunk('registerUser', async (userData, th
     }
     
     const data = await response.json();
-    localStorage.setItem("token" , data.token)
+  
     return data;
 
   } catch (error) {
@@ -27,7 +27,7 @@ export const registerUser = createAsyncThunk('registerUser', async (userData, th
   }
 });
 
-export const loginUser = createAsyncThunk('registerUser', async (userData, thunkAPI) => {
+export const loginUser = createAsyncThunk('loginUser', async (userData, thunkAPI) => {
   try {
     const response = await fetch(`${BASE_URL}/login`, {
       method: 'POST',
@@ -53,8 +53,12 @@ export const loginUser = createAsyncThunk('registerUser', async (userData, thunk
 
 export const deleteUser = createAsyncThunk('deleteUser', async (id, thunkAPI) => {
   try {
+    const token = localStorage.getItem('token');
     const response = await fetch(`${BASE_URL}/deleteUser/${id}`, {
       method: 'DELETE',
+      headers: {
+         'Authorization': `Bearer ${token}`,
+      }
     });
 
     if (!response.ok) {
@@ -87,10 +91,12 @@ export const fetchUsers = createAsyncThunk('fetchUsers', async () => {
 
   export const updateUser = createAsyncThunk('updateUser', async ({ values, userId }, thunkAPI) => {
     try {
+      // const token = localStorage.getItem('token');
       const response = await fetch(`${BASE_URL}/updateUser/${userId}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
+          //  'Authorization': `Bearer ${token}`,
         },
         body: JSON.stringify(values),
       });
@@ -146,6 +152,19 @@ export const counterSlice = createSlice({
         state.loading = false;
       })
       .addCase(registerUser.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+      .addCase(loginUser.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(loginUser.fulfilled, (state, action) => {
+        state.user = action.payload;
+        state.token = action.payload.token; 
+        state.loading = false;
+      })
+      .addCase(loginUser.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
       })
