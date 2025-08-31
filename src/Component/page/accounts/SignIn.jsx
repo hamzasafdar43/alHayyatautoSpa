@@ -19,7 +19,7 @@ function SignIn() {
   const singInHandler = async (values) => {
     try {
       const response = await dispatch(loginUser(values));
-      console.log("response", response);
+
       if (response?.payload?.token) {
         navigate("/dashbord");
       }

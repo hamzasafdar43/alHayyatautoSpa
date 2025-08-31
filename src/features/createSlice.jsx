@@ -1,6 +1,7 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 
 const BASE_URL = 'https://alhayyat-backend.onrender.com';
+//const BASE_URL = 'http://localhost:5000';
 
 
 export const registerUser = createAsyncThunk('registerUser', async (userData, thunkAPI) => {
@@ -18,6 +19,7 @@ export const registerUser = createAsyncThunk('registerUser', async (userData, th
     }
     
     const data = await response.json();
+  
     return data;
 
   } catch (error) {
@@ -25,7 +27,7 @@ export const registerUser = createAsyncThunk('registerUser', async (userData, th
   }
 });
 
-export const loginUser = createAsyncThunk('registerUser', async (userData, thunkAPI) => {
+export const loginUser = createAsyncThunk('loginUser', async (userData, thunkAPI) => {
   try {
     const response = await fetch(`${BASE_URL}/login`, {
       method: 'POST',
@@ -38,9 +40,10 @@ export const loginUser = createAsyncThunk('registerUser', async (userData, thunk
     if (!response.ok) {
       throw new Error('Failed to register user');
     }
-
+   
     const data = await response.json();
-    console.log("data" , data)
+    localStorage.setItem("token" , data.token)
+
     return data;
   } catch (error) {
     return thunkAPI.rejectWithValue(error.message);
@@ -50,8 +53,12 @@ export const loginUser = createAsyncThunk('registerUser', async (userData, thunk
 
 export const deleteUser = createAsyncThunk('deleteUser', async (id, thunkAPI) => {
   try {
+    const token = localStorage.getItem('token');
     const response = await fetch(`${BASE_URL}/deleteUser/${id}`, {
       method: 'DELETE',
+      headers: {
+         'Authorization': `Bearer ${token}`,
+      }
     });
 
     if (!response.ok) {
@@ -67,7 +74,12 @@ export const deleteUser = createAsyncThunk('deleteUser', async (id, thunkAPI) =>
 });
 
 export const fetchUsers = createAsyncThunk('fetchUsers', async () => {
-    const response = await fetch(`${BASE_URL}/getallUser`);
+    const token = localStorage.getItem('token');
+    const response = await fetch(`${BASE_URL}/getallUser`,{
+      headers : {
+        'Authorization': `Bearer ${token}`,
+      }
+    });
   
     if (!response.ok) throw new Error('Failed to fetch users');
   
@@ -79,10 +91,12 @@ export const fetchUsers = createAsyncThunk('fetchUsers', async () => {
 
   export const updateUser = createAsyncThunk('updateUser', async ({ values, userId }, thunkAPI) => {
     try {
+      // const token = localStorage.getItem('token');
       const response = await fetch(`${BASE_URL}/updateUser/${userId}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
+          //  'Authorization': `Bearer ${token}`,
         },
         body: JSON.stringify(values),
       });
@@ -104,6 +118,7 @@ export const counterSlice = createSlice({
   initialState: {
     user:null,
     users: [],
+    token: localStorage.getItem('token') || null,
     loading: false,
     error: null,
   },
@@ -137,6 +152,19 @@ export const counterSlice = createSlice({
         state.loading = false;
       })
       .addCase(registerUser.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+      .addCase(loginUser.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(loginUser.fulfilled, (state, action) => {
+        state.user = action.payload;
+        state.token = action.payload.token; 
+        state.loading = false;
+      })
+      .addCase(loginUser.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
       })

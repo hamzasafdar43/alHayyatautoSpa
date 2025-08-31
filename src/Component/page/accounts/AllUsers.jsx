@@ -8,6 +8,7 @@ function AllUsers() {
   const [isOpenConfirmDeleteUser, setIsOpenConfirmDeleteUser] = useState(false);
   const [isSelectedDeleteUserIndex, setIsSelectedDeleteUserIndex] =
     useState(null);
+  const [isOpenEditModal , setIsOpenEditModal] = useState(false)
   const dispatch = useDispatch();
 
   // Get Redux state
@@ -47,6 +48,12 @@ function AllUsers() {
     }
   };
 
+
+  const userEditHandler = () => {
+    
+  }
+
+
   return (
     <div className="w-[90%]">
       {loading && <p>Loading users...</p>}
@@ -55,6 +62,7 @@ function AllUsers() {
         rows={rows}
         columns={columns}
         onClickDelete={onClickDelete}
+        onClick={userEditHandler}
       />
       {isOpenConfirmDeleteUser && (
         <div className="fixed h-[100vh] w-full top-0 left-0 bg-[rgba(0,0,0,0.7)] flex items-center justify-center z-50">

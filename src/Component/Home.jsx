@@ -227,6 +227,45 @@ function Home() {
                 </p>
               )}
             </div>
+            <div className="mt-6 border-t pt-4 text-center text-gray-700 text-sm">
+              <h3 className="font-semibold text-base mb-3 tracking-wide text-gray-800">
+                📌 Stay Connected
+              </h3>
+
+              <div className="flex flex-col gap-2 items-center">
+                <p className="flex items-center gap-2">
+                  <span className="text-blue-500">📞</span>
+                  <span className="font-medium">03265401577</span>
+                </p>
+
+                <p className="flex items-center gap-2">
+                  <span className="text-blue-600">📘</span>
+                  <span className="font-medium">Facebook:</span>
+                  <span className="text-blue-600 hover:underline cursor-pointer">
+                    Al Hayat Auto Spa
+                  </span>
+                </p>
+
+                <p className="flex items-center gap-2">
+                  <span className="text-red-600">▶️</span>
+                  <span className="font-medium">YouTube:</span>
+                  <a
+                    href="https://www.youtube.com/@alhayatautospa"
+                    target="_blank"
+                    rel="noreferrer"
+                    className="text-red-600 font-medium hover:underline"
+                  >
+                    @alhayatautospa
+                  </a>
+                </p>
+
+                <p className="flex items-center gap-2">
+                  <span className="text-pink-500">🎵</span>
+                  <span className="font-medium">TikTok:</span>
+                  <span className="text-gray-800">alhayatautospa786sgd</span>
+                </p>
+              </div>
+            </div>
           </div>
 
           {billItems.length > 0 && (
