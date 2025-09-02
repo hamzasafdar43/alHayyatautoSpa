@@ -1,7 +1,7 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 
-const BASE_URL = 'https://alhayyat-backend.onrender.com';
-//const BASE_URL = 'http://localhost:5000';
+// const BASE_URL = 'https://alhayyat-backend.onrender.com';
+const BASE_URL = 'http://localhost:5000';
 
 
 export const registerUser = createAsyncThunk('registerUser', async (userData, thunkAPI) => {
