@@ -23,6 +23,7 @@ import DetailingRecords from "./Component/page/detailingStudio/DetailingRecords"
 import { useSelector } from "react-redux";
 import CheckMonthlyReport from "./Component/page/history/CheckMonthlyReport";
 import DetailingMonthlyReport from "./Component/page/history/DetailingMonthlyReport";
+import Employee from "./Component/page/employees/Employee";
 
 
 
@@ -56,6 +57,7 @@ function App() {
           <Route path="taxi_stand" element={< TaxiStand/>} />
            <Route path="rents" element={< Rents/>} />
            <Route path="detailing-records" element={<  DetailingRecords/>} />
+            <Route path="employee" element={<Employee/>} />
           
         </Route>
       </Routes>
