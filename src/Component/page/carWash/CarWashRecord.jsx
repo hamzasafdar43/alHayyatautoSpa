@@ -13,6 +13,7 @@ import Commission from "./Commission.jsx";
 
 function CarWashRecord() {
   const [record, setRecord] = useState("all-carWash-bill");
+  const [filterBill, setFilterBill] = useState("month");
 
   const dispatch = useDispatch();
   const { data: allBills = [] } = useGetAllBillsQuery();
@@ -22,19 +23,14 @@ function CarWashRecord() {
     dispatch(fetchUsers());
   }, [dispatch]);
 
-  const getCurrentMonthBill = allBills.filter((item) => {
-    const createdDate = new Date(item.createdAt);
-    const now = new Date();
-    return (
-      createdDate.getMonth() === now.getMonth() &&
-      createdDate.getFullYear() === now.getFullYear()
-    );
-  });
+console.log("allBills" , allBills)
 
   // Now reduce to get total
-  const carWashTotalBill = getCurrentMonthBill.reduce((total, item) => {
+  const carWashTotalBill = allBills.reduce((total, item) => {
     return total + parseFloat(item.bill || 0);
   }, 0);
+
+  console.log("carWashTotalBill" , carWashTotalBill)
 
   const today = new Date().toISOString().split("T")[0];
 
