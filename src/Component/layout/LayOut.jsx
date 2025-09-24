@@ -9,6 +9,7 @@ import { AiOutlineHistory } from "react-icons/ai";
 import { FaCarAlt, FaCarCrash } from "react-icons/fa";
 import { MdKeyboardArrowDown } from "react-icons/md";
 import { MdKeyboardArrowUp } from "react-icons/md";
+import { FaUsers } from "react-icons/fa6";
 
 function LayOut() {
   const [isOpenSidebar, setIsOpenSidebar] = useState(false);
@@ -88,6 +89,11 @@ function LayOut() {
       name: "General Expenses",
       url: "/dashbord/expense",
       icon: <FcSalesPerformance />,
+    },
+     {
+      name: "Employee",
+      url: "/dashbord/employee",
+      icon: <FaUsers />,
     },
     {
       name: "User Profile",

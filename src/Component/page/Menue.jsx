@@ -64,6 +64,7 @@ function Menue() {
   const bottomMenu = [
     { name: "Taxi Stand Logs", url: "/dashbord/taxi_stand", icon: <FcSalesPerformance /> },
     { name: "General Expenses", url: "/dashbord/expense", icon: <FcSalesPerformance /> },
+    { name: "Employee", url: "/employee", icon: <FaUserLarge /> },
     { name: "User Profile", url: "/dashbord/user-profile", icon: <FaUserLarge /> },
     { name: "Activity History", url: "/dashbord/history", icon: <AiOutlineHistory /> },
   ];

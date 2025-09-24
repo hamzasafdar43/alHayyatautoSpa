@@ -3,13 +3,12 @@ import { Formik, Form } from "formik";
 import CustomInput from "../../common/CustomInput";
 import CustomButton from "../../common/CustomButton";
 import CustomSelect from "../../common/CustomSelect";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { fetchUsers } from "../../../features/createSlice";
-import { useUpdateBillMutation } from "../../../features/Api";
 import {
-  SignupSchema,
-  updateRecordValidationSchema,
-} from "../validations/FormValidation";
+  useGetAllEmployeesQuery,
+  useUpdateBillMutation,
+} from "../../../features/Api";
 import { showToast } from "../../common/CustomToast";
 
 function CarWashBill({
@@ -20,8 +19,12 @@ function CarWashBill({
   setSelectBillForm,
 }) {
   const dispatch = useDispatch();
-  const { users } = useSelector((state) => state.user);
 
+  const {
+    data: allEmployees = {},
+    isLoading,
+    isError,
+  } = useGetAllEmployeesQuery();
   const [updateBill] = useUpdateBillMutation();
 
   useEffect(() => {
@@ -50,11 +53,11 @@ function CarWashBill({
     setSelectBillForm("");
   };
 
-  const carWasherOptions = users
-    .filter((user) => user)
-    .map((user) => ({
-      value: user.name,
-      label: user.name,
+  const carWasherOptions = allEmployees
+    .filter((employee) => employee)
+    .map((employee) => ({
+      value: employee.name,
+      label: employee.name,
     }));
 
   const updateHandler = async (values) => {
@@ -89,6 +92,7 @@ function CarWashBill({
         //     ? updateRecordValidationSchema
         //     : SignupSchema
         // }
+        
         onSubmit={isOpenUpdateRecod ? updateHandler : submitHandler}
       >
         {({ setFieldValue, values }) => {
