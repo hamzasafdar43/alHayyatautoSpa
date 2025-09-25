@@ -18,7 +18,7 @@ export const carWashBillApi = createApi({
       }),
     }),
     getAllBills: builder.query({
-      query: () => "carWash-bills?filter=month",
+      query: (filter) => `carWash-bills?filter=${filter}`,
     }),
     deleteBill: builder.mutation({
       query: (id) => ({

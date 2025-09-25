@@ -1,45 +1,34 @@
 import React, { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { fetchUsers } from "../../../features/createSlice";
-import { useGetAllBillsQuery } from "../../../features/Api";
+import { useGetAllBillsQuery, useGetAllEmployeesQuery } from "../../../features/Api";
 import CustomTable from "../../common/CustomTable";
 
 function Commission() {
-  const [selectedcarWasher, setSelectedcarWasher] = useState("");
+  const [selectedCarWasher, setSelectedCarWasher] = useState("");
+  const [filterType, setFilterType] = useState("day");
 
-  const { data: allBills = [] } = useGetAllBillsQuery();
+  const { data: allBills = [] } = useGetAllBillsQuery(filterType);
 
   const dispatch = useDispatch();
-  const { users } = useSelector((state) => state.user);
+  const { data: allEmployees = [] } = useGetAllEmployeesQuery();
 
   useEffect(() => {
     dispatch(fetchUsers());
   }, [dispatch]);
 
-  
+  // Filter bills based on selected car washer
+  const filteredBills = selectedCarWasher
+    ? allBills.filter((bill) => bill.carWasher === selectedCarWasher)
+    : allBills;
 
-  const today = new Date().toISOString().split("T")[0];
-
-  const filteredBills = allBills.filter((record) => {
-    if (!record.createdAt) return false; // skip if createdAt is missing
-
-    const billDate = new Date(record.createdAt);
-    if (isNaN(billDate)) return false; // skip if date is invalid
-
-    const isToday = billDate.toISOString().split("T")[0] === today;
-    const isWasherMatch = selectedcarWasher
-      ? record.carWasher === selectedcarWasher
-      : true;
-
-    return isToday && isWasherMatch;
-  });
-
-  const totalCommission = filteredBills.reduce((total, record) => {
-    return total + parseFloat(record.commission || 0);
-  }, 0);
+  // Calculate total commission for filtered bills
+  const totalCommission = filteredBills.reduce(
+    (total, record) => total + parseFloat(record.commission || 0),
+    0
+  );
 
   const columns = ["Sr_No", "Date", "Name", "Commission"];
-  
   const rows = filteredBills.map((record, index) => ({
     Sr_No: index + 1,
     Date: new Date(record.createdAt).toLocaleDateString(),
@@ -56,21 +45,35 @@ function Commission() {
       >
         <select
           className="border-[1px] border-[#262626] rounded-[10px] w-[50%] p-2 my-8"
-          onChange={(e) => setSelectedcarWasher(e.target.value)}
+          onChange={(e) => setSelectedCarWasher(e.target.value)}
+          value={selectedCarWasher}
           name="carWasher"
         >
-          {users.map((user, index) => (
-            <option value={user.name}>{user.name}</option>
+          <option value="">-- Select Car Washer --</option>
+          {allEmployees.map((user, index) => (
+            <option key={index} value={user.name}>
+              {user.name}
+            </option>
           ))}
         </select>
       </form>
-      <div>
-        <CustomTable rows={rows} columns={columns} />
-      </div>
-      {selectedcarWasher && (
+
+      {selectedCarWasher && filteredBills.length === 0 ? (
         <div className="text-lg font-semibold my-4">
-          Total Commission for {selectedcarWasher}: PKR{totalCommission}
+          Today {selectedCarWasher} has not washed any car.
         </div>
+      ) : (
+        <>
+          <div>
+            <CustomTable rows={rows} columns={columns} />
+          </div>
+
+          {selectedCarWasher && (
+            <div className="text-lg font-semibold my-4">
+              Total Commission for {selectedCarWasher}: PKR {totalCommission}
+            </div>
+          )}
+        </>
       )}
     </div>
   );
