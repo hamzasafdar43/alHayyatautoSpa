@@ -21,7 +21,7 @@ function CarWashBill({
   const dispatch = useDispatch();
 
   const {
-    data: allEmployees = {},
+    data: allEmployees = [],
     isLoading,
     isError,
   } = useGetAllEmployeesQuery();

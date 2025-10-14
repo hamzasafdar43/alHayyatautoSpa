@@ -17,8 +17,23 @@ export const carWashBillApi = createApi({
         body: { records: body },
       }),
     }),
-    getAllBills: builder.query({
-      query: (filter) => `carWash-bills?filter=${filter}`,
+   getAllBills: builder.query({
+  query: (filter) => `carWash-bills?filter=${filter}`,
+}),
+
+getCarWashBillByDate: builder.query({
+  query: (startDate) => {
+    if (!startDate) return "carWash-bill-date"; 
+    return `carWash-bill-date?date=${new Date(startDate).toISOString()}`;
+  },
+}),
+updateCommisstionStatus: builder.mutation({
+
+      query: (_id) => ({
+        url: "commission-paid",
+        method: "POST",
+        body: _id,
+      }),
     }),
     deleteBill: builder.mutation({
       query: (id) => ({
@@ -140,4 +155,6 @@ export const {
   useGetEmployeeByIdQuery,
   useUpdateEmployeeMutation,
   useDeleteEmployeeMutation,
+  useGetCarWashBillByDateQuery,
+  useUpdateCommisstionStatusMutation
 } = carWashBillApi;
