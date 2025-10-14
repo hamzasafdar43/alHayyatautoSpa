@@ -3,11 +3,13 @@ import AddProduct from "../Component/page/olishop/AddProduct";
 
 export const carWashBillApi = createApi({
   reducerPath: "carWashApi",
-  // baseQuery: fetchBaseQuery({
-  //   baseUrl: "https://alhayyat-backend.onrender.com/",
-  // }),
-  baseQuery: fetchBaseQuery({ baseUrl: '  http://localhost:5000/' }),
+  baseQuery: fetchBaseQuery({
+    baseUrl: "https://alhayyat-backend.onrender.com/",
+  }),
+  // baseQuery: fetchBaseQuery({ baseUrl: '  http://localhost:5000/' }),
   endpoints: (builder) => ({
+
+  // **********************************    Car Wash Api    **********************************
     submitCarWashBill: builder.mutation({
       query: (body) => ({
         url: "generate-bill",
@@ -15,8 +17,23 @@ export const carWashBillApi = createApi({
         body: { records: body },
       }),
     }),
-    getAllBills: builder.query({
-      query: () => "carWash-bills",
+   getAllBills: builder.query({
+  query: (filter) => `carWash-bills?filter=${filter}`,
+}),
+
+getCarWashBillByDate: builder.query({
+  query: (startDate) => {
+    if (!startDate) return "carWash-bill-date"; 
+    return `carWash-bill-date?date=${new Date(startDate).toISOString()}`;
+  },
+}),
+updateCommisstionStatus: builder.mutation({
+
+      query: (_id) => ({
+        url: "commission-paid",
+        method: "POST",
+        body: _id,
+      }),
     }),
     deleteBill: builder.mutation({
       query: (id) => ({
@@ -34,6 +51,9 @@ export const carWashBillApi = createApi({
         };
       },
     }),
+
+// **********************************    oilshop / sales    **********************************
+
     AddProduct: builder.mutation({
       query: (body) => ({
         url: "add-product",
@@ -62,6 +82,10 @@ export const carWashBillApi = createApi({
     getAllSales: builder.query({
       query: () => "all-sales",
     }),
+
+  // **********************************    accessories / sales    **********************************
+
+
     AddAccessoriesItem: builder.mutation({
       query: (body) => ({
         url: "add-accessories-item",
@@ -78,8 +102,7 @@ export const carWashBillApi = createApi({
     getAlldetailingStudioBil: builder.query({
       query: () => "detailing-studio-bills",
     }),
-
-    // ************************** Employees *************************
+ // **********************************   Employees / Api   *******************************************
     employeeAdd: builder.mutation({
       query: (body) => ({
         url: "employees",
@@ -132,4 +155,6 @@ export const {
   useGetEmployeeByIdQuery,
   useUpdateEmployeeMutation,
   useDeleteEmployeeMutation,
+  useGetCarWashBillByDateQuery,
+  useUpdateCommisstionStatusMutation
 } = carWashBillApi;

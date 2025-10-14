@@ -21,7 +21,7 @@ function CarWashBill({
   const dispatch = useDispatch();
 
   const {
-    data: allEmployees = {},
+    data: allEmployees = [],
     isLoading,
     isError,
   } = useGetAllEmployeesQuery();
@@ -116,7 +116,7 @@ function CarWashBill({
                 option={carWasherOptions}
                 onChange={(e) => setFieldValue("carWasher", e.target.value)}
               />
-              <CustomInput name="bill" type="text" label="Bill" />
+              <CustomInput name="bill" type="number" label="Bill" />
               {!isOpenUpdateRecod && (
                 <CustomInput
                   name="phoneNumber"
@@ -124,7 +124,7 @@ function CarWashBill({
                   label="Phone Number"
                 />
               )}
-              <CustomInput name="commission" type="text" label="Commission" />
+              <CustomInput name="commission" type="number" label="Commission" />
               <div className="mt-8 w-full">
                 <CustomButton
                   type="submit"

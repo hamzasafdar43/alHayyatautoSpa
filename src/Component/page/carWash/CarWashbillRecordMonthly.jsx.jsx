@@ -9,24 +9,17 @@ import CarWashBill from "./CarWashBill";
 import CustomButton from "../../common/CustomButton";
 import { showToast } from "../../common/CustomToast";
 
-function CarWashbillRecordMonthly() {
+function CarWashbillRecordMonthly({allCarWashBills}) {
   const [isOpenDeleteeRecod, setIsOpenDeleteeRecod] = useState(false);
   const [isOpenUpdateRecod, setIsOpenUpdateRecod] = useState(false);
   const [selectRecordIndex, setSelectRecordIndex] = useState(null);
 
-  const { data: allBills = [], refetch } = useGetAllBillsQuery();
+ 
   const [deleteBill] = useDeleteBillMutation();
 
-  const getCurrentMonthBill = allBills.filter((item) => {
-    const createdDate = new Date(item.createdAt);
-    const now = new Date();
-    return (
-      createdDate.getMonth() === now.getMonth() &&
-      createdDate.getFullYear() === now.getFullYear()
-    );
-  });
+ console.log("allCarWashBills" , allCarWashBills)
 
-  const rows = getCurrentMonthBill.map((bills, index) => ({
+  const rows = allCarWashBills.map((bills, index) => ({
     Sr_No: index + 1,
     Id: bills._id,
     Date: new Date(bills.createdAt).toLocaleDateString("en-GB", {
