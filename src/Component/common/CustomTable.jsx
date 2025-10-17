@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { AiFillDelete } from "react-icons/ai";
 import { FaEdit } from "react-icons/fa";
 
-function CustomTable({ rows, columns, onClick, onClickDelete, updateCommissionStatus }) {
+function CustomTable({ rows, columns, onClick, onClickDelete, updateCommissionStatus , selectedAll }) {
   const rowsPerPage = 5; // Define how many rows per page you want
   const [currentPage, setCurrentPage] = useState(1);
 
@@ -90,6 +90,7 @@ function CustomTable({ rows, columns, onClick, onClickDelete, updateCommissionSt
                     ) : column === "Id" ? (
                       `00${row[column]?.toString().slice(0, 8)}`
                     ) : column === "Status" ? (
+                     
                       <div
                         className={`text-white !text-[12px] p-2 rounded-[5px] cursor-pointer ${row[column] === "Paid" ? "bg-green-600" : "bg-[#2563ea]"
                           }`}

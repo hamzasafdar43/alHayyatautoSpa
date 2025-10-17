@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Formik, Form } from "formik";
-import {useGetAllProductQuery} from "../../../features/Api";
+import { useGetAllProductsQuery} from "../../../features/Api";
 import CustomInput from "../../common/CustomInput";
 import CustomButton from "../../common/CustomButton";
 import CustomSelect from "../../common/CustomSelect";
@@ -10,7 +10,7 @@ import { saleProductValidationSchema } from "../validations/FormValidation";
 function GeneratebillOilShop({setCarWashBill, setSelectBillForm }) {
   const [products, setProducts] = useState([]);
 
-  const { data: allProduct = {} } = useGetAllProductQuery();
+  const { data: allProduct = {} } = useGetAllProductsQuery();
 
     useEffect(() => {
     if (allProduct?.data) {

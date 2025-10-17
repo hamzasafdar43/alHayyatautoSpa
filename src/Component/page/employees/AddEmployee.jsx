@@ -1,7 +1,7 @@
 import React from "react";
 import { Formik, Form } from "formik";
 import {
-  useEmployeeAddMutation,
+  useAddEmployeeMutation,
   useGetAllEmployeesQuery,
   useUpdateEmployeeMutation,
 } from "../../../features/Api";
@@ -11,7 +11,7 @@ import { addProductValidationSchema } from "../validations/FormValidation";
 import { showToast } from "../../common/CustomToast";
 
 function AddEmployee({ setIsOpen, employee }) {
-  const [AddEmployee] = useEmployeeAddMutation();
+  const [AddEmployee] = useAddEmployeeMutation();
 
   const {
     data: allEmployees = {},

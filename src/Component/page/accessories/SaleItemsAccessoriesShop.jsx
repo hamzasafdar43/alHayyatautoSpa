@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Formik, Form } from "formik";
 import {
-  useGetAllAccessoriesItemQuery,
+  useGetAllAccessoriesItemsQuery,
 } from "../../../features/Api";
 import CustomInput from "../../common/CustomInput";
 import CustomButton from "../../common/CustomButton";
@@ -11,7 +11,7 @@ import { saleProductValidationSchema } from "../validations/FormValidation";
 
 function SaleItemsAccessoriesShop({ setCarWashBill, setSelectBillForm }) {
   const [products, setProducts] = useState([]);
-  const { data: allIAccessoriestems = {} } = useGetAllAccessoriesItemQuery();
+  const { data: allIAccessoriestems = {} } = useGetAllAccessoriesItemsQuery();
 
 
    useEffect(() => {

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Formik, Form } from "formik";
 import {
   useAddAccessoriesItemMutation,
-  useGetAllAccessoriesItemQuery,
+  useGetAllAccessoriesItemsQuery,
 } from "../../../features/Api";
 import CustomInput from "../../common/CustomInput";
 import CustomButton from "../../common/CustomButton";
@@ -12,7 +12,7 @@ import { showToast } from "../../common/CustomToast";
 function AddAccessoriesItems({ setIsOpen, product }) {
   const [previewImage, setPreviewImage] = useState(null);
   const [AddProduct] = useAddAccessoriesItemMutation();
-  const { refetch } = useGetAllAccessoriesItemQuery();
+  const { refetch } = useGetAllAccessoriesItemsQuery();
 
   useEffect(() => {
     if (product?.Product_Image) {

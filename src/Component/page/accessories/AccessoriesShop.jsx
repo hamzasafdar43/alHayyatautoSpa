@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useGetAllAccessoriesItemQuery } from "../../../features/Api";
+import {  useGetAllAccessoriesItemsQuery } from "../../../features/Api";
 import CustomTable from "../../common/CustomTable";
 import AddAccessoriesItems from "./AddAccessoriesItems";
 import { IoCloseSharp } from "react-icons/io5";
@@ -9,7 +9,7 @@ function AccessoriesShop({ onClick }) {
   const {
     data: allItems = {},
 
-  } = useGetAllAccessoriesItemQuery();
+  } = useGetAllAccessoriesItemsQuery();
   const [isOpen, setIsOpen] = useState(false);
 
   useEffect(() => {

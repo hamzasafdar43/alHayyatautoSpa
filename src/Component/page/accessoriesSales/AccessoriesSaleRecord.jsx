@@ -3,7 +3,7 @@ import { FcSalesPerformance } from "react-icons/fc";
 import { GiProfit } from "react-icons/gi";
 import { HiUsers } from "react-icons/hi";
 import { BsCashCoin } from "react-icons/bs";
-import { useGetAllSaleAccessoriesItemQuery } from "../../../features/Api";
+import { useGetAllAccessoriesItemsQuery,} from "../../../features/Api";
 import MonthlySale from "./MonthlySale";
 import TodaySale from "./TodaySale";
 import WeeklySale from "./WeeklySale";
@@ -15,7 +15,7 @@ function AccessoriesSaleRecord() {
   const [monthlyTotalSale, setMonthlyTotalSale] = useState(0); 
   const [weeklyTotalSale, setWeeklyTotalSale] = useState(0);
   const [todayTotalSale, setTodayTotalSale] = useState(0);
-  const { data: allSales = {}, isSuccess } = useGetAllSaleAccessoriesItemQuery();
+  const { data: allSales = {}, isSuccess } = useGetAllAccessoriesItemsQuery();
 
 
   useEffect(() => {

@@ -1,9 +1,9 @@
 import React, { useEffect } from "react";
 import { Formik, Form } from "formik";
+import { useDispatch } from "react-redux";
 import CustomInput from "../../common/CustomInput";
 import CustomButton from "../../common/CustomButton";
 import CustomSelect from "../../common/CustomSelect";
-import { useDispatch } from "react-redux";
 import { fetchUsers } from "../../../features/createSlice";
 import {
   useGetAllEmployeesQuery,
@@ -11,7 +11,7 @@ import {
 } from "../../../features/Api";
 import { showToast } from "../../common/CustomToast";
 
-function CarWashBill({
+function BillForm({
   isOpenUpdateRecod,
   record,
   setIsOpenUpdateRecod,
@@ -20,103 +20,102 @@ function CarWashBill({
 }) {
   const dispatch = useDispatch();
 
-  const {
-    data: allEmployees = [],
-    isLoading,
-    isError,
-  } = useGetAllEmployeesQuery();
+  // 🟨 RTK Query Hooks
+  const { data: allEmployees = [] } = useGetAllEmployeesQuery();
   const [updateBill] = useUpdateBillMutation();
 
+  // 🟨 Fetch Users (Redux)
   useEffect(() => {
     dispatch(fetchUsers());
   }, [dispatch]);
 
-  const initialValueUpdate = {
-    carName: record?.CarName || "",
-    carWasher: record?.CarWasher || "",
-    bill: record?.Price || "",
-    phoneNumber: record?.phoneNumber || "",
-    commission: record?.Commission || "",
-  };
+  // 🟨 Initial Values
+  const initialValues = isOpenUpdateRecod
+    ? {
+        carName: record?.CarName || "",
+        carWasher: record?.CarWasher || "",
+        bill: record?.Price || "",
+        phoneNumber: record?.phoneNumber || "",
+        commission: record?.Commission || "",
+      }
+    : {
+        category: "",
+        carName: "",
+        carWasher: "",
+        bill: "",
+        phoneNumber: "",
+        commission: "",
+      };
 
-  const initialValuesForm = {
-    category: "",
-    carName: "",
-    carWasher: "",
-    bill: "",
-    phoneNumber: "",
-    commission: "",
-  };
+  // 🟨 Car Washer Dropdown Options
+  const carWasherOptions = allEmployees.map((emp) => ({
+    value: emp.name,
+    label: emp.name,
+  }));
 
-  const submitHandler = async (values) => {
+  // 🟨 Create Bill Handler
+  const handleCreateBill = (values) => {
     setCarWashBill((prev) => [...prev, values]);
     setSelectBillForm("");
   };
 
-  const carWasherOptions = allEmployees
-    .filter((employee) => employee)
-    .map((employee) => ({
-      value: employee.name,
-      label: employee.name,
-    }));
-
-  const updateHandler = async (values) => {
+  // 🟨 Update Bill Handler
+  const handleUpdateBill = async (values) => {
     try {
       const response = await updateBill({ id: record.Id, ...values }).unwrap();
       if (response.message === "Car wash bill updated successfully") {
-        showToast(response?.message, "success");
-        setTimeout(() => {
-          setIsOpenUpdateRecod(false);
-        }, 2000);
+        showToast(response.message, "success");
+        setTimeout(() => setIsOpenUpdateRecod(false), 1500);
       }
-      refetch();
     } catch (error) {
-      const errorMessage = error?.data?.message || "Something went wrong!";
-      showToast(errorMessage, "error");
+      const msg = error?.data?.message || "Something went wrong!";
+      showToast(msg, "error");
     }
   };
 
   return (
     <div>
-      <div>
-        <h1 className="text-[#262626] font-[700] text-2xl mx-auto w-full flex justify-center ">
-          {isOpenUpdateRecod ? "Update Record " : "Generate Bill"}
-        </h1>
-      </div>
+      <h1 className="text-[#262626] font-[700] text-2xl text-center mb-6">
+        {isOpenUpdateRecod ? "Update Record" : "Generate Bill"}
+      </h1>
+
       <Formik
-        initialValues={
-          isOpenUpdateRecod && record ? initialValueUpdate : initialValuesForm
-        }
-        // validationSchema={
-        //   isOpenUpdateRecod && record
-        //     ? updateRecordValidationSchema
-        //     : SignupSchema
-        // }
-        
-        onSubmit={isOpenUpdateRecod ? updateHandler : submitHandler}
+        initialValues={initialValues}
+        onSubmit={isOpenUpdateRecod ? handleUpdateBill : handleCreateBill}
       >
         {({ setFieldValue, values }) => {
           useEffect(() => {
-            setFieldValue("category", "CarWash");
+            if (!isOpenUpdateRecod) setFieldValue("category", "CarWash");
           }, [setFieldValue]);
 
           return (
             <Form>
-              <CustomInput
-                name="category"
-                type="text"
-                label="Category"
-                value={values.category}
-                disabled
-              />
+              {/* Category */}
+              {!isOpenUpdateRecod && (
+                <CustomInput
+                  name="category"
+                  type="text"
+                  label="Category"
+                  value={values.category}
+                  disabled
+                />
+              )}
+
+              {/* Car Name */}
               <CustomInput name="carName" type="text" label="Car Name" />
+
+              {/* Car Washer */}
               <CustomSelect
                 name="carWasher"
                 label="Car Washer"
                 option={carWasherOptions}
                 onChange={(e) => setFieldValue("carWasher", e.target.value)}
               />
+
+              {/* Bill */}
               <CustomInput name="bill" type="number" label="Bill" />
+
+              {/* Phone Number (only for new record) */}
               {!isOpenUpdateRecod && (
                 <CustomInput
                   name="phoneNumber"
@@ -124,8 +123,12 @@ function CarWashBill({
                   label="Phone Number"
                 />
               )}
+
+              {/* Commission */}
               <CustomInput name="commission" type="number" label="Commission" />
-              <div className="mt-8 w-full">
+
+              {/* Submit / Update */}
+              <div className="mt-8">
                 <CustomButton
                   type="submit"
                   title={isOpenUpdateRecod ? "Update" : "Submit"}
@@ -139,4 +142,4 @@ function CarWashBill({
   );
 }
 
-export default CarWashBill;
+export default BillForm;

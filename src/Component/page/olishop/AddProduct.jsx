@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Formik, Form } from "formik";
 import {
   useAddProductMutation,
-  useGetAllProductQuery,
+  useGetAllProductsQuery,
   useSubmitCarWashBillMutation,
 } from "../../../features/Api";
 import CustomInput from "../../common/CustomInput";
@@ -18,7 +18,7 @@ function AddProduct({ setIsOpen, product }) {
     isLoading,
     isError,
     refetch,
-  } = useGetAllProductQuery();
+  } = useGetAllProductsQuery();
   console.log("allProduct", product);
 
   useEffect(() => {

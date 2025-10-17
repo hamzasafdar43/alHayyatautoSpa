@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import CarWashReport from './CarWashReport';
-import DetailingStudioReport from './DetailingStudioReport';
+import CarWashReport from './carwashrecord/CarWashReport';
+import DetailingStudioReport from './detailingrecord/DetailingStudioReport';
 
 function History() {
   const [activeTab, setActiveTab] = useState('carwash'); // default tab

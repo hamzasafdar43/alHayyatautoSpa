@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
-import { useGetAllProductQuery } from "../../../features/Api";
+import {  useGetAllProductsQuery } from "../../../features/Api";
 import CustomTable from "../../common/CustomTable";
 
 function AllProduct({onClick}) {
   const [products, setProducts] = useState([]);
-  const { data: allProduct = {}, isLoading, isError } = useGetAllProductQuery();
+  const { data: allProduct = {}, isLoading, isError } = useGetAllProductsQuery();
 
   useEffect(() => {
     if (allProduct?.data) {

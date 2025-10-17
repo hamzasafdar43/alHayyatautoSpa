@@ -2,11 +2,15 @@ import React, { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { fetchUsers } from "../../../features/createSlice";
 import {
-  useGetAllBillsQuery,
+  useGetAllBillsDetailingQuery,
   useGetAllEmployeesQuery,
-  useGetCarWashBillByDateQuery,
+  useGetDetailingBillByDateQuery,
+  useUpdateCommissionStatusDetailingMutation,
   useUpdateCommissionStatusMutation,
 } from "../../../features/Api";
+
+
+// 🟨 Local Components
 import CustomTable from "../../common/CustomTable";
 import CustomButton from "../../common/CustomButton";
 import CustomPopup from "../../common/CustomPopup";
@@ -24,11 +28,12 @@ function Commission() {
   const [selectAllMode, setSelectAllMode] = useState(false);
   const [showPopup, setShowPopup] = useState(false);
 
+
   // 🟨 API Queries
-  const { data: allBills = [], refetch: refetchAllBills } = useGetAllBillsQuery(filterType);
-  const { data: carWashBillsByDate = [], refetch: refetchByDate } = useGetCarWashBillByDateQuery(startDate);
+  const { data: allBills = [], refetch: refetchAllBills } = useGetAllBillsDetailingQuery(filterType);
+  const { data: carWashBillsByDate = [], refetch: refetchByDate } = useGetDetailingBillByDateQuery(startDate);
   const { data: allEmployees = [] } = useGetAllEmployeesQuery();
-  const [updateCommission] = useUpdateCommissionStatusMutation();
+  const [updateCommission] = useUpdateCommissionStatusDetailingMutation();
 
   // 🟨 Fetch Users on Mount
   useEffect(() => {
@@ -37,7 +42,7 @@ function Commission() {
 
   // 🟨 Helpers — Filtering and Derived Data
   const filterBillsByWasher = (bills) =>
-    selectedCarWasher ? bills.filter((bill) => bill.carWasher === selectedCarWasher) : bills;
+    selectedCarWasher ? bills.filter((bill) => bill.detailingMaster === selectedCarWasher) : bills;
 
   const billsToUse =
     filterType === "custom" ? filterBillsByWasher(carWashBillsByDate) : filterBillsByWasher(allBills);
@@ -54,18 +59,15 @@ function Commission() {
     Sr_No: i + 1,
     Id: record._id,
     Date: new Date(record.createdAt).toLocaleDateString(),
-    Name: record.carWasher,
+    Name: record.detailingMaster,
     Commission: record.commission,
     Status: record.commissionStatus || "Pending",
   }));
 
   // 🟨 Update Single Record
   const handleUpdateSingle = async (record) => {
-
     try {
-      console.log("id..." , record.Id)
-     const res =  await updateCommission({ _id: record.Id }).unwrap();
-      console.log("res..." , res)
+      await updateCommission({ _id: record.Id }).unwrap();
       filterType === "custom" ? await refetchByDate() : await refetchAllBills();
     } catch (err) {
       console.error("Error updating commission:", err);
@@ -98,7 +100,7 @@ function Commission() {
     selectAllMode ? setSelectAllMode(false) : setShowPopup(true);
   };
 
-
+ 
   return (
     <div className="w-[95%] md:w-[90%] mx-auto mt-6">
       {/* Filters Section */}
@@ -110,7 +112,7 @@ function Commission() {
             onChange={(e) => setSelectedCarWasher(e.target.value)}
             value={selectedCarWasher}
           >
-            <option value="">-- Select Car Washer --</option>
+            <option value="">-- Select Detailing MasterS --</option>
             {allEmployees.map((user, idx) => (
               <option key={idx} value={user.name}>
                 {user.name}
@@ -195,5 +197,6 @@ function Commission() {
     </div>
   );
 }
+
 
 export default Commission;

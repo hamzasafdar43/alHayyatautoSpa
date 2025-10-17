@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import { useGetAllSaleAccessoriesItemQuery } from '../../../features/Api';
+import { useGetAllAccessoriesItemsQuery } from '../../../features/Api';
 
 function Saleprofits() {
   const [monthlyTotalSale, setMonthlyTotalSale] = useState(0);
   const [weeklyTotalSale, setWeeklyTotalSale] = useState(0);
   const [todayTotalSale, setTodayTotalSale] = useState(0);
 
-   const { data: allSales = {}, isSuccess } = useGetAllSaleAccessoriesItemQuery();
+   const { data: allSales = {}, isSuccess } = useGetAllAccessoriesItemsQuery();
 
 useEffect(() => {
   if (isSuccess && allSales?.allSale) {

@@ -1,15 +1,16 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-import AddProduct from "../Component/page/olishop/AddProduct";
 
 export const carWashBillApi = createApi({
   reducerPath: "carWashApi",
-  baseQuery: fetchBaseQuery({
-    baseUrl: "https://alhayyat-backend.onrender.com/",
-  }),
-  // baseQuery: fetchBaseQuery({ baseUrl: '  http://localhost:5000/' }),
+ 
+  baseQuery: fetchBaseQuery({ baseUrl: "https://alhayyat-backend.onrender.com/" }),
+  // baseQuery: fetchBaseQuery({ baseUrl: "http://localhost:5000/" }),
+
   endpoints: (builder) => ({
 
-  // **********************************    Car Wash Api    **********************************
+    // ====================================================================================
+    // 🟨 🚗 CAR WASH API
+    // ====================================================================================
     submitCarWashBill: builder.mutation({
       query: (body) => ({
         url: "generate-bill",
@@ -17,24 +18,26 @@ export const carWashBillApi = createApi({
         body: { records: body },
       }),
     }),
-   getAllBills: builder.query({
-  query: (filter) => `carWash-bills?filter=${filter}`,
-}),
 
-getCarWashBillByDate: builder.query({
-  query: (startDate) => {
-    if (!startDate) return "carWash-bill-date"; 
-    return `carWash-bill-date?date=${new Date(startDate).toISOString()}`;
-  },
-}),
-updateCommisstionStatus: builder.mutation({
+    getAllBills: builder.query({
+      query: (filter) => `carWash-bills?filter=${filter}`,
+    }),
 
-      query: (_id) => ({
+    getCarWashBillByDate: builder.query({
+      query: (startDate) =>
+        startDate
+          ? `carWash-bill-date?date=${new Date(startDate).toISOString()}`
+          : "carWash-bill-date",
+    }),
+
+    updateCommissionStatus: builder.mutation({
+      query: (data) => ({
         url: "commission-paid",
         method: "POST",
-        body: _id,
+        body: data, // expects { _id }
       }),
     }),
+
     deleteBill: builder.mutation({
       query: (id) => ({
         url: `carWash-bill-delete/${id}`,
@@ -43,27 +46,50 @@ updateCommisstionStatus: builder.mutation({
     }),
 
     updateBill: builder.mutation({
-      query: ({ id, ...body }) => {
-        return {
-          url: `carWash-bills-update/${id}`,
-          method: "PUT",
-          body,
-        };
-      },
+      query: ({ id, ...body }) => ({
+        url: `carWash-bills-update/${id}`,
+        method: "PUT",
+        body,
+      }),
     }),
 
-// **********************************    oilshop / sales    **********************************
+    // ====================================================================================
+    // 🟨 🧽 DETAILING STUDIO API
+    // ====================================================================================
+    getAllBillsDetailing: builder.query({
+      query: (filter) => `detailing/bills?filter=${filter}`,
+    }),
 
-    AddProduct: builder.mutation({
+    getDetailingBillByDate: builder.query({
+      query: (startDate) =>
+        startDate
+          ? `detailing/bills-by-date?date=${new Date(startDate).toISOString()}`
+          : "detailing/bills-by-date",
+    }),
+
+    updateCommissionStatusDetailing: builder.mutation({
+      query: (data) => ({
+        url: "detailing/update-commission",
+        method: "PUT",
+        body: data, // expects { _id }
+      }),
+    }),
+
+    // ====================================================================================
+    // 🟨 🛢️ OIL SHOP (PRODUCTS & SALES)
+    // ====================================================================================
+    addProduct: builder.mutation({
       query: (body) => ({
         url: "add-product",
         method: "POST",
         body,
       }),
     }),
-    getAllProduct: builder.query({
+
+    getAllProducts: builder.query({
       query: () => "all-product",
     }),
+
     saleProduct: builder.mutation({
       query: (body) => ({
         url: "sale-product",
@@ -71,51 +97,53 @@ updateCommisstionStatus: builder.mutation({
         body,
       }),
     }),
-    getSaleProductRecord: builder.mutation({
-      query: ({ id }) => {
-        return {
-          url: `sale-product/${id}`,
-          method: "GET",
-        };
-      },
+
+    getSaleProductRecord: builder.query({
+      query: (id) => `sale-product/${id}`,
     }),
+
     getAllSales: builder.query({
       query: () => "all-sales",
     }),
 
-  // **********************************    accessories / sales    **********************************
-
-
-    AddAccessoriesItem: builder.mutation({
+    // ====================================================================================
+    // 🟨 🧰 ACCESSORIES API
+    // ====================================================================================
+    addAccessoriesItem: builder.mutation({
       query: (body) => ({
         url: "add-accessories-item",
         method: "POST",
         body,
       }),
     }),
-    getAllAccessoriesItem: builder.query({
+
+    getAllAccessoriesItems: builder.query({
       query: () => "all-accessories",
     }),
-    getAllSaleAccessoriesItem: builder.query({
+
+    getAllSaleAccessories: builder.query({
       query: () => "all-sale-accessories",
     }),
-    getAlldetailingStudioBil: builder.query({
-      query: () => "detailing-studio-bills",
-    }),
- // **********************************   Employees / Api   *******************************************
-    employeeAdd: builder.mutation({
+
+    // ====================================================================================
+    // 🟨 👥 EMPLOYEES API
+    // ====================================================================================
+    addEmployee: builder.mutation({
       query: (body) => ({
         url: "employees",
         method: "POST",
         body,
       }),
     }),
+
     getAllEmployees: builder.query({
       query: () => "employees",
     }),
+
     getEmployeeById: builder.query({
-      query: (id) => `employees/${id}`, // GET request
+      query: (id) => `employees/${id}`,
     }),
+
     deleteEmployee: builder.mutation({
       query: (id) => ({
         url: `employees/${id}`,
@@ -124,37 +152,49 @@ updateCommisstionStatus: builder.mutation({
     }),
 
     updateEmployee: builder.mutation({
-      query: ({ id, ...body }) => {
-        console.log("body" , body)
-        return {
-          url: `employees/${id}`,
-          method: "PUT",
-          body,
-        };
-      },
+      query: ({ id, ...body }) => ({
+        url: `employees/${id}`,
+        method: "PUT",
+        body,
+      }),
     }),
   }),
 });
 
+// ====================================================================================
+// 🟨 Exported Hooks (auto-generated by RTK Query)
+// ====================================================================================
+
 export const {
+  //🟨 Car Wash
   useSubmitCarWashBillMutation,
+  useGetAllBillsQuery,
+  useGetCarWashBillByDateQuery,
+  useUpdateCommissionStatusMutation,
   useDeleteBillMutation,
   useUpdateBillMutation,
-  useGetAllBillsQuery,
-  useGetAllProductQuery,
+
+  //🟨 Detailing
+  useGetAllBillsDetailingQuery,
+  useGetDetailingBillByDateQuery,
+  useUpdateCommissionStatusDetailingMutation,
+
+  //🟨 Oil Shop
   useAddProductMutation,
-  useGetAllSalesQuery,
+  useGetAllProductsQuery,
   useSaleProductMutation,
-  useGetSaleProductRecordMutation,
-  useGetAllAccessoriesItemQuery,
+  useGetSaleProductRecordQuery,
+  useGetAllSalesQuery,
+
+  //🟨 Accessories
   useAddAccessoriesItemMutation,
-  useGetAllSaleAccessoriesItemQuery,
-  useGetAlldetailingStudioBilQuery,
-  useEmployeeAddMutation,
+  useGetAllAccessoriesItemsQuery,
+  useGetAllSaleAccessoriesQuery,
+
+  //🟨 Employees
+  useAddEmployeeMutation,
   useGetAllEmployeesQuery,
   useGetEmployeeByIdQuery,
   useUpdateEmployeeMutation,
   useDeleteEmployeeMutation,
-  useGetCarWashBillByDateQuery,
-  useUpdateCommisstionStatusMutation
 } = carWashBillApi;

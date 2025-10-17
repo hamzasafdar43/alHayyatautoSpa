@@ -21,9 +21,9 @@ import Rents from "./Component/page/shopRent/Rents";
 import AccessoriesSaleRecord from "./Component/page/accessoriesSales/AccessoriesSaleRecord";
 import DetailingRecords from "./Component/page/detailingStudio/DetailingRecords";
 import { useSelector } from "react-redux";
-import CheckMonthlyReport from "./Component/page/history/CheckMonthlyReport";
-import DetailingMonthlyReport from "./Component/page/history/DetailingMonthlyReport";
 import Employee from "./Component/page/employees/Employee";
+import DetailingMonthlyReport from "./Component/page/history/detailingrecord/DetailingMonthlyReport";
+import CheckMonthlyReport from "./Component/page/history/carwashrecord/CheckMonthlyReport";
 
 
 

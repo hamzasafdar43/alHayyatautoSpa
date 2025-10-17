@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import { useGetAllSaleAccessoriesItemQuery, useGetAllSalesQuery } from '../../../features/Api';
+import { useGetAllAccessoriesItemsQuery,  useGetAllSalesQuery } from '../../../features/Api';
 import CustomTable from '../../common/CustomTable';
 
 function MonthlySale() {
   const [groupedSales, setGroupedSales] = useState([]);
-  const { data: allSales = {}, isSuccess } = useGetAllSaleAccessoriesItemQuery();
+  const { data: allSales = {}, isSuccess } = useGetAllAccessoriesItemsQuery();
 
   console.log("allSales" , allSales)
   useEffect(() => {

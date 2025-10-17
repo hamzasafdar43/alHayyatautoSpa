@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import moment from 'moment';
-import { useGetAlldetailingStudioBilQuery } from '../../../features/Api';
+import { useGetAllBillsDetailingQuery } from '../../../features/Api';
 import CustomTable from '../../common/CustomTable';
 
 function WeeklyRecord() {
   const [weeklyDetailingStudioSales, setWeeklyDetailingStudioSales] = useState([]);
-  const { data: detailingStudioData = {}, isSuccess } = useGetAlldetailingStudioBilQuery();
+  const { data: detailingStudioData = {}, isSuccess } = useGetAllBillsDetailingQuery();
 
   useEffect(() => {
     if (isSuccess && detailingStudioData) {
