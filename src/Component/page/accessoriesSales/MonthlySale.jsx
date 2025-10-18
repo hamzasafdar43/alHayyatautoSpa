@@ -32,7 +32,7 @@ function MonthlySale() {
             Date: date,
             Id: sale._id,
             Product_Name: sale.productId?.productName,
-            Product_Image: `https://alhayyat-backend.onrender.com/uploads/${sale.productId?.image}`,
+            Product_Image: `${import.meta.env.VITE_BASE_URL}uploads/${sale.productId?.image}`,
             Quantity: sale.quantitySold,
             Price: sale.sellingPrice,
           };

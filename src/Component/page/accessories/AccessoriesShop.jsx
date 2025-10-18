@@ -39,7 +39,7 @@ function AccessoriesShop({ onClick }) {
   const rows = items.map((product, index) => ({
     Sr_No: index + 1,
     Id: product?._id,
-    Product_Image: `https://alhayyat-backend.onrender.com/uploads/${product?.image}`,
+    Product_Image: `${import.meta.env.VITE_BASE_URL}uploads/${product?.image}`,
     Product_Name: product?.productName,
     Product_Quantity: product?.quantity,
     Price: product?.price,
@@ -63,7 +63,7 @@ function AccessoriesShop({ onClick }) {
         <div className="w-[90%] ">
           <div>
             <h1 className="text-lg font-[500] my-4 ">
-              All Accessories Product ......
+              All Accessories Product
             </h1>
           </div>
           <div>

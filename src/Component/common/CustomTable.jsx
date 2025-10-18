@@ -69,14 +69,19 @@ function CustomTable({ rows, columns, onClick, onClickDelete, updateCommissionSt
                         </div>
                       </div>
                     ) : column === "Product_Image" ? (
-                      <div className="w-[50px] h-[50px]  mx-auto ">
-                        <img
-                          src={row?.Product_Image}
-                          alt="product"
-                          className="w-full h-full  object-cover rounded"
-                          onError={(e) => (e.target.src = "/fallback.jpg")}
-                        />
-                      </div>
+                      <>
+    {/* Debug in console */}
+    {console.log("Product_Image value:", row?.Product_Image)}
+
+    <div className="w-[50px] h-[50px] mx-auto">
+      <img
+        src={row?.Product_Image}
+        alt="product"
+        className="w-full h-full object-cover rounded"
+        onError={(e) => (e.target.src = "/fallback.jpg")}
+      />
+    </div>
+  </>
                     ) : column === "Product_Quantity" ? (
                       row.Product_Quantity < 2 ? (
 

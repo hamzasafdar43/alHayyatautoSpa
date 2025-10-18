@@ -1,69 +1,182 @@
+// import React from "react";
+// import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+// import LayOut from "./Component/layout/LayOut";
+// import Home from "./Component/Home";
+// import SignUp from "./Component/page/accounts/SignUp"
+// import SignIn from "./Component/page/accounts/SignIn"
+// import Menue from "./Component/page/Menue"
+// import PublicRoute from "./Component/protectRoutes/PublicRoute";
+// import ProtectedRoute from "./Component/protectRoutes/ProtectedRoute";
+// import Olishop from "./Component/page/olishop/Olishop";
+// import UserProfile from "./Component/page/accounts/UserProfile";
+// import History from "./Component/page/history/History";
+// import CustomToast from "./Component/common/CustomToast";
+// import CarDetailing from "./Component/page/cardetailing/CarDetailing"
+// import AccessoriesShop  from "./Component/page/accessories/AccessoriesShop"
+// import CarWashRecord from "./Component/page/carWash/CarWashRecord";
+// import SaleProductOilShop from "./Component/page/salerecord/SaleProductOilShop";
+// import Expense from "./Component/page/expense/Expense"
+// import TaxiStand from "./Component/page/taxiStand/TaxiStand";
+// import Rents from "./Component/page/shopRent/Rents";
+// import AccessoriesSaleRecord from "./Component/page/accessoriesSales/AccessoriesSaleRecord";
+// import DetailingRecords from "./Component/page/detailingStudio/DetailingRecords";
+// import { useSelector } from "react-redux";
+// import Employee from "./Component/page/employees/Employee";
+// import DetailingMonthlyReport from "./Component/page/history/detailingrecord/DetailingMonthlyReport";
+// import CheckMonthlyReport from "./Component/page/history/carwashrecord/CheckMonthlyReport";
+
+
+
+
+
+// function App() {
+//   const user = useSelector((user)=>user.user)
+
+//   return (
+//     <div>
+//        <CustomToast/>
+//        <Router>
+//    {user?.user?.token && (<Menue/>)}
+//        <Routes>
+//         <Route path="/detailing-monthly-report/:month" element={<DetailingMonthlyReport />} />
+//         <Route path="/monthly-report/:month" element={<CheckMonthlyReport/>} />
+//        <Route path="/sign-up" element={<PublicRoute><SignUp /></PublicRoute>} />
+//        <Route path="/" element={<PublicRoute><SignIn /></PublicRoute>} />
+//          <Route path="/dashbord" element={<ProtectedRoute><LayOut /></ProtectedRoute>}>
+//          <Route path="home" element={<Home />} />  
+//          <Route path="oil-shop" element={<Olishop />} />
+//          <Route path="car-detailing" element={< CarDetailing />} />
+//          <Route path="accessories-shop" element={<AccessoriesShop />} />
+//          <Route path="accessories-shop-record" element={<AccessoriesSaleRecord />} />
+//          <Route path="oil-shop" element={<Olishop />} />
+//          <Route path="car-wash-record" element={<CarWashRecord />} />
+//          <Route path="user-profile" element={<UserProfile />} />
+//          <Route path="sale-product" element={< SaleProductOilShop/>} />
+//          <Route path="history" element={< History/>} />
+//          <Route path="expense" element={< Expense/>} />
+//           <Route path="taxi_stand" element={< TaxiStand/>} />
+//            <Route path="rents" element={< Rents/>} />
+//            <Route path="detailing-records" element={<  DetailingRecords/>} />
+//             <Route path="employee" element={<Employee/>} />
+          
+//         </Route>
+//       </Routes>
+//     </Router>
+//     </div>
+//   )
+// }
+
+// export default App
+
+
+
 import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { useSelector } from "react-redux";
+
+// Layout & Common Components
 import LayOut from "./Component/layout/LayOut";
-import Home from "./Component/Home";
-import SignUp from "./Component/page/accounts/SignUp"
-import SignIn from "./Component/page/accounts/SignIn"
-import Menue from "./Component/page/Menue"
-import PublicRoute from "./Component/protectRoutes/PublicRoute";
-import ProtectedRoute from "./Component/protectRoutes/ProtectedRoute";
-import Olishop from "./Component/page/olishop/Olishop";
-import UserProfile from "./Component/page/accounts/UserProfile";
-import History from "./Component/page/history/History";
 import CustomToast from "./Component/common/CustomToast";
-import CarDetailing from "./Component/page/cardetailing/CarDetailing"
-import AccessoriesShop  from "./Component/page/accessories/AccessoriesShop"
+import Menue from "./Component/page/Menue";
+
+// Auth Pages
+import SignUp from "./Component/page/accounts/SignUp";
+import SignIn from "./Component/page/accounts/SignIn";
+import UserProfile from "./Component/page/accounts/UserProfile";
+
+// Pages
+import Home from "./Component/Home";
+import Olishop from "./Component/page/olishop/Olishop";
+import CarDetailing from "./Component/page/cardetailing/CarDetailing";
+import AccessoriesShop from "./Component/page/accessories/AccessoriesShop";
 import CarWashRecord from "./Component/page/carWash/CarWashRecord";
 import SaleProductOilShop from "./Component/page/salerecord/SaleProductOilShop";
-import Expense from "./Component/page/expense/Expense"
+import Expense from "./Component/page/expense/Expense";
 import TaxiStand from "./Component/page/taxiStand/TaxiStand";
 import Rents from "./Component/page/shopRent/Rents";
 import AccessoriesSaleRecord from "./Component/page/accessoriesSales/AccessoriesSaleRecord";
 import DetailingRecords from "./Component/page/detailingStudio/DetailingRecords";
-import { useSelector } from "react-redux";
 import Employee from "./Component/page/employees/Employee";
+import History from "./Component/page/history/History";
+
+// Reports
 import DetailingMonthlyReport from "./Component/page/history/detailingrecord/DetailingMonthlyReport";
 import CheckMonthlyReport from "./Component/page/history/carwashrecord/CheckMonthlyReport";
 
-
-
-
+// Route Guards
+import PublicRoute from "./Component/protectRoutes/PublicRoute";
+import ProtectedRoute from "./Component/protectRoutes/ProtectedRoute";
 
 function App() {
-  const user = useSelector((user)=>user.user)
+  const user = useSelector((state) => state.user);
 
   return (
     <div>
-       <CustomToast/>
-       <Router>
-   {user?.user?.token && (<Menue/>)}
-       <Routes>
-        <Route path="/detailing-monthly-report/:month" element={<DetailingMonthlyReport />} />
-        <Route path="/monthly-report/:month" element={<CheckMonthlyReport/>} />
-       <Route path="/sign-up" element={<PublicRoute><SignUp /></PublicRoute>} />
-       <Route path="/" element={<PublicRoute><SignIn /></PublicRoute>} />
-         <Route path="/dashbord" element={<ProtectedRoute><LayOut /></ProtectedRoute>}>
-         <Route path="home" element={<Home />} />  
-         <Route path="oil-shop" element={<Olishop />} />
-         <Route path="car-detailing" element={< CarDetailing />} />
-         <Route path="accessories-shop" element={<AccessoriesShop />} />
-         <Route path="accessories-shop-record" element={<AccessoriesSaleRecord />} />
-         <Route path="oil-shop" element={<Olishop />} />
-         <Route path="car-wash-record" element={<CarWashRecord />} />
-         <Route path="user-profile" element={<UserProfile />} />
-         <Route path="sale-product" element={< SaleProductOilShop/>} />
-         <Route path="history" element={< History/>} />
-         <Route path="expense" element={< Expense/>} />
-          <Route path="taxi_stand" element={< TaxiStand/>} />
-           <Route path="rents" element={< Rents/>} />
-           <Route path="detailing-records" element={<  DetailingRecords/>} />
-            <Route path="employee" element={<Employee/>} />
-          
-        </Route>
-      </Routes>
-    </Router>
+      <CustomToast />
+
+      <Router>
+        {user?.user?.token && <Menue />}
+
+        <Routes>
+          {/* Reports */}
+          <Route
+            path="/detailing-monthly-report/:month"
+            element={<DetailingMonthlyReport />}
+          />
+          <Route
+            path="/monthly-report/:month"
+            element={<CheckMonthlyReport />}
+          />
+
+          {/* Public Routes */}
+          <Route
+            path="/sign-up"
+            element={
+              <PublicRoute>
+                <SignUp />
+              </PublicRoute>
+            }
+          />
+          <Route
+            path="/"
+            element={
+              <PublicRoute>
+                <SignIn />
+              </PublicRoute>
+            }
+          />
+
+          {/* Protected Routes */}
+          <Route
+            path="/dashbord"
+            element={
+              <ProtectedRoute>
+                <LayOut />
+              </ProtectedRoute>
+            }
+          >
+            <Route path="home" element={<Home />} />
+            <Route path="oil-shop" element={<Olishop />} />
+            <Route path="car-detailing" element={<CarDetailing />} />
+            <Route path="accessories-shop" element={<AccessoriesShop />} />
+            <Route
+              path="accessories-shop-record"
+              element={<AccessoriesSaleRecord />}
+            />
+            <Route path="car-wash-record" element={<CarWashRecord />} />
+            <Route path="user-profile" element={<UserProfile />} />
+            <Route path="sale-product" element={<SaleProductOilShop />} />
+            <Route path="history" element={<History />} />
+            <Route path="expense" element={<Expense />} />
+            <Route path="taxi_stand" element={<TaxiStand />} />
+            <Route path="rents" element={<Rents />} />
+            <Route path="detailing-records" element={<DetailingRecords />} />
+            <Route path="employee" element={<Employee />} />
+          </Route>
+        </Routes>
+      </Router>
     </div>
-  )
+  );
 }
 
-export default App
+export default App;
