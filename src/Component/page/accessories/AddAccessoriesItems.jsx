@@ -55,7 +55,7 @@ function AddAccessoriesItems({ setIsOpen, product }) {
     <div>
       <div>
         <h1 className="text-[#262626] font-[700] text-2xl mx-auto w-full flex justify-center">
-          Oil Shop
+         Accessories
         </h1>
       </div>
       <Formik

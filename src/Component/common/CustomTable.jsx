@@ -52,6 +52,8 @@ function CustomTable({ rows, columns, onClick, onClickDelete, updateCommissionSt
                       }`}
                   >
                     {column === "Actions" ? (
+                      <>
+                      {console.log(row)}
                       <div className="flex items-center h-20 gap-2 mx-auto justify-center w-[50px]">
                         <div
                           className=" flex text-red-600 text-sm rounded-[5px]  cursor-pointer"
@@ -68,6 +70,7 @@ function CustomTable({ rows, columns, onClick, onClickDelete, updateCommissionSt
 
                         </div>
                       </div>
+                      </>
                     ) : column === "Product_Image" ? (
                       <>
     {/* Debug in console */}

@@ -1,164 +1,155 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { FcSalesPerformance } from "react-icons/fc";
 import { GiProfit } from "react-icons/gi";
 import { HiUsers } from "react-icons/hi";
 import { BsCashCoin } from "react-icons/bs";
-import { useGetAllAccessoriesItemsQuery,} from "../../../features/Api";
+import { useGetAllSaleAccessoriesQuery } from "../../../features/Api";
 import MonthlySale from "./MonthlySale";
 import TodaySale from "./TodaySale";
 import WeeklySale from "./WeeklySale";
-import Saleprofits from "./Saleprofits";
+import SalesProfit from "./Saleprofits";
 
+function AccessoriesSalesRecord() {
+  // 🟨 Local State
+  const [activeView, setActiveView] = useState("monthly");
+  const [monthlySales, setMonthlySales] = useState([]);
+  const [dailySales, setDailySales] = useState([]);
+  const [monthlyTotal, setMonthlyTotal] = useState(0);
+  const [dailyTotal, setDailyTotal] = useState(0);
+  const [monthlyProfit, setMonthlyProfit] = useState(0);
+  const [todayProfit, setTodayProfit] = useState(0);
+  
+  // 🟨 Fetch data using RTK Query
+  const { data: monthlySalesData = [] } = useGetAllSaleAccessoriesQuery("month");
+  const { data: dailySalesData = [] } = useGetAllSaleAccessoriesQuery("day");
 
-function AccessoriesSaleRecord() {
-  const [record, setRecord] = useState("monthly_sale");
-  const [monthlyTotalSale, setMonthlyTotalSale] = useState(0); 
-  const [weeklyTotalSale, setWeeklyTotalSale] = useState(0);
-  const [todayTotalSale, setTodayTotalSale] = useState(0);
-  const { data: allSales = {}, isSuccess } = useGetAllAccessoriesItemsQuery();
-
-
+  // 🟩 Monthly Sales Effect
   useEffect(() => {
+    if (!monthlySalesData.length) return;
 
-    if (isSuccess && allSales?.allSale) {
-      const getCurrentMonthSale = (allSales.allSale || []).filter((item) => {
-        const createdDate = new Date(item.createdAt);
-        const now = new Date();
-        return (
-          createdDate.getMonth() === now.getMonth() &&
-          createdDate.getFullYear() === now.getFullYear()
-        );
-      });
-  
-      const totalMonthlySale = getCurrentMonthSale.reduce((total, sale) => {
-        return total + parseFloat(sale.sellingPrice || 0);
-      }, 0);
-  
-      setMonthlyTotalSale(totalMonthlySale);
+    setMonthlySales(monthlySalesData);
 
+    // Calculate totals
+    const totalSales = monthlySalesData.reduce(
+      (sum, s) => sum + (parseFloat(s.sellingPrice) || 0),
+      0
+    );
 
-      const today = new Date().toISOString().split("T")[0];
+    const totalCost = monthlySalesData.reduce(
+      (sum, s) => sum + (parseFloat(s.productId?.cost) || 0),
+      0
+    );
 
+    setMonthlyTotal(totalSales);
+    setMonthlyProfit(totalSales - totalCost);
+  }, [monthlySalesData]);
 
-      const filterTodaySale = allSales?.allSale.filter((record) => {
-        if (!record.createdAt) return false; 
-      
-        const billDate = new Date(record.createdAt);
-        if (isNaN(billDate)) return false; 
-      
-        const isToday = billDate.toISOString().split("T")[0] === today;
-        
-        return isToday 
-      });
-      const totalTodaySale = filterTodaySale.reduce((total, sale) => {
-        return total + parseFloat(sale.sellingPrice || 0);
-      }, 0);
+  // 🟦 Daily Sales Effect
+  useEffect(() => {
+    if (!dailySalesData.length) return;
 
-      setTodayTotalSale(totalTodaySale)
-      
+    const validSales = dailySalesData.filter(
+      (s) => !isNaN(parseFloat(s.sellingPrice))
+    );
 
-      const todaySale = new Date();
-      const sevenDaysAgo = new Date();
-      sevenDaysAgo.setDate(todaySale.getDate() - 6);
-  
-      const filterWeeklySale = allSales?.allSale.filter((record) => {
-        if (!record.createdAt) return false;
-  
-        const billDate = new Date(record.createdAt);
-        if (isNaN(billDate)) return false;
-  
-        return billDate >= sevenDaysAgo && billDate <= todaySale;
-      });
+    setDailySales(validSales);
 
-      const weeklyTotalSale = filterWeeklySale.reduce((total, sale) => {
-        return total + parseFloat(sale.sellingPrice || 0);
-      }, 0);
+    const total = validSales.reduce(
+      (sum, s) => sum + parseFloat(s.sellingPrice),
+      0
+    );
+    
+    const todayTotalSales = dailySalesData.reduce(
+      (sum, s) => sum + (parseFloat(s.sellingPrice) || 0),
+      0
+    );
 
-      setWeeklyTotalSale(weeklyTotalSale)
-    }
-  }, [allSales]);
-  
+    const todaySaleCost = dailySalesData.reduce(
+      (sum, s) => sum + (parseFloat(s.productId?.cost) || 0),
+      0
+    );
 
-  const saleDetails = [
+    setTodayProfit(todayTotalSales-todaySaleCost)
+    setDailyTotal(total);
+  }, [dailySalesData]);
+
+  // 🟧 Summary Cards
+  const summaryCards = [
     {
-      icons: <FcSalesPerformance size={50} />,
-      heading: "Monthly Sale",
-      para: `PKR  ${monthlyTotalSale}`,
+      key: "monthly",
+      icon: <FcSalesPerformance size={50} />,
+      title: "Monthly Sales",
+      value: `PKR ${monthlyTotal.toLocaleString()}`,
     },
     {
-      icons: <BsCashCoin size={50} />,
-      heading: "Today Sale",
-      para: `PKR ${todayTotalSale}`,
+      key: "today",
+      icon: <BsCashCoin size={50} />,
+      title: "Today Sales",
+      value: `PKR ${dailyTotal.toLocaleString()}`,
     },
     {
-      icons: <HiUsers size={50} />,
-      heading: "Weekly Sale",
-      para: `PKR 00, ${weeklyTotalSale}`,
+      key: "weekly",
+      icon: <HiUsers size={50} />,
+      title: "Weekly Sales",
+      value: "PKR 0", // future enhancement
     },
     {
-      icons: <GiProfit size={50} />,
-      heading: "Profits",
-      para: `PKR `,
+      key: "profits",
+      icon: <GiProfit size={50} />,
+      title: "Total Profit",
+      value: `PKR ${monthlyProfit.toLocaleString()}`,
     },
   ];
 
- 
-
   return (
     <div>
+      {/* Header */}
       <div className="h-[80px] w-full bg-white mt-[70px] mb-8 flex items-center justify-between px-8">
-        <div className="flex gap-8">
-          <h1 className="text-lg font-[500] ">Sale Product</h1>
-          
-          
-        </div>
-        <div className="border-[1px] border-[#262626] p-1 sm:block hidden w-[300px] font-[500] rounded-[8px]">
-          <form action="">
-            <input
-              type="text"
-              placeholder="Search"
-              className="ml-2 outline-none"
-            />
-          </form>
+        <h1 className="text-lg font-medium">Accessories Sales Record</h1>
+        <div className="border border-[#262626] p-1 sm:block hidden w-[300px] font-medium rounded-[8px]">
+          <input
+            type="text"
+            placeholder="Search"
+            className="ml-2 outline-none w-full"
+          />
         </div>
       </div>
+
+      {/* Summary Cards */}
       <div className="w-[90%] mx-auto">
-        <div className="flex lg:justify-between flex-wrap  justify-center ">
-          {saleDetails.map((sale, index) => (
+        <div className="flex flex-wrap justify-center lg:justify-between">
+          {summaryCards.map((card) => (
             <div
-              className="bg-white lg:w-[250px]   md:w-[320px] w-[90%] md:mt-2 mt-5 md:mx-8 lg:mx-0  h-[100px] cursor-pointer rounded-[10px] flex items-center justify-center gap-8"
-              onClick={() => {
-                if (index === 0) setRecord("monthly_sale");
-                else if (index === 1) setRecord("today_sale");
-                else if (index === 2) setRecord("weekly_sale");
-                else if (index === 3) setRecord("profits");
-              }}
+              key={card.key}
+              className={`bg-white lg:w-[250px] md:w-[320px] w-[90%] md:mt-2 mt-5 md:mx-8 lg:mx-0 h-[100px] rounded-[10px] flex items-center justify-center gap-8 cursor-pointer transition-transform hover:scale-105 ${
+                activeView === card.key ? "border-2 border-blue-500" : ""
+              }`}
+              onClick={() => setActiveView(card.key)}
             >
-              <div>{sale.icons}</div>
+              <div>{card.icon}</div>
               <div>
-                <div>{sale.heading}</div>
-                <div className="font-[600] text-2xl ">{sale.para}</div>
+                <div className="text-gray-700 font-medium">{card.title}</div>
+                <div className="font-semibold text-2xl">{card.value}</div>
               </div>
             </div>
           ))}
         </div>
       </div>
-      <div className="bg-white rounded-[10px] mt-8 pt-4 mb-20 flex items-center justify-center h-auto  w-[90%] mx-auto ">
-        {record === "monthly_sale" ? (
-          <MonthlySale />
-        ) : record === "today_sale" ? (
-          <TodaySale />
-        ) : record === "weekly_sale" ? (
+
+      {/* Active Record Section */}
+      <div className="bg-white rounded-[10px] mt-8 pt-4 mb-20 flex items-center justify-center h-auto w-[90%] mx-auto">
+        {activeView === "monthly" ? (
+          <MonthlySale monthlySales={monthlySales} />
+        ) : activeView === "today" ? (
+          <TodaySale dailySales={dailySales} />
+        ) : activeView === "weekly" ? (
           <WeeklySale />
         ) : (
-          <Saleprofits />
+          <SalesProfit monthlyProfit={monthlyProfit} todayProfit={todayProfit} />
         )}
       </div>
     </div>
   );
 }
 
-
-
-
-export default AccessoriesSaleRecord
+export default AccessoriesSalesRecord;

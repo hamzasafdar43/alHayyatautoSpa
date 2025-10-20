@@ -130,9 +130,10 @@ export const carWashBillApi = createApi({
     }),
 
     getAllSaleAccessories: builder.query({
-      query: () => "all-sale-accessories",
+      query: (filter) => `accessories-sales?filter=${filter}`,
     }),
 
+   
     // ====================================================================================
     // 🟨 👥 EMPLOYEES API
     // ====================================================================================

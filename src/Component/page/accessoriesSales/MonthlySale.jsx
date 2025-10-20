@@ -1,66 +1,97 @@
-import React, { useEffect, useState } from 'react';
-import { useGetAllAccessoriesItemsQuery,  useGetAllSalesQuery } from '../../../features/Api';
-import CustomTable from '../../common/CustomTable';
+import React, { useState } from "react";
+import CustomTable from "../../common/CustomTable";
+import SaleItemsAccessoriesShop from "../accessories/SaleItemsAccessoriesShop"
+import CustomModal from "../../common/CustomModal";
+import CustomPopup from "../../common/CustomPopup";
 
-function MonthlySale() {
-  const [groupedSales, setGroupedSales] = useState([]);
-  const { data: allSales = {}, isSuccess } = useGetAllAccessoriesItemsQuery();
 
-  console.log("allSales" , allSales)
-  useEffect(() => {
-    if (isSuccess && allSales?.allSale) {
+function MonthlySale({ monthlySales = [] }) {
+  const [isOpen, setIsOpen] = useState(false)
+  const [showDeletePopup, setShowDeletePopup] = useState(false);
+   const [selectRecordIndex, setSelectRecordIndex] = useState(null);
 
-      const getCurrentMonthSale = allSales.allSale.filter((item) => {
-        const createdDate = new Date(item.createdAt);
-        const now = new Date();
-        return (
-          createdDate.getMonth() === now.getMonth() &&
-          createdDate.getFullYear() === now.getFullYear()
-        );
-      });
+  // 🟢 Prepare rows for the table
+  const rows = monthlySales.map((sale, index) => ({
+    Sr_No: index + 1,
+    Date: new Date(sale.createdAt).toLocaleDateString("en-GB", {
+      timeZone: "Asia/Karachi",
+    }),
+    Id: sale._id,
+    Product_Name: sale.productId?.productName || "N/A",
+    Product_Image: `${import.meta.env.VITE_BASE_URL}uploads/${sale.productId?.image}`,
+    Quantity: sale.quantitySold,
+    Price: `${sale.sellingPrice}`,
 
-      const grouped = {};
+  }));
 
-      getCurrentMonthSale.forEach((sale) => {
-        const date = sale.createdAt.split("T")[0];
-        const productId = sale.productId?._id;
-        const key = `${date}_${productId}`;
+  const columns = [
+    "Sr_No",
+    "Date",
+    "Id",
+    "Product_Name",
+    "Product_Image",
+    "Quantity",
+    "Price",
+    "Actions",
+  ];
 
-        if (!grouped[key]) {
-          grouped[key] = {
-            Sr_No: 0, // will be added later
-            Date: date,
-            Id: sale._id,
-            Product_Name: sale.productId?.productName,
-            Product_Image: `${import.meta.env.VITE_BASE_URL}uploads/${sale.productId?.image}`,
-            Quantity: sale.quantitySold,
-            Price: sale.sellingPrice,
-          };
-        } else {
-          grouped[key].Quantity += sale.quantitySold;
-          grouped[key].Price += sale.sellingPrice; // optional: total price
-        }
-      });
+const deleteAccessoriesShopRecordHandler = (record) => {
+    setSelectRecordIndex(record);
+    setShowDeletePopup(true);
+  };
 
-      const rows = Object.values(grouped).map((item, index) => ({
-        ...item,
-        Sr_No: index + 1,
-      }));
-
-      setGroupedSales(rows);
+  const updateAccessoriesShopRecordHandler = (record) => {
+    try {
+      setSelectRecordIndex(record)
+      setIsOpen(true)
+    } catch (error) {
+      console.log("error", error)
     }
-  }, [allSales, isSuccess]);
+  }
 
-  const columns = ["Sr_No", "Date", "Id", "Product_Name", "Product_Image", "Quantity", "Price", "Actions"];
+   // 🟨 Confirm Delete
+    const confirmDeleteHandler = async () => {
+      try {
+       console.log("hello")
+        // const response = await deleteBill(selectRecordIndex.Id).unwrap();
+        // if (response.message === "Bill deleted successfully") {
+        //   showToast(response?.message, "success");
+        //   setTimeout(() => setShowDeletePopup(false), 1000);
+        // }
+        // Optionally: refetch or trigger state update here
+      } catch (error) {
+        const errorMessage = error?.data?.message || "Something went wrong!";
+        showToast(errorMessage, "error");
+      }
+    };
 
   return (
-    <div className='w-[90%]'>
+    <div className="w-[90%]">
       <div>
-        <h1 className='my-4 font-[500] text-[24px]'>Monthly Sale Record ...</h1>
+        <h1 className="my-4 font-medium text-[24px]">Monthly Sale Record</h1>
       </div>
       <div>
-        <CustomTable rows={groupedSales} columns={columns} />
+        <CustomTable rows={rows} columns={columns} onClickDelete={deleteAccessoriesShopRecordHandler} onClick={updateAccessoriesShopRecordHandler} />
       </div>
+      <div>
+        {isOpen && 
+          <CustomModal isOpen={isOpen} onClose={() => setIsOpen(false)}>
+            <SaleItemsAccessoriesShop selectedUpdateRecord={selectRecordIndex} />
+          </CustomModal>
+
+        }
+      </div>
+      {showDeletePopup && (
+        <CustomPopup
+          show={showDeletePopup}
+          heading="Delete Record?"
+          title="Are you sure you want to delete this record?"
+          cancelText="Cancel"
+          confirmText="Delete"
+          onCancel={() => setShowDeletePopup(false)}
+          onConfirm={confirmDeleteHandler}
+        />
+      )}
     </div>
   );
 }

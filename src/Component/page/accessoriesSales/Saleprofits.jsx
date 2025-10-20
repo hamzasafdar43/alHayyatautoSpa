@@ -1,68 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import { useGetAllAccessoriesItemsQuery } from '../../../features/Api';
 
-function Saleprofits() {
-  const [monthlyTotalSale, setMonthlyTotalSale] = useState(0);
-  const [weeklyTotalSale, setWeeklyTotalSale] = useState(0);
-  const [todayTotalSale, setTodayTotalSale] = useState(0);
-
-   const { data: allSales = {}, isSuccess } = useGetAllAccessoriesItemsQuery();
-
-useEffect(() => {
-  if (isSuccess && allSales?.allSale) {
-    const today = new Date();
-
-    // Start of today
-    const startOfToday = new Date(today.getFullYear(), today.getMonth(), today.getDate());
-
-    // Start of the month (1st of current month)
-    const startOfMonth = new Date(today.getFullYear(), today.getMonth(), 1);
-
-    // Start of the current "week" (from 1st of the month, as per your requirement)
-    const startOfCurrentWeek = startOfMonth;
-
-    let todayProfit = 0;
-    let weekProfit = 0;
-    let monthProfit = 0;
-
-    allSales.allSale.forEach((sale) => {
-      if (!sale?.createdAt || !sale?.sellingPrice || !sale?.quantitySold) return;
-
-      const saleDate = new Date(sale.createdAt);
-      if (isNaN(saleDate)) return;
-
-      const quantity = Number(sale.quantitySold) || 1;
-      const sellingPrice = Number(sale.sellingPrice) || 0;
-      const cost = Number(sale?.productId?.cost) || 0;
-
-      const singleProfit = (sellingPrice / quantity) - cost;
-      const totalProfit = singleProfit * quantity;
-
-      // Monthly profit (from 1st of the month)
-      if (saleDate >= startOfMonth) monthProfit += totalProfit;
-
-      // Week profit (from 1st of the month — same logic)
-      if (saleDate >= startOfCurrentWeek) weekProfit += totalProfit;
-
-      // Today profit
-      if (saleDate >= startOfToday) todayProfit += totalProfit;
-    });
-
-    setTodayTotalSale(todayProfit.toFixed(2));
-    setWeeklyTotalSale(weekProfit.toFixed(2));
-    setMonthlyTotalSale(monthProfit.toFixed(2));
-  }
-}, [allSales, isSuccess]);
-
-
-
-
+function Saleprofits({monthlyProfit , todayProfit}) {
   
 
   const saleProfits = [
-    { title: "Today Profit", para: `PKR ${todayTotalSale}` },
-    { title: "Weekly Profit", para: `PKR ${weeklyTotalSale}` },
-    { title: "Monthly Profit", para: `PKR ${monthlyTotalSale}` },
+    { title: "Today Profit", para: `PKR ${todayProfit}` },
+    { title: "Monthlty Profit", para: `PKR ${monthlyProfit}` },
+    // { title: "Monthly Profit", para: `PKR ${monthlyTotalSale}` },
   ];
 
   return (

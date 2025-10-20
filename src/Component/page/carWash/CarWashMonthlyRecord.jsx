@@ -17,7 +17,6 @@ function CarWashMonthlyRecord({ allCarWashBills }) {
   // 🟨 RTK Query Hook
   const [deleteBill] = useDeleteBillMutation();
 
-  console.log("allCarWashBills", allCarWashBills);
 
   // 🟨 Table Rows
   const rows = allCarWashBills.map((bills, index) => ({
