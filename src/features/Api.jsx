@@ -86,7 +86,7 @@ export const carWashBillApi = createApi({
     // ====================================================================================
     // 🟨 🛢️ OIL SHOP (PRODUCTS & SALES)
     // ====================================================================================
-    addProduct: builder.mutation({
+     addOilShopProduct: builder.mutation({
       query: (body) => ({
         url: "add-product",
         method: "POST",
@@ -94,26 +94,51 @@ export const carWashBillApi = createApi({
       }),
     }),
 
-    getAllProducts: builder.query({
-      query: () => "all-product",
+    getAllOilShopProducts: builder.query({
+      query: () => "all-products",
     }),
 
-    saleProduct: builder.mutation({
+    updateOilShopProduct: builder.mutation({
+      query: ({ id, data }) => ({
+        url: `update-product/${id}`,
+        method: "PUT",
+        body: data,
+      }),
+    }),
+
+    deleteOilShopProduct: builder.mutation({
+      query: (id) => ({
+        url: `delete-product/${id}`,
+        method: "DELETE",
+      }),
+    }),
+
+    addOilSale: builder.mutation({
       query: (body) => ({
-        url: "sale-product",
+        url: "add-sale",
         method: "POST",
         body,
       }),
     }),
 
-    getSaleProductRecord: builder.query({
-      query: (id) => `sale-product/${id}`,
+    getFilteredOilSales: builder.query({
+      query: (filter) => `sales?filter=${filter}`,
     }),
 
-    getAllSales: builder.query({
-      query: () => "all-sales",
+    updateOilSale: builder.mutation({
+      query: ({ id, ...body }) => ({
+        url: `update-sale/${id}`,
+        method: "PUT",
+        body,
+      }),
     }),
 
+    deleteOilSale: builder.mutation({
+      query: (id) => ({
+        url: `delete-sale/${id}`,
+        method: "DELETE",
+      }),
+    }),
     // ====================================================================================
     // 🟨 🧰 ACCESSORIES API
     // ====================================================================================
@@ -125,12 +150,42 @@ export const carWashBillApi = createApi({
       }),
     }),
 
+       deleteAccessoriesItems: builder.mutation({
+      query: (id) => ({
+        url: `delete-accessories-items/${id}`,
+        method: "DELETE",
+      }),
+    }),
+
+    updateAccessoriesItems: builder.mutation({
+      query: ({ id, data}) => ({
+        url: `update-accessories-items/${id}`,
+        method: "PUT",
+        body : data,
+      }),
+    }),
+
     getAllAccessoriesItems: builder.query({
       query: () => "all-accessories",
     }),
 
     getAllSaleAccessories: builder.query({
       query: (filter) => `accessories-sales?filter=${filter}`,
+    }),
+
+     deleteAccessoriesSale: builder.mutation({
+      query: (id) => ({
+        url: `accessories-sales-delete/${id}`,
+        method: "DELETE",
+      }),
+    }),
+
+    updateAccessoriesSale: builder.mutation({
+      query: ({ id, ...body }) => ({
+        url: `accessories-sales-update/${id}`,
+        method: "PUT",
+        body,
+      }),
     }),
 
    
@@ -189,16 +244,24 @@ export const {
   useUpdateCommissionStatusDetailingMutation,
 
   //🟨 Oil Shop
-  useAddProductMutation,
-  useGetAllProductsQuery,
-  useSaleProductMutation,
-  useGetSaleProductRecordQuery,
-  useGetAllSalesQuery,
+  useAddOilShopProductMutation, 
+  useGetAllOilShopProductsQuery,
+  useUpdateOilShopProductMutation,
+  useDeleteOilShopProductMutation,
+  
+  useAddOilSaleMutation,
+  useGetFilteredOilSalesQuery,
+  useUpdateOilSaleMutation,
+  useDeleteOilSaleMutation,
 
   //🟨 Accessories
   useAddAccessoriesItemMutation,
   useGetAllAccessoriesItemsQuery,
   useGetAllSaleAccessoriesQuery,
+  useDeleteAccessoriesSaleMutation,
+  useUpdateAccessoriesSaleMutation,
+  useDeleteAccessoriesItemsMutation,
+  useUpdateAccessoriesItemsMutation,
 
   //🟨 Employees
   useAddEmployeeMutation,

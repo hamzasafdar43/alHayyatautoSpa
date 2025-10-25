@@ -1,7 +1,8 @@
 import React from 'react';
-import CustomTable from '../../common/CustomTable';
+import CustomTable from '../../../common/CustomTable';
 
-function TodaySale({ dailySales }) {
+
+function OilTodaySales({ dailySales }) {
   const columns = [
     "Sr_No",
     "Time", // 🔁 Changed from Date → Time
@@ -35,4 +36,4 @@ function TodaySale({ dailySales }) {
   );
 }
 
-export default TodaySale;
+export default OilTodaySales;

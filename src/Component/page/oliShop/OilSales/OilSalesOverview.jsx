@@ -3,13 +3,13 @@ import { FcSalesPerformance } from "react-icons/fc";
 import { GiProfit } from "react-icons/gi";
 import { HiUsers } from "react-icons/hi";
 import { BsCashCoin } from "react-icons/bs";
-import { useGetAllSaleAccessoriesQuery } from "../../../features/Api";
-import MonthlySale from "./MonthlySale";
-import TodaySale from "./TodaySale";
-import WeeklySale from "./WeeklySale";
-import SalesProfit from "./Saleprofits";
+import { useGetFilteredOilSalesQuery } from "../../../../features/Api";
+import OilMonthlySales from "./OilMonthlySales";
+import OilSalesWeeklySales from "./OilSalesWeeklySales";
+import OilTodaySales from "./OilTodaySales";
+import OilProfitSummary from "./OilProfitSummary"
 
-function AccessoriesSalesRecord() {
+function OilSalesOverview() {
   // 🟨 Local State
   const [activeView, setActiveView] = useState("monthly");
   const [monthlySales, setMonthlySales] = useState([]);
@@ -20,8 +20,8 @@ function AccessoriesSalesRecord() {
   const [todayProfit, setTodayProfit] = useState(0);
   
   // 🟨 Fetch data using RTK Query
-  const { data: monthlySalesData = [] } = useGetAllSaleAccessoriesQuery("month");
-  const { data: dailySalesData = [] } = useGetAllSaleAccessoriesQuery("day");
+  const { data: monthlySalesData = [] } = useGetFilteredOilSalesQuery("month");
+  const { data: dailySalesData = [] } = useGetFilteredOilSalesQuery("day");
 
   // 🟩 Monthly Sales Effect
   useEffect(() => {
@@ -139,17 +139,17 @@ function AccessoriesSalesRecord() {
       {/* Active Record Section */}
       <div className="bg-white rounded-[10px] mt-8 pt-4 mb-20 flex items-center justify-center h-auto w-[90%] mx-auto">
         {activeView === "monthly" ? (
-          <MonthlySale monthlySales={monthlySales} />
+          <OilMonthlySales monthlySales={monthlySales} />
         ) : activeView === "today" ? (
-          <TodaySale dailySales={dailySales} />
+          <OilTodaySales dailySales={dailySales} />
         ) : activeView === "weekly" ? (
-          <WeeklySale />
+          <OilSalesWeeklySales />
         ) : (
-          <SalesProfit monthlyProfit={monthlyProfit} todayProfit={todayProfit} />
+          <OilProfitSummary monthlyProfit={monthlyProfit} todayProfit={todayProfit} />
         )}
       </div>
     </div>
   );
 }
 
-export default AccessoriesSalesRecord;
+export default OilSalesOverview;

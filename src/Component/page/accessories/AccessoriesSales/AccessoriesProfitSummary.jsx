@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from 'react';
-import { useGetAllAccessoriesItemsQuery } from '../../../features/Api';
+import React from 'react';
 
-function Saleprofits({monthlyProfit , todayProfit}) {
+
+function AccessoriesProfitSummary({monthlyProfit , todayProfit}) {
   
 
   const saleProfits = [
@@ -27,4 +27,4 @@ function Saleprofits({monthlyProfit , todayProfit}) {
   );
 }
 
-export default Saleprofits;
+export default AccessoriesProfitSummary;

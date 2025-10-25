@@ -3,30 +3,35 @@ import { Formik, Form } from "formik";
 import {
   useAddAccessoriesItemMutation,
   useGetAllAccessoriesItemsQuery,
-} from "../../../features/Api";
-import CustomInput from "../../common/CustomInput";
-import CustomButton from "../../common/CustomButton";
-import { addProductValidationSchema } from "../validations/FormValidation";
-import { showToast } from "../../common/CustomToast";
+  useUpdateAccessoriesItemsMutation,
+} from "../../../../features/Api";
+import CustomInput from "../../../common/CustomInput";
+import CustomButton from "../../../common/CustomButton";
+import { addProductValidationSchema } from "../../validations/FormValidation";
+import { showToast } from "../../../common/CustomToast";
 
-function AddAccessoriesItems({ setIsOpen, product }) {
+function CreateAccessoriesProduct({ setIsOpen, selectRecordIndex }) {
   const [previewImage, setPreviewImage] = useState(null);
   const [AddProduct] = useAddAccessoriesItemMutation();
   const { refetch } = useGetAllAccessoriesItemsQuery();
+  const [updateAccessoriesItems] = useUpdateAccessoriesItemsMutation()
 
   useEffect(() => {
-    if (product?.Product_Image) {
-      setPreviewImage(product.Product_Image);
+    if (selectRecordIndex?.Product_Image) {
+      setPreviewImage(selectRecordIndex.Product_Image);
     }
-  }, [product]);
+  }, [selectRecordIndex]);
 
   const initialValuesForm = {
-    productName: product?.Product_Name || "",
-    image: product?.Product_Image || "",
-    price: product?.Price || "",
-    cost: product?.Cost || "",
-    quantity: product?.Product_Quantity || "",
+    productName: selectRecordIndex?.Product_Name || "",
+    image: selectRecordIndex?.Product_Image || "",
+    price: selectRecordIndex?.Price || "",
+    cost: selectRecordIndex?.Cost || "",
+    quantity: selectRecordIndex?.Product_Quantity
+      || "",
   };
+
+
 
   const submitHandler = async (values) => {
     const formData = new FormData();
@@ -51,16 +56,55 @@ function AddAccessoriesItems({ setIsOpen, product }) {
     }
   };
 
+  const updateAccessoriesItemHandler = async (values) => {
+    try {
+      if (!selectRecordIndex?.Id) {
+        showToast("Invalid record selected for update", "error");
+        return;
+      }
+
+      const formData = new FormData();
+      formData.append("productName", values.productName);
+      formData.append("price", values.price);
+      formData.append("cost", values.cost);
+      formData.append("quantity", values.quantity);
+
+      // ✅ If user selected new image, append it — otherwise skip
+      if (values.image && typeof values.image !== "string") {
+        formData.append("image", values.image);
+      }
+
+      const response = await updateAccessoriesItems({
+        id: selectRecordIndex.Id,
+        data: formData,
+      }).unwrap();
+
+      showToast(response?.message || "Accessories item updated successfully!", "success");
+      setIsOpen(false);
+      await refetch();
+    } catch (error) {
+      const errorMessage = error?.data?.message || "Failed to update record!";
+      showToast(errorMessage, "error");
+    }
+  };
+
+
   return (
     <div>
       <div>
-        <h1 className="text-[#262626] font-[700] text-2xl mx-auto w-full flex justify-center">
-         Accessories
-        </h1>
+        {selectRecordIndex ? (
+          <h1 className="text-[#262626] font-[700] text-2xl mx-auto w-full flex justify-center">
+            Update Accessories item
+          </h1>
+        ) : (
+          <h1 className="text-[#262626] font-[700] text-2xl mx-auto w-full flex justify-center">
+            Add Accessories
+          </h1>)}
+
       </div>
       <Formik
         initialValues={initialValuesForm}
-        onSubmit={submitHandler}
+        onSubmit={selectRecordIndex ? updateAccessoriesItemHandler : submitHandler}
         validationSchema={addProductValidationSchema}
       >
         {({ setFieldValue }) => (
@@ -97,7 +141,7 @@ function AddAccessoriesItems({ setIsOpen, product }) {
               <CustomInput name="quantity" type="number" label="Quantity" />
             </div>
             <div className="mt-8 w-full">
-              <CustomButton type="submit" title="Add Product" />
+              <CustomButton type="submit" title={selectRecordIndex ? "UPDATE" : "ADD"} />
             </div>
           </Form>
         )}
@@ -106,4 +150,4 @@ function AddAccessoriesItems({ setIsOpen, product }) {
   );
 }
 
-export default AddAccessoriesItems;
+export default CreateAccessoriesProduct;
