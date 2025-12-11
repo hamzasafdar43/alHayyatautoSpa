@@ -105,7 +105,7 @@ function OilSalesOverview() {
     <div>
       {/* Header */}
       <div className="h-[80px] w-full bg-white mt-[70px] mb-8 flex items-center justify-between px-8">
-        <h1 className="text-lg font-medium">Accessories Sales Record</h1>
+        <h1 className="text-lg font-medium">Oil Product Sales Record</h1>
         <div className="border border-[#262626] p-1 sm:block hidden w-[300px] font-medium rounded-[8px]">
           <input
             type="text"

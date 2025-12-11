@@ -1,12 +1,10 @@
 import React, { useState } from "react";
 import { useDeleteAccessoriesSaleMutation, useDeleteOilSaleMutation, useGetAllSaleAccessoriesQuery, useGetFilteredOilSalesQuery } from "../../../../features/Api";
-import { showToast } from "../../../common/CustomToast";
+
 import CustomModal from "../../../common/CustomModal";
 import CustomPopup from "../../../common/CustomPopup";
 import CustomTable from "../../../common/CustomTable";
-
-
-
+import { showToast } from "../../../common/CustomToast";
 
 function OilMonthlySales() {
   const [isOpen, setIsOpen] = useState(false)
@@ -14,6 +12,8 @@ function OilMonthlySales() {
   const [selectRecordIndex, setSelectRecordIndex] = useState(null);
   const [deleteAccessoriesSale, { isLoading: isDeleting }] = useDeleteOilSaleMutation();
   const { data: monthlySalesData = [] , refetch  : refetchDelete  } = useGetFilteredOilSalesQuery("month");
+
+
 
   // 🟢 Prepare rows for the table
   const rows = monthlySalesData.map((sale, index) => ({

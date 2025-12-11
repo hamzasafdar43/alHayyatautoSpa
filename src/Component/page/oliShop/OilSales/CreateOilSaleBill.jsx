@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Formik, Form } from "formik";
-import { useGetAllAccessoriesItemsQuery, useGetAllSaleAccessoriesQuery, useGetDetailingBillByDateQuery, useGetFilteredOilSalesQuery, useUpdateAccessoriesSaleMutation, useUpdateOilShopProductMutation } from "../../../../features/Api";
+import { useGetDetailingBillByDateQuery, useGetFilteredOilSalesQuery, useGetAllOilShopProductsQuery , useUpdateOilShopProductMutation } from "../../../../features/Api";
 import CustomInput from "../../../common/CustomInput";
 import CustomButton from "../../../common/CustomButton";
 import CustomSelect from "../../../common/CustomSelect";
@@ -17,19 +17,19 @@ function CreateOilSaleBill({
 
 
   // 🔹 Fetch Accessories
-  const { data: allAccessoriesItems = [] } = useGetDetailingBillByDateQuery();
+  const { data: OilProductLists = [] } = useGetAllOilShopProductsQuery();
   const [updateAccessoriesSale] = useUpdateOilShopProductMutation()
   const { data: monthlySalesData = [], refetch } = useGetFilteredOilSalesQuery("month");
 
   useEffect(() => {
-    if (allAccessoriesItems?.data) {
-      setProducts(allAccessoriesItems.data);
+    if (OilProductLists?.data) {
+      setProducts(OilProductLists.data);
     }
-  }, [allAccessoriesItems]);
+  }, [OilProductLists]);
 
   // 🔹 Initial Values (update mode support)
   const initialValuesForm = {
-    category: "accessoriesShop",
+    category: "oilShop",
     productId: selectedUpdateRecord
       ? products.find(
         (p) => p.productName === selectedUpdateRecord.Product_Name
