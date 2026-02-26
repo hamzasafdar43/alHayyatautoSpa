@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { AiFillDelete } from "react-icons/ai";
 import { FaEdit } from "react-icons/fa";
 
-function CustomTable({ rows, columns, onClick, onClickDelete, updateCommissionStatus , selectedAll }) {
+function CustomTable({ rows, columns, onClick, onClickDelete, updateCommissionStatus, selectedAll }) {
   const rowsPerPage = 5; // Define how many rows per page you want
   const [currentPage, setCurrentPage] = useState(1);
 
@@ -52,36 +52,38 @@ function CustomTable({ rows, columns, onClick, onClickDelete, updateCommissionSt
                       }`}
                   >
                     {column === "Actions" ? (
-                      <div className="flex items-center h-20 gap-2 mx-auto justify-center w-[50px]">
-                        <div
-                          className=" flex text-red-600 text-sm rounded-[5px]  cursor-pointer"
-                          onClick={() => onClickDelete(row)}
-                        >
-                          <AiFillDelete size={20} />
+                      <>
 
-                        </div>
-                        <div
-                          className="text-[#2563ea]  flex gap-1 items-center justify-center p-1 rounded-[5px]  cursor-pointer"
-                          onClick={() => onClick(row)}
-                        >
-                          <FaEdit size={20} />
+                        <div className="flex items-center h-20 gap-2 mx-auto justify-center w-[50px]">
+                          <div
+                            className=" flex text-red-600 text-sm rounded-[5px]  cursor-pointer"
+                            onClick={() => onClickDelete(row)}
+                          >
+                            <AiFillDelete size={20} />
 
+                          </div>
+                          <div
+                            className="text-[#2563ea]  flex gap-1 items-center justify-center p-1 rounded-[5px]  cursor-pointer"
+                            onClick={() => onClick(row)}
+                          >
+                            <FaEdit size={20} />
+
+                          </div>
                         </div>
-                      </div>
+                      </>
                     ) : column === "Product_Image" ? (
                       <>
-    {/* Debug in console */}
-    {console.log("Product_Image value:", row?.Product_Image)}
 
-    <div className="w-[50px] h-[50px] mx-auto">
-      <img
-        src={row?.Product_Image}
-        alt="product"
-        className="w-full h-full object-cover rounded"
-        onError={(e) => (e.target.src = "/fallback.jpg")}
-      />
-    </div>
-  </>
+
+                        <div className="w-[50px] h-[50px] mx-auto">
+                          <img
+                            src={row?.Product_Image}
+                            alt="product"
+                            className="w-full h-full object-cover rounded"
+                            onError={(e) => (e.target.src = "/fallback.jpg")}
+                          />
+                        </div>
+                      </>
                     ) : column === "Product_Quantity" ? (
                       row.Product_Quantity < 2 ? (
 
@@ -95,7 +97,7 @@ function CustomTable({ rows, columns, onClick, onClickDelete, updateCommissionSt
                     ) : column === "Id" ? (
                       `00${row[column]?.toString().slice(0, 8)}`
                     ) : column === "Status" ? (
-                     
+
                       <div
                         className={`text-white !text-[12px] p-2 rounded-[5px] cursor-pointer ${row[column] === "Paid" ? "bg-green-600" : "bg-[#2563ea]"
                           }`}
