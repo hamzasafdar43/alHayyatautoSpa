@@ -1,36 +1,40 @@
 import React, { useEffect, useState } from "react";
 import { Formik, Form } from "formik";
-import { useGetAllAccessoriesItemsQuery } from "../../../features/Api";
-import CustomInput from "../../common/CustomInput";
-import CustomButton from "../../common/CustomButton";
-import CustomSelect from "../../common/CustomSelect";
-import { saleProductValidationSchema } from "../validations/FormValidation";
+import { useGetDetailingBillByDateQuery, useGetFilteredOilSalesQuery, useGetAllOilShopProductsQuery , useUpdateOilShopProductMutation } from "../../../../features/Api";
+import CustomInput from "../../../common/CustomInput";
+import CustomButton from "../../../common/CustomButton";
+import CustomSelect from "../../../common/CustomSelect";
+import { saleProductValidationSchema } from "../../validations/FormValidation";
+import { showToast } from "../../../common/CustomToast";
 
-function SaleItemsAccessoriesShop({
+function CreateOilSaleBill({
   setCarWashBill,
   setSelectBillForm,
   selectedUpdateRecord,
+  setIsOpen
 }) {
   const [products, setProducts] = useState([]);
 
 
   // 🔹 Fetch Accessories
-  const { data: allAccessoriesItems = [] } = useGetAllAccessoriesItemsQuery();
+  const { data: OilProductLists = [] } = useGetAllOilShopProductsQuery();
+  const [updateAccessoriesSale] = useUpdateOilShopProductMutation()
+  const { data: monthlySalesData = [], refetch } = useGetFilteredOilSalesQuery("month");
 
   useEffect(() => {
-    if (allAccessoriesItems?.data) {
-      setProducts(allAccessoriesItems.data);
+    if (OilProductLists?.data) {
+      setProducts(OilProductLists.data);
     }
-  }, [allAccessoriesItems]);
+  }, [OilProductLists]);
 
   // 🔹 Initial Values (update mode support)
   const initialValuesForm = {
-    category: "accessoriesShop",
-   productId: selectedUpdateRecord
-  ? products.find(
-      (p) => p.productName === selectedUpdateRecord.Product_Name
-    )?._id || ""
-  : "",
+    category: "oilShop",
+    productId: selectedUpdateRecord
+      ? products.find(
+        (p) => p.productName === selectedUpdateRecord.Product_Name
+      )?._id || ""
+      : "",
     quantitySold: selectedUpdateRecord ? selectedUpdateRecord.Quantity : "",
     sellingPrice: selectedUpdateRecord ? selectedUpdateRecord.Price : "",
   };
@@ -41,9 +45,6 @@ function SaleItemsAccessoriesShop({
     label: product.productName,
     product,
   }));
-
-
- 
 
   // 🔹 Submit handler
   const submitHandler = async (values) => {
@@ -71,6 +72,29 @@ function SaleItemsAccessoriesShop({
       console.error("Error in submitting:", error);
     }
   };
+  const updateSaleHandler = async (values) => {
+    try {
+      // 🟢 Validate the selected record
+      if (!selectedUpdateRecord?.Id) {
+        showToast("Invalid record selected for update", "error");
+        return;
+      }
+
+      const response = await updateAccessoriesSale({
+        id: selectedUpdateRecord.Id,
+        ...values,
+      }).unwrap();
+
+      showToast(response?.message || "Accessories sale updated successfully!", "success");
+      setIsOpen(false)
+      await refetch()
+
+    } catch (error) {
+      const errorMessage = error?.data?.message || "Failed to update record!";
+      showToast(errorMessage, "error");
+    }
+  };
+
 
   return (
     <div>
@@ -81,7 +105,7 @@ function SaleItemsAccessoriesShop({
       <Formik
         enableReinitialize
         initialValues={initialValuesForm}
-        onSubmit={submitHandler}
+        onSubmit={selectedUpdateRecord ? updateSaleHandler : submitHandler}
         validationSchema={saleProductValidationSchema}
       >
         {({ setFieldValue, values }) => (
@@ -96,16 +120,16 @@ function SaleItemsAccessoriesShop({
             />
 
             {/* Product Select */}
-           <CustomSelect
-  name="productId"
-  label="Product Name"
-  option={saleProductOptions}
-  value={values.productId || ""}
-  onChange={(e) => {
-    const selectedProductId = e.target.value;
-    setFieldValue("productId", selectedProductId);
-  }}
-/>
+            <CustomSelect
+              name="productId"
+              label="Product Name"
+              option={saleProductOptions}
+              value={values.productId || ""}
+              onChange={(e) => {
+                const selectedProductId = e.target.value;
+                setFieldValue("productId", selectedProductId);
+              }}
+            />
 
 
             {/* Quantity */}
@@ -132,4 +156,4 @@ function SaleItemsAccessoriesShop({
   );
 }
 
-export default SaleItemsAccessoriesShop;
+export default CreateOilSaleBill;
