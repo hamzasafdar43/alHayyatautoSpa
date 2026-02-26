@@ -1,15 +1,17 @@
-import React, { useState } from "react";
-import { IoIosHome } from "react-icons/io";
-import { NavLink, Outlet } from "react-router-dom";
-import { FaListUl } from "react-icons/fa6";
-import { RiOilFill } from "react-icons/ri";
-import { FaUserLarge, FaCarOn } from "react-icons/fa6";
-import { FcSalesPerformance } from "react-icons/fc";
-import { AiOutlineHistory } from "react-icons/ai";
 import { FaCarAlt, FaCarCrash } from "react-icons/fa";
+import { FaCarOn, FaUserLarge } from "react-icons/fa6";
+import { NavLink, Outlet } from "react-router-dom";
+import React, { useState } from "react";
+
+import { AiOutlineHistory } from "react-icons/ai";
+import { FaListUl } from "react-icons/fa6";
+import { FaUsers } from "react-icons/fa6";
+import { FcSalesPerformance } from "react-icons/fc";
+import { IoIosHome } from "react-icons/io";
 import { MdKeyboardArrowDown } from "react-icons/md";
 import { MdKeyboardArrowUp } from "react-icons/md";
-import { FaUsers } from "react-icons/fa6";
+import { RiOilFill } from "react-icons/ri";
+import { TbReportMoney } from "react-icons/tb";
 
 function LayOut() {
   const [isOpenSidebar, setIsOpenSidebar] = useState(false);
@@ -104,6 +106,11 @@ function LayOut() {
       name: "Activity History",
       url: "/dashbord/history",
       icon: <AiOutlineHistory />,
+    },
+    {
+      name: "Daily Sales",
+      url: "/dashbord/daily-sales",
+      icon: <TbReportMoney />,
     },
   ];
 

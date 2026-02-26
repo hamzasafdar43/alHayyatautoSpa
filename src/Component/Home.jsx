@@ -1,13 +1,15 @@
 import React, { useEffect, useRef, useState } from "react";
 import CustomButton from "./common/CustomButton";
-import CarWashBill from "../Component/page/carWash/CarWashBill";
-import SaleItemsAccessoriesShop from "./page/accessories/SaleItemsAccessoriesShop";
-import GeneratebillOilShop from "./page/salerecord/GeneratebillOilShop";
-import GenerateBillDetailingStudio from "./page/detailingStudio/GenerateBillDetailingStudio";
+import CarWashBill from "./page/carWash/BillForm";
+import SaleItemsAccessoriesShop from "./page/accessories/AccessoriesSales/CreateAccessoriesSaleBill";
+import GenerateBillDetailingStudio from "./page/detailingStudio/BillForm";
 import Discount from "./page/discount/Discount";
 import { useSubmitCarWashBillMutation } from "../features/Api";
 import { useReactToPrint } from "react-to-print";
 import { showToast } from "./common/CustomToast";
+import BillForm from "./page/carWash/BillForm";
+import CreateOilSaleBill from "./page/oliShop/OilSales/CreateOilSaleBill";
+
 
 function Home() {
   const [selectBillForm, setSelectBillForm] = useState("");
@@ -110,7 +112,7 @@ function Home() {
               />
             )}
             {selectBillForm === "oliShop" && (
-              <GeneratebillOilShop
+              <CreateOilSaleBill
                 setCarWashBill={setBillItems}
                 setSelectBillForm={setSelectBillForm}
               />

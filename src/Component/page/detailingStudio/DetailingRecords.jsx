@@ -1,131 +1,158 @@
 import React, { useEffect, useState } from "react";
 import { FcSalesPerformance } from "react-icons/fc";
-import { useDispatch, useSelector } from "react-redux";
 import { GiProfit } from "react-icons/gi";
 import { HiUsers } from "react-icons/hi";
 import { BsCashCoin } from "react-icons/bs";
-import {
-  useGetAlldetailingStudioBilQuery,
-} from "../../../features/Api";
+import { useDispatch, useSelector } from "react-redux";
+import { useGetAllBillsDetailingQuery } from "../../../features/Api";
 import { fetchUsers } from "../../../features/createSlice";
-import MonthlyRcord from "./MonthlyRcord.jsx";
-import TodayRecord from "./TodayRecord.jsx";
-import CommissionDetailngStudio from "./CommissionDetailngStudio.jsx";
-import WeeklyRecord from "./WeeklyRecord.jsx";
+import CommissionDetailingMaster from "../detailingStudio/Commission.jsx";
+import DetailingStudioMonthlyRcord from "./DetailingStudioMonthlyRcord.jsx";
+import DetailingStudioTodayRecord from "./DetailingStudioTodayRecord.jsx";
+
+
 
 function DetailingRecords() {
-  const [activeRecordView, setActiveRecordView] = useState("monthly_record");
+  //🟨 UI State
+  const [activeRecord, setActiveRecord] = useState("all-carwash-bill");
+  const [filterType, setFilterType] = useState("month");
+
+  //🟨 Data State
+  const [monthlyBills, setMonthlyBills] = useState([]);
+  const [todayBills, setTodayBills] = useState([]);
+  const [todayBillTotal, setTodayBillTotal] = useState(0);
+  const [todayCommissionTotal, setTodayCommissionTotal] = useState(0);
 
   const dispatch = useDispatch();
-  const { data: detailingStudioAllBills = [] } = useGetAlldetailingStudioBilQuery();
   const { users } = useSelector((state) => state.user);
 
+  //🟨 Fetch all detailing bills (monthly and daily)
+  const { data: monthlyData = [] } = useGetAllBillsDetailingQuery("month");
+  const { data: todayData = [] } = useGetAllBillsDetailingQuery("day");
+
+  //🟨 Fetch users on mount
   useEffect(() => {
     dispatch(fetchUsers());
   }, [dispatch]);
 
-  const currentMonthDetailingStudioBills = detailingStudioAllBills.filter((item) => {
-    const createdDate = new Date(item.createdAt);
-    const now = new Date();
-    return (
-      createdDate.getMonth() === now.getMonth() &&
-      createdDate.getFullYear() === now.getFullYear()
+  //🟨 Update monthly bills when data changes
+  useEffect(() => {
+    setMonthlyBills(monthlyData);
+  }, [monthlyData]);
+
+  //🟨 Update today's bills and calculate totals
+  useEffect(() => {
+    const validTodayBills = todayData.filter(
+      (b) => !isNaN(parseFloat(b.detailingBill))
     );
-  });
 
-  const detailingStudioMonthlyTotal = currentMonthDetailingStudioBills.reduce((total, item) => {
-    return total + parseFloat(item?.detailingBill || 0);
-  }, 0);
+    setTodayBills(validTodayBills);
 
-  const todayDate = new Date().toISOString().split("T")[0];
+    //🟨 Calculate daily totals
+    const totalBill = validTodayBills.reduce(
+      (sum, b) => sum + parseFloat(b.detailingBill),
+      0
+    );
+    const totalCommission = validTodayBills.reduce(
+      (sum, b) => sum + parseFloat(b.commission || 0),
+      0
+    );
 
-  const todayDetailingStudioBills = detailingStudioAllBills.filter((item) => {
-    if (!item.createdAt) return false;
+    setTodayBillTotal(totalBill);
+    setTodayCommissionTotal(totalCommission);
+  }, [todayData]);
 
-    const billDate = new Date(item.createdAt);
-    if (isNaN(billDate)) return false;
+  //🟨 Calculate monthly total
+  const monthlyBillTotal = monthlyBills
+    .filter((b) => !isNaN(parseFloat(b.detailingBill)))
+    .reduce((sum, b) => sum + parseFloat(b.detailingBill), 0);
 
-    return billDate.toISOString().split("T")[0] === todayDate;
-  });
-
-  const detailingStudioTodayTotal = todayDetailingStudioBills.reduce((total, item) => {
-    return total + parseFloat(item?.detailingBill || 0);
-  }, 0);
-
-  const detailingStudioTodayCommission = todayDetailingStudioBills.reduce((total, item) => {
-    return total + parseFloat(item.commission || 0);
-  }, 0);
-
-  const detailingStudioSummary = [
+  //🟨 Dashboard summary cards
+  const carWashSaleDetails = [
     {
-      icons: <FcSalesPerformance size={50} />,
-      heading: "Monthly Record",
-      para: `PKR ${detailingStudioMonthlyTotal}`,
+      icon: <FcSalesPerformance size={50} />,
+      heading: "Monthly Bill",
+      value: `PKR ${monthlyBillTotal}`,
+      onClick: () => {
+        setActiveRecord("all-carwash-bill");
+        setFilterType("month");
+      },
     },
     {
-      icons: <BsCashCoin size={50} />,
-      heading: "Today Record",
-      para: `PKR ${detailingStudioTodayTotal}`,
+      icon: <BsCashCoin size={50} />,
+      heading: "Today's Bill",
+      value: `PKR ${todayBillTotal}`,
+      onClick: () => {
+        setActiveRecord("today-total-bill");
+        setFilterType("day");
+      },
     },
     {
-      icons: <HiUsers size={50} />,
-      heading: "Weekly Record",
-      para: `PKR 00, ${users.length}`,
+      icon: <HiUsers size={50} />,
+      heading: "Total Visitors",
+      value: users.length,
+      onClick: () => setActiveRecord("total-user"),
     },
     {
-      icons: <GiProfit size={50} />,
-      heading: "Commissions",
-      para: `PKR ${detailingStudioTodayCommission}`,
+      icon: <GiProfit size={50} />,
+      heading: "Today's Commissions",
+      value: `PKR ${todayCommissionTotal}`,
+      onClick: () => setActiveRecord("total-commission"),
     },
   ];
 
+  //🟨 Handle which record component to render
+  const renderActiveRecord = () => {
+    switch (activeRecord) {
+      case "all-carwash-bill":
+        return <DetailingStudioMonthlyRcord allCarWashBills={monthlyBills} />;
+      case "today-total-bill":
+        return <DetailingStudioTodayRecord filteredBills={todayBills} />;
+      case "total-user":
+        return <AllUsers />;
+      case "total-commission":
+        return <CommissionDetailingMaster allBills={todayBills} />;
+      default:
+        return null;
+    }
+  };
+
   return (
     <div>
+      {/* ===== Header ===== */}
       <div className="h-[80px] w-full bg-white mt-[70px] mb-8 flex items-center justify-between px-8">
+        <h1 className="text-lg font-[500]">Car Wash Records</h1>
         <div className="border-[1px] border-[#262626] p-1 sm:block hidden w-[300px] font-[500] rounded-[8px]">
-          <form action="">
-            <input
-              type="text"
-              placeholder="Search"
-              className="ml-2 outline-none"
-            />
-          </form>
+          <input
+            type="text"
+            placeholder="Search"
+            className="ml-2 outline-none w-full"
+          />
         </div>
       </div>
 
+      {/* ===== Summary Cards ===== */}
       <div className="w-[90%] mx-auto">
         <div className="flex lg:justify-between flex-wrap justify-center">
-          {detailingStudioSummary.map((item, index) => (
+          {carWashSaleDetails.map((sale, idx) => (
             <div
-              key={index}
-              className="bg-white lg:w-[250px] md:w-[320px] w-[90%] md:mt-2 mt-5 md:mx-8 lg:mx-0 h-[100px] cursor-pointer rounded-[10px] flex items-center justify-center gap-8"
-              onClick={() => {
-                if (index === 0) setActiveRecordView("monthly_record");
-                else if (index === 1) setActiveRecordView("today_record");
-                else if (index === 2) setActiveRecordView("weekly_record");
-                else if (index === 3) setActiveRecordView("total_commission");
-              }}
+              key={idx}
+              className="bg-white lg:w-[250px] md:w-[320px] w-[90%] md:mt-2 mt-5 md:mx-8 lg:mx-0 h-[100px] cursor-pointer rounded-[10px] flex items-center justify-center gap-8 hover:shadow-lg transition"
+              onClick={sale.onClick}
             >
-              <div>{item.icons}</div>
+              <div>{sale.icon}</div>
               <div>
-                <div>{item.heading}</div>
-                <div className="font-[600] text-2xl">{item.para}</div>
+                <div>{sale.heading}</div>
+                <div className="font-[600] text-2xl">{sale.value}</div>
               </div>
             </div>
           ))}
         </div>
       </div>
 
+      {/* ===== Record Details Section ===== */}
       <div className="bg-white rounded-[10px] mt-8 pt-4 mb-20 flex items-center justify-center h-auto w-[90%] mx-auto">
-        {activeRecordView === "monthly_record" ? (
-          <MonthlyRcord />
-        ) : activeRecordView === "today_record" ? (
-          <TodayRecord todayDetailingStudioBills={todayDetailingStudioBills} />
-        ) : activeRecordView === "weekly_record" ? (
-          <WeeklyRecord />
-        ) : (
-          <CommissionDetailngStudio />
-        )}
+        {renderActiveRecord()}
       </div>
     </div>
   );

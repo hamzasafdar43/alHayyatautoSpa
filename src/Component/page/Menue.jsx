@@ -1,17 +1,18 @@
+import { FaCarAlt, FaCarCrash } from "react-icons/fa";
+import { FaCarOn, FaUserLarge } from "react-icons/fa6";
+import { NavLink, useNavigate } from "react-router-dom";
 import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { NavLink, useNavigate } from "react-router-dom";
-import { logout } from "../../features/createSlice";
 
-import { IoIosHome } from "react-icons/io";
-import { FaListUl } from "react-icons/fa6";
-import { RiOilFill } from "react-icons/ri";
-import { FaUserLarge, FaCarOn } from "react-icons/fa6";
-import { FcSalesPerformance } from "react-icons/fc";
 import { AiOutlineHistory } from "react-icons/ai";
-import { FaCarAlt, FaCarCrash } from "react-icons/fa";
+import { FaListUl } from "react-icons/fa6";
+import { FcSalesPerformance } from "react-icons/fc";
+import { IoIosHome } from "react-icons/io";
 import { MdKeyboardArrowDown } from "react-icons/md";
 import { MdKeyboardArrowUp } from "react-icons/md";
+import { RiOilFill } from "react-icons/ri";
+import { TbReportMoney } from "react-icons/tb";
+import { logout } from "../../features/createSlice";
 
 function Menue() {
   const [isOpenSidebar, setIsOpenSidebar] = useState(false);
@@ -67,6 +68,7 @@ function Menue() {
     { name: "Employee", url: "/employee", icon: <FaUserLarge /> },
     { name: "User Profile", url: "/dashbord/user-profile", icon: <FaUserLarge /> },
     { name: "Activity History", url: "/dashbord/history", icon: <AiOutlineHistory /> },
+     { name: "Daily Sales",  url: "/dashbord/daily-sales", icon: <TbReportMoney /> },
   ];
 
   return (
