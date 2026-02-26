@@ -94,6 +94,14 @@ export const carWashBillApi = createApi({
       }),
     }),
 
+     getoilShopBillByDate: builder.query({
+      query: (startDate) =>
+        startDate
+          ? `/bills-by-date?date=${new Date(startDate).toISOString()}`
+          : "/sales",
+    }),
+
+
     getAllOilShopProducts: builder.query({
       query: () => "all-products",
     }),
@@ -148,6 +156,13 @@ export const carWashBillApi = createApi({
         method: "POST",
         body,
       }),
+    }),
+
+      getAccessoriesBillByDate: builder.query({
+      query: (startDate) =>
+        startDate
+          ? `/accessories-bills-by-date?date=${new Date(startDate).toISOString()}`
+          : "/all-accessories",
     }),
 
     deleteAccessoriesItems: builder.mutation({
@@ -235,6 +250,13 @@ export const carWashBillApi = createApi({
       }),
     }),
 
+    getExpensesByDate: builder.query({
+      query: (startDate) =>
+        startDate
+          ? `/expense-by-date?date=${new Date(startDate).toISOString()}`
+          : "/all-expenses",
+    }),
+
     getExpenses: builder.query({
       query: (type) => (type ? `expenses?type=${type}` : "expenses"),
     }),
@@ -282,6 +304,7 @@ export const {
   useAddOilShopProductMutation,
   useGetAllOilShopProductsQuery,
   useUpdateOilShopProductMutation,
+  useGetoilShopBillByDateQuery,
   useDeleteOilShopProductMutation,
 
   useAddOilSaleMutation,
@@ -293,6 +316,7 @@ export const {
   useAddAccessoriesItemMutation,
   useGetAllAccessoriesItemsQuery,
   useGetAllSaleAccessoriesQuery,
+  useGetAccessoriesBillByDateQuery,
   useDeleteAccessoriesSaleMutation,
   useUpdateAccessoriesSaleMutation,
   useDeleteAccessoriesItemsMutation,
@@ -310,5 +334,6 @@ export const {
   useGetExpensesQuery,
   useUpdateExpenseMutation,
   useDeleteExpenseMutation,
+  useGetExpensesByDateQuery,
 
 } = carWashBillApi;

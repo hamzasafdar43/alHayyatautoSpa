@@ -4,10 +4,10 @@ import AccessoriesProductList from "./Component/page/accessories/AccessoriesProd
 import AccessoriesSalesOverview from "./Component/page/accessories/AccessoriesSales/AccessoriesSalesOverview";
 import AddExpense from "./Component/page/expense/AddExpense";
 import CarWashRecord from "./Component/page/carWash/CarWashRecord";
-import CheckMonthlyReport from "./Component/page/history/carwashrecord/CheckMonthlyReport";
+import CheckMonthlyReports from "./Component/page/history/CheckMonthlyReports";
 import CustomToast from "./Component/common/CustomToast";
 import DailyExpense from "./Component/page/expense/DailyExpense";
-import DetailingMonthlyReport from "./Component/page/history/detailingrecord/DetailingMonthlyReport";
+import DailySales from "./Component/page/dailySales/DailySales";
 import DetailingRecords from "./Component/page/detailingStudio/DetailingRecords";
 import Employee from "./Component/page/employees/Employee";
 import History from "./Component/page/history/History";
@@ -39,13 +39,10 @@ function App() {
 
         <Routes>
           {/* Reports */}
+         
           <Route
-            path="/detailing-monthly-report/:month"
-            element={<DetailingMonthlyReport />}
-          />
-          <Route
-            path="/monthly-report/:month"
-            element={<CheckMonthlyReport />}
+           path="/history/:tab/month/:month"
+            element={<CheckMonthlyReports />}
           />
 
           {/* Public Routes */}
@@ -82,7 +79,8 @@ function App() {
               path="accessories-shop-record"
               element={<AccessoriesSalesOverview />}
             />
-            <Route path="car-wash-record" element={<CarWashRecord />} />
+            
+      <Route path="car-wash-record" element={<CarWashRecord />} />
             <Route path="user-profile" element={<UserProfile />} />
             <Route path="sale-product" element={<OilSalesOverview />} />
             <Route path="history" element={<History />} />
@@ -93,6 +91,7 @@ function App() {
             <Route path="rents" element={<Rents />} />
             <Route path="detailing-records" element={<DetailingRecords />} />
             <Route path="employee" element={<Employee />} />
+            <Route path="daily-sales" element={<DailySales />} />
           </Route>
         </Routes>
       </Router>
