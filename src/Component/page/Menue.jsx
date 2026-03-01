@@ -37,45 +37,102 @@ function Menue() {
 
   const logOutUserHandler = async () => {
     const response = await dispatch(logout());
-    localStorage.clear()
+    localStorage.clear();
     console.log("logout response", response);
     navigate("/");
   };
 
   const mainMenu = [
     { name: "Dashboard", url: "/dashbord/home", icon: <IoIosHome /> },
-    { name: "Car Wash Records", url: "/dashbord/car-wash-record", icon: <FaCarOn /> },
-    { name: "Detailing Studio", url: "/dashbord/detailing-records", icon: <FaCarAlt /> },
+    {
+      name: "Car Wash Records",
+      url: "/dashbord/car-wash-record",
+      icon: <FaCarOn />,
+    },
+    {
+      name: "Detailing Studio",
+      url: "/dashbord/detailing-records",
+      icon: <FaCarAlt />,
+    },
   ];
 
   const oilShopGroup = [
-    { name: "Oil Shop Inventory", url: "/dashbord/oil-shop", icon: <RiOilFill /> },
-    { name: "Oil Shop Sales", url: "/dashbord/sale-product", icon: <FcSalesPerformance /> },
+    {
+      name: "Oil Shop Inventory",
+      url: "/dashbord/oil-shop",
+      icon: <RiOilFill />,
+    },
+    {
+      name: "Oil Shop Sales",
+      url: "/dashbord/sale-product",
+      icon: <FcSalesPerformance />,
+    },
   ];
 
   const accessoriesGroup = [
-    { name: "Accessories Inventory", url: "/dashbord/accessories-shop", icon: <FaCarCrash /> },
-    { name: "Accessories Sales", url: "/dashbord/accessories-shop-record", icon: <FcSalesPerformance /> },
+    {
+      name: "Accessories Inventory",
+      url: "/dashbord/accessories-shop",
+      icon: <FaCarCrash />,
+    },
+    {
+      name: "Accessories Sales",
+      url: "/dashbord/accessories-shop-record",
+      icon: <FcSalesPerformance />,
+    },
   ];
 
   const rentGroup = [
-    { name: "Rental Records", url: "/dashbord/rents", icon: <FcSalesPerformance /> },
+    {
+      name: "Rental Records",
+      url: "/dashbord/rents",
+      icon: <FcSalesPerformance />,
+    },
   ];
 
   const bottomMenu = [
-    { name: "Taxi Stand Logs", url: "/dashbord/taxi_stand", icon: <FcSalesPerformance /> },
-    { name: "General Expenses", url: "/dashbord/expense", icon: <FcSalesPerformance /> },
+    {
+      name: "Taxi Stand Logs",
+      url: "/dashbord/taxi_stand",
+      icon: <FcSalesPerformance />,
+    },
+    {
+      name: "General Expenses",
+      url: "/dashbord/expense",
+      icon: <FcSalesPerformance />,
+    },
     { name: "Employee", url: "/employee", icon: <FaUserLarge /> },
-    { name: "User Profile", url: "/dashbord/user-profile", icon: <FaUserLarge /> },
-    { name: "Activity History", url: "/dashbord/history", icon: <AiOutlineHistory /> },
-     { name: "Daily Sales",  url: "/dashbord/daily-sales", icon: <TbReportMoney /> },
+    {
+      name: "User Profile",
+      url: "/dashbord/user-profile",
+      icon: <FaUserLarge />,
+    },
+    {
+      name: "Activity History",
+      url: "/dashbord/history",
+      icon: <AiOutlineHistory />,
+    },
+    {
+      name: "Daily Sales",
+      url: "/dashbord/daily-sales",
+      icon: <TbReportMoney />,
+    },
+    {
+      name: "Monthly Reports",
+      url: "/dashbord/monthly-sales",
+      icon: <TbReportMoney />,
+    },
   ];
 
   return (
-    <>
+    <div className="mb-20 lg:mb-0">
       {/* Topbar Mobile */}
-      <div className="h-[80px] lg:hidden bg-[#262626] flex items-center justify-between px-8 fixed top-0 left-0 right-0 z-50">
-        <FaListUl size={25} className="cursor-pointer text-white" onClick={sidebarIsOpenHandler} />
+      <div className="h-[80px] lg:hidden bg-[#262626] flex items-center justify-between px-8 fixed top-0 left-0 right-0 z-50 ">
+        <FaListUl
+          size={25}
+          className="cursor-pointer text-white"
+          onClick={sidebarIsOpenHandler}
+        />
         {user && (
           <div
             className="border border-gray-100 w-20 h-8 cursor-pointer flex justify-center items-center"
@@ -121,7 +178,11 @@ function Menue() {
               <RiOilFill />
               <span className="text-sm">OilShop</span>
             </div>
-            {dropdowns.oilShop ? <MdKeyboardArrowUp /> : <MdKeyboardArrowDown />}
+            {dropdowns.oilShop ? (
+              <MdKeyboardArrowUp />
+            ) : (
+              <MdKeyboardArrowDown />
+            )}
           </div>
           {dropdowns.oilShop &&
             oilShopGroup.map((item, i) => (
@@ -144,7 +205,11 @@ function Menue() {
               <FaCarCrash />
               <span className="text-sm">Accessories</span>
             </div>
-            {dropdowns.accessories ? <MdKeyboardArrowUp /> : <MdKeyboardArrowDown />}
+            {dropdowns.accessories ? (
+              <MdKeyboardArrowUp />
+            ) : (
+              <MdKeyboardArrowDown />
+            )}
           </div>
           {dropdowns.accessories &&
             accessoriesGroup.map((item, i) => (
@@ -216,7 +281,7 @@ function Menue() {
           </div>
         </div>
       )}
-    </>
+    </div>
   );
 }
 

@@ -1,6 +1,6 @@
 import { FaCarAlt, FaCarCrash } from "react-icons/fa";
 import { FaCarOn, FaUserLarge } from "react-icons/fa6";
-import { NavLink, Outlet } from "react-router-dom";
+import { NavLink, Navigate, Outlet, useNavigate } from "react-router-dom";
 import React, { useState } from "react";
 
 import { AiOutlineHistory } from "react-icons/ai";
@@ -20,6 +20,8 @@ function LayOut() {
     accessories: false,
     rent: false,
   });
+
+  const navigate = useNavigate();
 
   const toggleDropdown = (key) => {
     setDropdowns((prev) => ({ ...prev, [key]: !prev[key] }));
@@ -82,11 +84,11 @@ function LayOut() {
   ];
 
   const bottomMenu = [
-    {
-      name: "Taxi Stand Logs",
-      url: "/dashbord/taxi_stand",
-      icon: <FcSalesPerformance />,
-    },
+    // {
+    //   name: "Taxi Stand Logs",
+    //   url: "/dashbord/taxi_stand",
+    //   icon: <FcSalesPerformance />,
+    // },
     {
       name: "General Expenses",
       url: "/dashbord/expense",
@@ -108,11 +110,23 @@ function LayOut() {
       icon: <AiOutlineHistory />,
     },
     {
-      name: "Daily Sales",
+      name: "Daily Reports",
       url: "/dashbord/daily-sales",
       icon: <TbReportMoney />,
     },
+     {
+      name: "Monthly Reports",
+      url: "/dashbord/monthly-sales",
+      icon: <TbReportMoney />,
+    },
   ];
+
+   const logOutUserHandler = async () => {
+      const response = await dispatch(logout());
+      localStorage.clear();
+      console.log("logout response", response);
+      navigate("/");
+    };
 
   return (
     <div className="flex w-full">
@@ -302,6 +316,12 @@ function LayOut() {
           ))}
         </div>
       </div>
+       <div
+            className="bg-white border border-[#262626] w-[100px] absolute right-6 flex justify-center items-center p-1 cursor-pointer rounded fixed top-1 right-6 z-50"
+            onClick={logOutUserHandler}
+          >
+            <h1 className="font-[500]">LogOut</h1>
+          </div>
 
       {/* Main Content */}
       <div

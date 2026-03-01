@@ -15,6 +15,7 @@ import Home from "./Component/Home";
 import LayOut from "./Component/layout/LayOut";
 import Menue from "./Component/page/Menue";
 import MonthlyExpense from "./Component/page/expense/MonthlyExpense";
+import MonthlyHistory from "./Component/page/history/MonthlyHistory";
 import OilProductList from "./Component/page/oliShop/OilProduct/OilProductList";
 import OilSalesOverview from "./Component/page/oliShop/OilSales/OilSalesOverview";
 import ProtectedRoute from "./Component/protectRoutes/ProtectedRoute";
@@ -92,6 +93,7 @@ function App() {
             <Route path="detailing-records" element={<DetailingRecords />} />
             <Route path="employee" element={<Employee />} />
             <Route path="daily-sales" element={<DailySales />} />
+           <Route path="monthly-sales" element={<MonthlyHistory />} />
           </Route>
         </Routes>
       </Router>
