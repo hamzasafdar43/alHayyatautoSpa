@@ -1,189 +1,259 @@
+import "react-datepicker/dist/react-datepicker.css";
+
+import { FaCarAlt, FaCarCrash } from "react-icons/fa";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import {
-  useGetAllBillsDetailingQuery,
-  useGetAllBillsQuery,
-  useGetAllSaleAccessoriesQuery,
+  useGetAccessoriesMonthlyDataQuery,
+  useGetCarWashMonthlyQuery,
   useGetExpensesByDateQuery,
-  useGetExpensesQuery,
-  useGetFilteredOilSalesQuery,
+  useGetMonthlyDailyExpensesQuery,
+  useGetMonthlyExpensesQuery,
+  useGetOilMonthlyDataQuery,
+  useGetdetailingByMonthlyQuery,
 } from "../../../features/Api";
 
-import React from "react";
+import { CiCalendarDate } from "react-icons/ci";
+import DatePicker from "react-datepicker";
+import { FaCarOn } from "react-icons/fa6";
+import { FcSalesPerformance } from "react-icons/fc";
+import { RiOilFill } from "react-icons/ri";
 
 function MonthlyHistory() {
-  const { data: carWash = [], isLoading, error } =
-    useGetAllBillsQuery("year");
-  const { data: detailing = [] } =
-    useGetAllBillsDetailingQuery("year");
-  const { data: oil = [] } =
-    useGetFilteredOilSalesQuery("year");
-  const { data: accessories = [] } =
-    useGetAllSaleAccessoriesQuery("year");
-  const { data: monthlyExpense } =
-    useGetExpensesQuery("monthly");
-  const { data: dailyExpense } =
-    useGetExpensesQuery("daily");
-
-  if (isLoading) return <div className="text-center p-4">Loading...</div>;
-  if (error)
-    return <div className="text-center text-red-500 p-4">Error</div>;
-
-  const currentYear = new Date().getFullYear();
-  const toNumber = (v) => (isNaN(parseFloat(v)) ? 0 : parseFloat(v));
+const [startDate, setStartDate] = useState(new Date());
 
 
-  const monthlyReport = Array.from({ length: 12 }, (_, i) => ({
-    month: new Date(0, i).toLocaleString("default", { month: "long" }),
-    carWashBill: 0,
-    carWashCommission: 0,
-    detailingBill: 0,
-    detailingCommission: 0,
-    oilSale: 0,
-    oilCost: 0,
-    oilProfit: 0,
-    accSale: 0,
-    accCost: 0,
-    accProfit: 0,
-    dailyExpense: 0,
-    monthlyExpense: 0,
-  }));
+const year = startDate.getFullYear();
+const month = startDate.getMonth() + 1; 
 
-  // Car Wash
-  carWash.forEach((b) => {
-    const m = new Date(b.createdAt).getMonth();
-    const total = toNumber(b.bill);
-    const commission = toNumber(b.commission);
-    monthlyReport[m].carWashBill += total;
-    monthlyReport[m].carWashCommission += commission;
-  });
-
+ const [selectDate, setSelectDate] = React.useState("");
  
-  
 
-  // Detailing
-  detailing.forEach((b) => {
-    const m = new Date(b.createdAt).getMonth();
-    const total = toNumber(b.detailingBill);
-    const commission = toNumber(b.commission);
-    monthlyReport[m].detailingBill += total;
-    monthlyReport[m].detailingCommission += commission;
-  });
+   const { data: expenseData = [] } = useGetExpensesByDateQuery(selectDate);
+ const { data: monthlyDetailingData = [] } =
+  useGetdetailingByMonthlyQuery({ year,month});
+const { data: monthlyCarWashData = [] } = useGetCarWashMonthlyQuery({ year, month });
+const { data: monthlyAccessoriesData = [] } = useGetAccessoriesMonthlyDataQuery({ year, month });
+const { data: monthlyOilShopData = [] } = useGetOilMonthlyDataQuery({ year, month });
+const { data: monthlyExpenseData = [] } = useGetMonthlyExpensesQuery({ year, month });
+const { data: monthlyDailyExpenseData = [] } = useGetMonthlyDailyExpensesQuery({ year, month });
 
-  // Oil Shop
-  oil.forEach((b) => {
-    const m = new Date(b.createdAt).getMonth();
-    const sale = toNumber(b.sellingPrice);
-    const cost = toNumber(b.productId?.cost);
-    monthlyReport[m].oilSale += sale;
-    monthlyReport[m].oilCost += cost;
-    monthlyReport[m].oilProfit += sale - cost;
-  });
 
-  // Accessories
-  accessories.forEach((b) => {
-    const m = new Date(b.createdAt).getMonth();
-    const sale = toNumber(b.sellingPrice);
-    const cost = toNumber(b.productId?.cost);
-    monthlyReport[m].accSale += sale;
-    monthlyReport[m].accCost += cost;
-    monthlyReport[m].accProfit += sale - cost;
-  });
+     const datePickerRef = useRef(null);
 
-  // Expenses
-  monthlyExpense?.data?.forEach((e) => {
-    const m = new Date(e.createdAt).getMonth();
-    monthlyReport[m].monthlyExpense += toNumber(e.amount);
-  });
+    //  console.log("oilShopData", monthlyOilShopData);
+    //  console.log("detailingData", monthlyDetailingData);
+    //  console.log("carWashData", monthlyCarWashData);
+    //  console.log("accessoriesData", monthlyAccessoriesData);
+    //   console.log("expenseData", monthlyExpenseData);
+    //    console.log("monthlyDailyExpenseData", monthlyDailyExpenseData);
 
-  dailyExpense?.data?.forEach((e) => {
-    const m = new Date(e.createdAt).getMonth();
-    monthlyReport[m].dailyExpense += toNumber(e.amount);
-  });
+
+   useEffect(() => {
+   const today = new Date().toISOString().split("T")[0];
+
+    if (!selectDate) {
+      setSelectDate(today);
+    }
+    }, [selectDate]);
+
+  // 🔹 Reusable Calculator Function
+  const calculateTotals = (data, fieldName) => {
+    const validRecords = data.filter(
+      (item) => !isNaN(parseFloat(item[fieldName]))
+    );
+
+    const totalAmount = validRecords.reduce(
+      (sum, item) => sum + parseFloat(item[fieldName] || 0),
+      0
+    );
+
+    const totalCommission = validRecords.reduce(
+      (sum, item) => sum + parseFloat(item.commission || 0),
+      0
+    );
+
+    return { totalAmount, totalCommission };
+  };
+
+  // 🔹 Memoized Values (Performance Optimized)
+  const carWashTotals = useMemo(
+    () => calculateTotals(monthlyCarWashData, "bill"),
+    [monthlyCarWashData]
+  );
+
+  const detailingTotals = useMemo(
+    () => calculateTotals(monthlyDetailingData, "detailingBill"),
+    [monthlyDetailingData]
+  );
+
+  const oilShopTotals = useMemo(
+    () => calculateTotals(monthlyOilShopData, "sellingPrice"),
+    [monthlyOilShopData]
+  );
+
+  const oilShopTotalCost = useMemo(() => {
+  return monthlyOilShopData.reduce((sum, item) => {
+    const cost = item.productId?.cost || 0;
+    const quantity = item.quantitySold || 1;
+    return sum + cost * quantity;
+  }, 0);
+}, [monthlyOilShopData]);
+
+
+  const accessoriesTotalCost = useMemo(() => {
+  return monthlyAccessoriesData.reduce((sum, item) => {
+    const cost = item.productId?.cost || 0;
+    const quantity = item.quantitySold || 1;
+    return sum + cost * quantity;
+  }, 0);
+}, [monthlyAccessoriesData]);
+
+  const accessoriesTotals = useMemo(  
+    () => calculateTotals(monthlyAccessoriesData, "sellingPrice"),
+    [monthlyAccessoriesData]
+  );
+
+  const monthlyExpenseTotal = useMemo(
+    () => calculateTotals(monthlyExpenseData, "amount"),
+    [monthlyExpenseData]
+  );
+
+  const DailyCurrMonthallExpense = useMemo(
+    () => calculateTotals(monthlyDailyExpenseData, "amount"),
+    [monthlyDailyExpenseData]
+  );
+
+  const totalSales = carWashTotals.totalAmount + detailingTotals.totalAmount+ oilShopTotals.totalAmount + accessoriesTotals.totalAmount + monthlyExpenseTotal.totalAmount;
+ const profitTotal = (carWashTotals.totalAmount - carWashTotals.totalCommission) + (detailingTotals.totalAmount - detailingTotals.totalCommission) + (oilShopTotals.totalAmount - oilShopTotalCost) + (accessoriesTotals.totalAmount - accessoriesTotalCost) ;
+  const salesCards = [
+    {
+      icon: <FaCarOn size={40} />,
+      title: "Car Wash Sales",
+      amount: carWashTotals.totalAmount,
+      commission: carWashTotals.totalCommission,
+    },
+    {
+      icon: <FaCarAlt size={40} />,
+      title: "Detailing Sales",
+      amount: detailingTotals.totalAmount,
+      commission: detailingTotals.totalCommission,
+    },
+    {
+      icon: <RiOilFill size={40} />,
+      title: "Oil Shop Sales",
+      amount: oilShopTotals.totalAmount,
+      cost: oilShopTotalCost,
+    },
+    {
+      icon: <FaCarCrash size={40} />,
+      title: "Accessories Sales",
+      amount: accessoriesTotals.totalAmount,
+      cost: accessoriesTotalCost,
+    },
+    {
+      icon: <FcSalesPerformance size={40} />,
+      title: " Monthly Expenses",
+      amount: monthlyExpenseTotal.totalAmount,
+      dailyExpense : DailyCurrMonthallExpense,
+    },
+  ];
+
+
+    const ProfitCards = [
+    {
+      icon: <FaCarOn size={40} />,
+      title: "Car Wash Profit without comission",
+      amount: carWashTotals.totalAmount - carWashTotals.totalCommission,
+    
+    },
+    {
+      icon: <FaCarAlt size={40} />,
+      title: "Detailing Profit without comission",
+      amount: detailingTotals.totalAmount - detailingTotals.totalCommission,
+    },
+    {
+      icon: <RiOilFill size={40} />,
+      title: "Oil Shop Sales",
+      amount: oilShopTotals.totalAmount - oilShopTotalCost,
+
+    },
+    {
+      icon: <FaCarCrash size={40} />,
+      title: "Accessories Sales",
+      amount: accessoriesTotals.totalAmount - accessoriesTotalCost,
+
+    },
+    
+  ];
+
 
  return (
-  <div className="w-[95%] mx-auto my-10 space-y-10">
-    <h2 className="text-3xl font-bold text-center">
-      Monthly Financial Report ({currentYear})
-    </h2>
-
-    {monthlyReport.map((r, i) => {
-      const serviceProfit =
-        (r.carWashBill - r.carWashCommission) +
-        (r.detailingBill - r.detailingCommission);
-
-      const productProfit = r.oilProfit + r.accProfit;
-
-      const totalExpense = r.dailyExpense + r.monthlyExpense;
-
-      const netProfit =
-        serviceProfit + productProfit ;
-
-       
-
-      return (
-
-        <div
-          key={i}
-         
-        >
-          <h3 className="text-xl font-semibold text-blue-600 my-2">
-            {r.month}
-          </h3>
-          <div  className=" rounded-2xl p-6 border-gray-200 border-[1px] space-y-6">
-
-          <div className="grid md:grid-cols-4 gap-6">
-
-            {/* Services */}
-            <div className="bg-gray-50 p-4 rounded-xl">
-              <h4 className="font-bold mb-2">Services</h4>
-              <p>CarWash: {r.carWashBill - r.carWashCommission}</p>
-              <p>Detailing: {r.detailingBill - r.detailingCommission}</p>
-              <p className="text-green-600 font-semibold">
-                Profit: {serviceProfit.toFixed(0)}
-              </p>
-            </div>
-
-            {/* Products */}
-            <div className="bg-gray-50 p-4 rounded-xl">
-              <h4 className="font-bold mb-2">Products</h4>
-              <p>Oil Profit: {r.oilProfit.toFixed(0)}</p>
-              <p>Accessories Profit: {r.accProfit.toFixed(0)}</p>
-              <p className="text-green-600 font-semibold">
-                Total: {productProfit.toFixed(0)}
-              </p>
-            </div>
-
-            {/* Expenses */}
-            <div className="bg-gray-50 p-4 rounded-xl">
-              <h4 className="font-bold mb-2 text-red-600">Expenses</h4>
-              <p>Daily: {r.dailyExpense.toFixed(0)}</p>
-              <p>Monthly: {r.monthlyExpense.toFixed(0)}</p>
-              <p className="font-semibold">
-                Total: {totalExpense.toFixed(0)}
-              </p>
-            </div>
-
-            {/* Net Profit */}
-            <div className="bg-gray-50 p-4 rounded-xl">
-              <h4 className="font-bold mb-2">Services+Products</h4>
-              <p
-                className={`text-2xl font-bold ${
-                  netProfit >= 0
-                    ? "text-green-600"
-                    : "text-red-600"
-                }`}
-              >
-                {netProfit.toFixed(0)}
-              </p>
-            </div>
-
+    <div className="p-6 bg-gray-100 min-h-screen">
+      {/* Date Picker */}
+      <div className="flex items-center gap-4 mb-6">
+        <h1 className="text-2xl font-semibold">Select Month & Year</h1>
+        <div className="relative">
+          <CiCalendarDate
+            className="text-blue-600 cursor-pointer"
+            size={30}
+            onClick={() => datePickerRef.current.setOpen(true)}
+          />
+          <DatePicker
+            ref={datePickerRef}
+            selected={startDate}
+            onChange={setStartDate}
+            dateFormat="MM/yyyy"
+            showMonthYearPicker
+            className="absolute top-0 left-0 opacity-0 w-0 h-0"
+          />
+        </div>
+        {startDate && (
+          <div className="text-gray-700 font-medium">
+            {startDate.toLocaleDateString("en-US", { month: "long", year: "numeric" })}
           </div>
-        </div>
-        </div>
-      );
-    })}
-  </div>
-);
+        )}
+      </div>
 
+      {/* Total Sales */}
+      <div className="bg-white shadow-lg rounded-xl p-6 flex justify-between items-center mb-8">
+        <h2 className="text-xl font-semibold text-gray-700">Monthly Report</h2>
+        <h2 className="text-3xl font-bold text-green-600">Total Sales: PKR {totalSales}</h2>
+      </div>
+
+      {/* Sales Cards */}
+      <div className="grid lg:grid-cols-5 md:grid-cols-2 sm:grid-cols-1 gap-6 mb-10">
+        {salesCards.map((card, idx) => (
+          <div key={idx} className="bg-white rounded-xl shadow-md hover:shadow-xl transition p-5 flex flex-col gap-3">
+            <div>{card.icon}</div>
+            <h3 className="text-gray-500 text-sm">{card.title}</h3>
+            <p className="text-xl font-bold text-gray-800">PKR {card.amount}</p>
+            {card.commission > 0 && <p className="text-xs text-gray-400">Commission: PKR {card.commission}</p>}
+            {card.dailyExpense && <p className="text-xs text-gray-400">Daily Expense: PKR {card.dailyExpense.totalAmount}</p>}
+            {card.cost > 0 && <p className="text-xs text-gray-400">Cost: PKR {card.cost}</p>}
+          </div>
+        ))}
+      </div>
+
+      {/* Total Profit */}
+      <div className="bg-white shadow-lg rounded-xl p-6 flex justify-between items-center mb-8">
+        <h2 className="text-xl font-semibold text-gray-700">Monthly Profit</h2>
+        <h2 className="text-3xl font-bold text-green-600">Total Profit: PKR {profitTotal}</h2>
+      </div>
+
+      {/* Profit Cards */}
+      <div className="grid lg:grid-cols-5 md:grid-cols-2 sm:grid-cols-1 gap-6">
+        {ProfitCards.map((card, idx) => (
+          <div key={idx} className="bg-white rounded-xl shadow-md hover:shadow-xl transition p-5 flex flex-col gap-3">
+            <div>{card.icon}</div>
+            <h3 className="text-gray-500 text-sm">{card.title}</h3>
+            <p className="text-xl font-bold text-gray-800">PKR {card.amount}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
 }
+
+
 
 export default MonthlyHistory;
