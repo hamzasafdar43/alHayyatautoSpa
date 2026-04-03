@@ -1,11 +1,13 @@
 import { Form, Formik } from "formik";
-import React from "react";
-import CustomInput from "../../common/CustomInput";
-import CustomButton from "../../common/CustomButton";
 import { Link, useNavigate } from "react-router-dom";
+
+import CustomButton from "../../common/CustomButton";
+import CustomInput from "../../common/CustomInput";
+import React from "react";
 import { registerUser } from "../../../features/createSlice";
-import { useDispatch } from "react-redux";
 import { registerUserFormValidationSchema } from "../validations/FormValidation";
+import { showToast } from "../../common/CustomToast";
+import { useDispatch } from "react-redux";
 
 function SignUp() {
   const dispatch = useDispatch();
@@ -21,11 +23,17 @@ function SignUp() {
    
     try {
       const response = await dispatch(registerUser(values));
-      if (response.payload.message === "User registered successfully") {
-        navigate("/");
+      if (registerUser.fulfilled.match(response)) {
+        showToast("Registration successful", "success");
+        setTimeout(() => {  
+        navigate("/dashbord");
+        }, 3000);
+        
+      }else{
+         showToast(response.payload || "Login failed", "error");
       }
     } catch (error) {
-      console.log("error", error);
+        showToast(error?.payload || "An error occurred", "error");
     }
   };
   return (

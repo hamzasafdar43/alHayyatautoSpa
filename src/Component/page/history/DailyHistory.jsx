@@ -38,22 +38,26 @@ function DailySales() {
 
   // 🔹 Reusable Calculator Function
   const calculateTotals = (data, fieldName) => {
-    const validRecords = data.filter(
-      (item) => !isNaN(parseFloat(item[fieldName]))
-    );
+  if (!Array.isArray(data)) {
+    return { totalAmount: 0, totalCommission: 0 };
+  }
 
-    const totalAmount = validRecords.reduce(
-      (sum, item) => sum + parseFloat(item[fieldName] || 0),
-      0
-    );
+  const validRecords = data.filter(
+    (item) => !isNaN(parseFloat(item[fieldName]))
+  );
 
-    const totalCommission = validRecords.reduce(
-      (sum, item) => sum + parseFloat(item.commission || 0),
-      0
-    );
+  const totalAmount = validRecords.reduce(
+    (sum, item) => sum + parseFloat(item[fieldName] || 0),
+    0
+  );
 
-    return { totalAmount, totalCommission };
-  };
+  const totalCommission = validRecords.reduce(
+    (sum, item) => sum + parseFloat(item.commission || 0),
+    0
+  );
+
+  return { totalAmount, totalCommission };
+};
 
   // 🔹 Memoized Values (Performance Optimized)
   const carWashTotals = useMemo(
