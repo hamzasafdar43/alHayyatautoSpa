@@ -1,39 +1,47 @@
-import { FaCarAlt, FaCarCrash } from "react-icons/fa";
-import { FaCarOn, FaUserLarge } from "react-icons/fa6";
-import { NavLink, Navigate, Outlet, useNavigate } from "react-router-dom";
+import {
+  FaCarAlt,
+  FaCarCrash,
+  FaUsers,
+} from "react-icons/fa";
+import { FaCarOn, FaListUl, FaUserLarge } from "react-icons/fa6";
+import { MdKeyboardArrowDown, MdKeyboardArrowUp } from "react-icons/md";
+import { NavLink, Outlet, useNavigate } from "react-router-dom";
 import React, { useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 
 import { AiOutlineHistory } from "react-icons/ai";
-import { FaListUl } from "react-icons/fa6";
-import { FaUsers } from "react-icons/fa6";
 import { FcSalesPerformance } from "react-icons/fc";
 import { IoIosHome } from "react-icons/io";
-import { MdKeyboardArrowDown } from "react-icons/md";
-import { MdKeyboardArrowUp } from "react-icons/md";
 import { RiOilFill } from "react-icons/ri";
 import { TbReportMoney } from "react-icons/tb";
+import { logout } from "../../features/createSlice";
 
 function LayOut() {
-  const [isOpenSidebar, setIsOpenSidebar] = useState(false);
-  const [dropdowns, setDropdowns] = useState({
-    oilShop: false,
-    accessories: false,
-    rent: false,
-  });
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [activeDropdown, setActiveDropdown] = useState(null);
 
+  const user = useSelector((state) => state.user);
+  const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const toggleDropdown = (key) => {
-    setDropdowns((prev) => ({ ...prev, [key]: !prev[key] }));
+  const toggleSidebar = () => {
+    setIsSidebarOpen(!isSidebarOpen);
   };
 
-  const sidebarIsOpenHandler = () => {
-    setIsOpenSidebar(!isOpenSidebar);
+  const toggleDropdown = (name) => {
+    setActiveDropdown(activeDropdown === name ? null : name);
   };
 
-  const mainMenu = [
+  const handleLogout = async () => {
+    await dispatch(logout());
+    localStorage.clear();
+    navigate("/");
+  };
+
+  // ✅ ALL MENUS COMBINED IN ONE ARRAY
+  const menuItems = [
     {
-      name: "Dashboard",
+      name: "Home",
       url: "/dashbord/home",
       icon: <IoIosHome />,
     },
@@ -47,288 +55,163 @@ function LayOut() {
       url: "/dashbord/detailing-records",
       icon: <FaCarAlt />,
     },
-  ];
-
-  const oilShopGroup = [
-    {
-      name: "Oil Shop Inventory",
-      url: "/dashbord/oil-shop",
-      icon: <RiOilFill />,
-    },
-    {
-      name: "Oil Shop Sales",
-      url: "/dashbord/sale-product",
-      icon: <FcSalesPerformance />,
-    },
-  ];
-
-  const accessoriesGroup = [
-    {
-      name: "Accessories Inventory",
-      url: "/dashbord/accessories-shop",
-      icon: <FaCarCrash />,
-    },
-    {
-      name: "Accessories Sales",
-      url: "/dashbord/accessories-shop-record",
-      icon: <FcSalesPerformance />,
-    },
-  ];
-
-  const rentGroup = [
-    {
-      name: "Rental Records",
-      url: "/dashbord/rents",
-      icon: <FcSalesPerformance />,
-    },
-  ];
-
-  const bottomMenu = [
-    // {
-    //   name: "Taxi Stand Logs",
-    //   url: "/dashbord/taxi_stand",
-    //   icon: <FcSalesPerformance />,
-    // },
-    {
+     {
       name: "General Expenses",
       url: "/dashbord/expense",
       icon: <FcSalesPerformance />,
     },
-     {
-      name: "Employee",
+    {
+      name: "Employees Records",
       url: "/dashbord/employee",
       icon: <FaUsers />,
     },
+    // {
+    //   name: "User Profile",
+    //   url: "/dashbord/user-profile",
+    //   icon: <FaUserLarge />,
+    // },
     {
-      name: "User Profile",
-      url: "/dashbord/user-profile",
-      icon: <FaUserLarge />,
+      name: "Inventory Shop",
+      icon: <RiOilFill />,
+      children: [
+        {
+          name: "Oil Shop Inventory",
+          url: "/dashbord/oil-shop",
+          icon: <RiOilFill />,
+        },
+         {
+          name: "Accessories Inventory",
+          url: "/dashbord/accessories-shop",
+          icon: <FaCarCrash />,
+        },
+        
+      ],
     },
+    {
+      name: "Sales Records",
+      icon: <FaCarCrash />,
+      children: [
+       
+        {
+          name: "Accessories Sales",
+          url: "/dashbord/accessories-shop-record",
+          icon: <FcSalesPerformance />,
+        },
+        {
+          name: "Oil Shop Sales",
+          url: "/dashbord/sale-product",
+          icon: <FcSalesPerformance />,
+        },
+      ],
+    },
+    
+   
     {
       name: "Activity History",
-      url: "/dashbord/history",
-      icon: <AiOutlineHistory />,
-    },
-    {
+      children :[
+ {
       name: "Daily Reports",
       url: "/dashbord/daily-sales",
       icon: <TbReportMoney />,
     },
-     {
+    {
       name: "Monthly Reports",
       url: "/dashbord/monthly-sales",
       icon: <TbReportMoney />,
     },
+      ]
+    },
+   
   ];
 
-   const logOutUserHandler = async () => {
-      const response = await dispatch(logout());
-      localStorage.clear();
-      console.log("logout response", response);
-      navigate("/");
-    };
-
   return (
-    <div className="flex w-full">
-      {/* Sidebar */}
+    <div className="flex w-full h-screen">
+
+      {/* ✅ Mobile Header */}
+      <div className="lg:hidden fixed top-0 left-0 w-full h-14 bg-[#1F2937] text-white flex items-center justify-between px-4 z-50">
+        <h1 className="font-bold">ALHAYYAT</h1>
+        <FaListUl size={22} className="cursor-pointer" onClick={toggleSidebar} />
+      </div>
+
+      {/* ✅ Sidebar */}
       <div
-        className={`h-screen lg:block hidden bg-[#1F2937] text-white shadow-lg transition-all duration-300 ${
-          isOpenSidebar ? "w-[70px]" : "w-[230px]"
-        } flex flex-col justify-between`}
+        className={`fixed lg:static top-0 left-0 h-full bg-[#1F2937] text-white transition-all duration-300 z-40
+        ${isSidebarOpen ? "w-[230px]" : "w-0 lg:w-[230px]"}
+        overflow-hidden`}
       >
-        {/* Header */}
-        <div>
-          <div className="p-4 flex items-center justify-between mt-8">
-            {!isOpenSidebar && (
-              <h1 className="text-2xl font-bold tracking-wider text-white">
-                ALHAYYAT
-              </h1>
-            )}
-            <FaListUl
-              size={20}
-              className="cursor-pointer"
-              onClick={sidebarIsOpenHandler}
-            />
-          </div>
+        <div className="p-4 mt-14 lg:mt-6">
 
-          {/* Top Menu Items */}
-          <div className="mt-6">
-            {mainMenu.map((item, index) => (
-              <NavLink
-                key={index}
-                to={item.url}
-                className={({ isActive }) =>
-                  `flex items-center px-5 py-3 transition-all duration-200 ${
-                    isActive ? "bg-[#374151]" : "hover:bg-[#2563EB]"
-                  } ${isOpenSidebar ? "justify-center" : "gap-4"}`
-                }
-              >
-                <span className="text-lg">{item.icon}</span>
-                {!isOpenSidebar && (
-                  <span className="text-sm font-medium tracking-wide">
-                    {item.name}
-                  </span>
-                )}
-              </NavLink>
-            ))}
-
-            {/* OilShop Dropdown */}
-            <div
-              className="cursor-pointer flex items-center gap-5 px-5 py-3 hover:bg-[#2563EB]"
-              onClick={() => toggleDropdown("oilShop")}
-            >
-              <span>
-                <RiOilFill />
-              </span>
-              {!isOpenSidebar && (
-                <span className="text-sm font-medium">OilShop</span>
-              )}
-              <span className="ml-auto">
-                {dropdowns.oilShop ? (
-                  <MdKeyboardArrowUp size={25} />
-                ) : (
-                  <MdKeyboardArrowDown size={25} />
-                )}
-              </span>
-            </div>
-            {dropdowns.oilShop && !isOpenSidebar && (
-              <div>
-                {oilShopGroup.map((item, i) => (
-                  <NavLink
-                    key={i}
-                    to={item.url}
-                    className={({ isActive }) =>
-                      isActive
-                        ? "text-white bg-[#4c4646] block  py-2 rounded"
-                        : "text-white hover:text-blue-300 block px-4 py-2"
-                    }
+          {menuItems.map((item, index) => (
+            <div key={index}>
+              {item.children ? (
+                <>
+                  {/* Dropdown Parent */}
+                  <div
+                    className="flex items-center justify-between px-4 py-3 cursor-pointer hover:bg-[#2563EB]"
+                    onClick={() => toggleDropdown(item.name)}
                   >
-                    <div className="flex mx-4 text-sm font-[500]">
-                      <span className="mr-2">{item.icon}</span>{" "}
+                    <div className="flex items-center gap-3">
+                      {item.icon}
                       <span>{item.name}</span>
                     </div>
-                  </NavLink>
-                ))}
-              </div>
-            )}
+                    {activeDropdown === item.name ? (
+                      <MdKeyboardArrowUp size={25} />
+                    ) : (
+                      <MdKeyboardArrowDown size={25} />
+                    )}
+                  </div>
 
-            {/* Accessories Dropdown */}
-            <div
-              className="cursor-pointer flex items-center gap-5 px-5 py-3 hover:bg-[#2563EB]"
-              onClick={() => toggleDropdown("accessories")}
-            >
-              <span>
-                <FaCarCrash />
-              </span>
-              {!isOpenSidebar && (
-                <span className="text-sm font-medium">Accessories</span>
-              )}
-              <span className="ml-auto">
-                {dropdowns.accessories ? (
-                  <MdKeyboardArrowUp size={25} />
-                ) : (
-                  <MdKeyboardArrowDown size={25} />
-                )}
-              </span>
-            </div>
-            {dropdowns.accessories && !isOpenSidebar && (
-              <div>
-                {accessoriesGroup.map((item, i) => (
-                  <NavLink
-                    key={i}
-                    to={item.url}
-                    className={({ isActive }) =>
-                      isActive
-                        ? "text-white bg-[#4c4646] block px-4 py-2 rounded"
-                        : "text-white hover:text-blue-300 block px-4 py-2"
-                    }
-                  >
-                    <div className="flex mx-4 text-sm font-[500]">
-                      <span className="mr-2">{item.icon}</span>{" "}
-                      <span>{item.name}</span>
-                    </div>
-                  </NavLink>
-                ))}
-              </div>
-            )}
-
-            {/* Rent Dropdown */}
-            <div
-              className="cursor-pointer flex items-center gap-5 px-5 py-3 hover:bg-[#2563EB]"
-              onClick={() => toggleDropdown("rent")}
-            >
-              <span>
-                <FcSalesPerformance />
-              </span>
-              {!isOpenSidebar && (
-                <span className="text-sm font-medium">Rent</span>
-              )}
-              <span className="ml-auto">
-                {dropdowns.rent ? (
-                  <MdKeyboardArrowUp size={25} />
-                ) : (
-                  <MdKeyboardArrowDown size={25} />
-                )}
-              </span>
-            </div>
-            {dropdowns.rent && !isOpenSidebar && (
-              <div>
-                {rentGroup.map((item, i) => (
-                  <NavLink
-                    key={i}
-                    to={item.url}
-                    className={({ isActive }) =>
-                      isActive
-                        ? "text-white bg-[#4c4646] block px-4 py-2 rounded"
-                        : "text-white hover:text-blue-300 block px-4 py-2"
-                    }
-                  >
-                    <div className="flex mx-4 text-sm font-[500]">
-                      <span className="mr-2">{item.icon}</span>{" "}
-                      <span>{item.name}</span>
-                    </div>
-                  </NavLink>
-                ))}
-              </div>
-            )}
-          </div>
-        </div>
-
-        {/* Bottom Menu */}
-        <div className="mb-5">
-          {bottomMenu.map((item, index) => (
-            <NavLink
-              key={index}
-              to={item.url}
-              className={({ isActive }) =>
-                `flex items-center px-5 py-3 transition-all duration-200 ${
-                  isActive ? "bg-[#374151]" : "hover:bg-[#2563EB]"
-                } ${isOpenSidebar ? "justify-center" : "gap-4"}`
-              }
-            >
-              <span className="text-lg">{item.icon}</span>
-              {!isOpenSidebar && (
-                <span className="text-sm font-medium tracking-wide">
+                  {/* Dropdown Children */}
+                  {activeDropdown === item.name &&
+                    item.children.map((child, i) => (
+                      <NavLink
+                        key={i}
+                        to={child.url}
+                        className={({ isActive }) =>
+                          `block px-7 py-2 text-sm ${
+                            isActive
+                              ? "bg-[#374151]"
+                              : "hover:bg-[#2563EB]"
+                          }`
+                        }
+                        onClick={() => setIsSidebarOpen(false)}
+                      >
+                        <div className="flex items-center gap-2">
+                          {child.icon}
+                          {child.name}
+                        </div>
+                      </NavLink>
+                    ))}
+                </>
+              ) : (
+                <NavLink
+                  to={item.url}
+                  className={({ isActive }) =>
+                    `flex items-center gap-3 px-4 py-3 ${
+                      isActive ? "bg-[#374151]" : "hover:bg-[#2563EB]"
+                    }`
+                  }
+                  onClick={() => setIsSidebarOpen(false)}
+                >
+                  {item.icon}
                   {item.name}
-                </span>
+                </NavLink>
               )}
-            </NavLink>
+            </div>
           ))}
+
+          {/* Logout */}
+          <div
+            onClick={handleLogout}
+            className="mt-5 px-4 py-3 cursor-pointer hover:bg-[#2563EB] fixed bottom-0 w-[200px]"
+          >
+            Logout
+          </div>
         </div>
       </div>
-       <div
-            className="bg-white border border-[#262626] w-[100px] absolute right-6 flex justify-center items-center p-1 cursor-pointer rounded fixed top-1 right-6 z-50"
-            onClick={logOutUserHandler}
-          >
-            <h1 className="font-[500]">LogOut</h1>
-          </div>
 
-      {/* Main Content */}
-      <div
-        className={`bg-gray-100 overflow-y-auto h-screen ${
-          isOpenSidebar ? "lg:w-[95%] w-full" : "lg:w-[85%] w-full"
-        }`}
-      >
+      {/* ✅ Main Content */}
+      <div className="flex-1 bg-gray-100 overflow-y-auto mt-14 lg:mt-0">
         <Outlet />
       </div>
     </div>

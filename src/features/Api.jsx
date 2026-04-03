@@ -2,6 +2,7 @@ import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 
 export const carWashBillApi = createApi({
   reducerPath: "carWashApi",
+  tagTypes: ["CarWashBills"],
 
   baseQuery: fetchBaseQuery({
     baseUrl: import.meta.env.VITE_BASE_URL,
@@ -24,11 +25,14 @@ export const carWashBillApi = createApi({
         url: "generate-bill",
         method: "POST",
         body: { records: body },
+        
       }),
+      invalidatesTags: ["CarWashBills"],
     }),
 
     getAllBills: builder.query({
       query: (filter) => `carWash-bills?filter=${filter}`,
+      providesTags: ["CarWashBills"],
     }),
 
     getCarWashBillByDate: builder.query({
@@ -36,6 +40,7 @@ export const carWashBillApi = createApi({
         startDate
           ? `carWash-bill-date?date=${new Date(startDate).toISOString()}`
           : "carWash-bill-date",
+        providesTags: ["CarWashBills"],
     }),
 
     updateCommissionStatus: builder.mutation({

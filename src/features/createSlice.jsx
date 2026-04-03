@@ -1,135 +1,148 @@
-import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
+import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 
 const BASE_URL = 'https://alhayyat-backend.onrender.com';
-// const BASE_URL = 'http://localhost:5000';
+// const BASE_URL = "http://localhost:5000";
+
+export const registerUser = createAsyncThunk(
+  "registerUser",
+  async (userData, thunkAPI) => {
+    try {
+      const response = await fetch(`${BASE_URL}/register`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(userData),
+      });
+
+      const data = await response.json();
 
 
-export const registerUser = createAsyncThunk('registerUser', async (userData, thunkAPI) => {
-  try {
-    const response = await fetch(`${BASE_URL}/register`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(userData),
-    });
+      if (!response.ok) {
+        return thunkAPI.rejectWithValue(data.message);
+      }
 
-    if (!response.ok) {
-      throw new Error('Failed to register user');
-    }
     
-    const data = await response.json();
-    console.log("data........" , data)
-    localStorage.setItem("token" , data.token)
-  
-    return data;
+     
+      localStorage.setItem("token", data.token);
 
-  } catch (error) {
-    return thunkAPI.rejectWithValue(error.message);
-  }
-});
-
-export const loginUser = createAsyncThunk('loginUser', async (userData, thunkAPI) => {
-  try {
-    const response = await fetch(`${BASE_URL}/login`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(userData),
-    });
-
-    if (!response.ok) {
-      throw new Error('Failed to register user');
+      return data;
+    } catch (error) {
+      return thunkAPI.rejectWithValue(error.message);
     }
-   
-    const data = await response.json();
-    localStorage.setItem("token" , data.token)
+  },
+);
 
-    return data;
-  } catch (error) {
-    return thunkAPI.rejectWithValue(error.message);
-  }
-});
+export const loginUser = createAsyncThunk(
+  "loginUser",
+  async (userData, thunkAPI) => {
+    try {
+      const response = await fetch(`${BASE_URL}/login`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(userData),
+      });
+      const data = await response.json(); // ✅ parse first
 
-
-export const deleteUser = createAsyncThunk('deleteUser', async (id, thunkAPI) => {
-  try {
-    const token = localStorage.getItem('token');
-    const response = await fetch(`${BASE_URL}/deleteUser/${id}`, {
-      method: 'DELETE',
-      headers: {
-         'Authorization': `Bearer ${token}`,
+      if (!response.ok) {
+        return thunkAPI.rejectWithValue(data.message);
       }
-    });
 
-    if (!response.ok) {
-      throw new Error('Failed to register user');
+      localStorage.setItem("token", data.token);
+
+      return data;
+      localStorage.setItem("token", data.token);
+
+      return data;
+    } catch (error) {
+      return thunkAPI.rejectWithValue(error.message);
     }
+  },
+);
 
-    const data = await response.json();
-    console.log("data" , data)
-    return data;
-  } catch (error) {
-    return thunkAPI.rejectWithValue(error.message);
-  }
-});
+export const deleteUser = createAsyncThunk(
+  "deleteUser",
+  async (id, thunkAPI) => {
+    try {
+      const token = localStorage.getItem("token");
+      const response = await fetch(`${BASE_URL}/deleteUser/${id}`, {
+        method: "DELETE",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
 
-export const fetchUsers = createAsyncThunk('fetchUsers', async () => {
-    const token = localStorage.getItem('token');
-    const response = await fetch(`${BASE_URL}/getallUser`,{
-      headers : {
-        'Authorization': `Bearer ${token}`,
+      if (!response.ok) {
+        throw new Error("Failed to register user");
       }
-    });
-  
-    if (!response.ok) throw new Error('Failed to fetch users');
-  
-    const data = await response.json();
-   
-    return data;
+
+      const data = await response.json();
+      console.log("data", data);
+      return data;
+    } catch (error) {
+      return thunkAPI.rejectWithValue(error.message);
+    }
+  },
+);
+
+export const fetchUsers = createAsyncThunk("fetchUsers", async () => {
+  const token = localStorage.getItem("token");
+  const response = await fetch(`${BASE_URL}/getallUser`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
   });
 
+  if (!response.ok) throw new Error("Failed to fetch users");
 
-  export const updateUser = createAsyncThunk('updateUser', async ({ values, userId }, thunkAPI) => {
+  const data = await response.json();
+
+  return data;
+});
+
+export const updateUser = createAsyncThunk(
+  "updateUser",
+  async ({ values, userId }, thunkAPI) => {
     try {
       // const token = localStorage.getItem('token');
       const response = await fetch(`${BASE_URL}/updateUser/${userId}`, {
-        method: 'PUT',
+        method: "PUT",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
           //  'Authorization': `Bearer ${token}`,
         },
         body: JSON.stringify(values),
       });
-  
+
       if (!response.ok) {
-        throw new Error('Failed to update user');
+        throw new Error("Failed to update user");
       }
-  
+
       const data = await response.json();
       return data;
     } catch (error) {
       return thunkAPI.rejectWithValue(error.message);
     }
-  });
-  
+  },
+);
 
 export const counterSlice = createSlice({
-  name: 'counter',
+  name: "counter",
   initialState: {
-    user:null,
+    user: null,
     users: [],
-    token: localStorage.getItem('token') || null,
+    token: localStorage.getItem("token") || null,
     loading: false,
     error: null,
   },
   reducers: {
     logout: (state) => {
-      state.user = null; 
-    }
+      state.user = null;
+    },
   },
-  
+
   extraReducers: (builder) => {
     builder
       .addCase(fetchUsers.pending, (state) => {
@@ -163,7 +176,7 @@ export const counterSlice = createSlice({
       })
       .addCase(loginUser.fulfilled, (state, action) => {
         state.user = action.payload;
-        state.token = action.payload.token; 
+        state.token = action.payload.token;
         state.loading = false;
       })
       .addCase(loginUser.rejected, (state, action) => {
@@ -182,7 +195,6 @@ export const counterSlice = createSlice({
         state.loading = false;
         state.error = action.payload;
       });
-      
   },
 });
 

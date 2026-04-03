@@ -4,16 +4,13 @@ import AccessoriesProductList from "./Component/page/accessories/AccessoriesProd
 import AccessoriesSalesOverview from "./Component/page/accessories/AccessoriesSales/AccessoriesSalesOverview";
 import AddExpense from "./Component/page/expense/AddExpense";
 import CarWashRecord from "./Component/page/carWash/CarWashRecord";
-import CheckMonthlyReports from "./Component/page/history/CheckMonthlyReports";
 import CustomToast from "./Component/common/CustomToast";
 import DailyExpense from "./Component/page/expense/DailyExpense";
-import DailySales from "./Component/page/dailySales/DailySales";
+import DailyHistory from "./Component/page/history/DailyHistory";
 import DetailingRecords from "./Component/page/detailingStudio/DetailingRecords";
 import Employee from "./Component/page/employees/Employee";
-import History from "./Component/page/history/History";
 import Home from "./Component/Home";
 import LayOut from "./Component/layout/LayOut";
-import Menue from "./Component/page/Menue";
 import MonthlyExpense from "./Component/page/expense/MonthlyExpense";
 import MonthlyHistory from "./Component/page/history/MonthlyHistory";
 import OilProductList from "./Component/page/oliShop/OilProduct/OilProductList";
@@ -36,15 +33,10 @@ function App() {
       <CustomToast />
 
       <Router>
-        {user?.user?.token && <Menue />}
+        {/* {user?.user?.token && <Menue />} */}
 
         <Routes>
-          {/* Reports */}
          
-          <Route
-           path="/history/:tab/month/:month"
-            element={<CheckMonthlyReports />}
-          />
 
           {/* Public Routes */}
           <Route
@@ -84,7 +76,6 @@ function App() {
       <Route path="car-wash-record" element={<CarWashRecord />} />
             <Route path="user-profile" element={<UserProfile />} />
             <Route path="sale-product" element={<OilSalesOverview />} />
-            <Route path="history" element={<History />} />
             <Route path="expense" element={<AddExpense />} />
             <Route path="monthly-expense" element={<MonthlyExpense />} />
             <Route path="daily-expense" element={<DailyExpense />} />
@@ -92,7 +83,7 @@ function App() {
             <Route path="rents" element={<Rents />} />
             <Route path="detailing-records" element={<DetailingRecords />} />
             <Route path="employee" element={<Employee />} />
-            <Route path="daily-sales" element={<DailySales />} />
+            <Route path="daily-sales" element={<DailyHistory />} />
            <Route path="monthly-sales" element={<MonthlyHistory />} />
           </Route>
         </Routes>
