@@ -1,8 +1,13 @@
+import { Form, Formik } from "formik";
 import React, { useEffect, useState } from "react";
-import { Formik, Form } from "formik";
-import { useGetAllAccessoriesItemsQuery, useGetAllSaleAccessoriesQuery, useUpdateAccessoriesSaleMutation } from "../../../../features/Api";
-import CustomInput from "../../../common/CustomInput";
+import {
+  useGetAllAccessoriesItemsQuery,
+  useGetAllSaleAccessoriesQuery,
+  useUpdateAccessoriesSaleMutation,
+} from "../../../../features/Api";
+
 import CustomButton from "../../../common/CustomButton";
+import CustomInput from "../../../common/CustomInput";
 import CustomSelect from "../../../common/CustomSelect";
 import { saleProductValidationSchema } from "../../validations/FormValidation";
 import { showToast } from "../../../common/CustomToast";
@@ -11,15 +16,15 @@ function CreateAccessoriesSaleBill({
   setCarWashBill,
   setSelectBillForm,
   selectedUpdateRecord,
-  setIsOpen
+  setIsOpen,
 }) {
   const [products, setProducts] = useState([]);
 
-
   // 🔹 Fetch Accessories
   const { data: allAccessoriesItems = [] } = useGetAllAccessoriesItemsQuery();
-  const [updateAccessoriesSale] = useUpdateAccessoriesSaleMutation()
-  const { data: monthlySalesData = [], refetch } = useGetAllSaleAccessoriesQuery("month");
+  const [updateAccessoriesSale] = useUpdateAccessoriesSaleMutation();
+  const { data: monthlySalesData = [], refetch } =
+    useGetAllSaleAccessoriesQuery("month");
 
   useEffect(() => {
     if (allAccessoriesItems?.data) {
@@ -32,19 +37,21 @@ function CreateAccessoriesSaleBill({
     category: "accessoriesShop",
     productId: selectedUpdateRecord
       ? products.find(
-        (p) => p.productName === selectedUpdateRecord.Product_Name
-      )?._id || ""
+          (p) => p.productName === selectedUpdateRecord.Product_Name,
+        )?._id || ""
       : "",
     quantitySold: selectedUpdateRecord ? selectedUpdateRecord.Quantity : "",
     sellingPrice: selectedUpdateRecord ? selectedUpdateRecord.Price : "",
   };
 
   // 🔹 Product options for dropdown
-  const saleProductOptions = products.map((product) => ({
-    value: product._id,
-    label: product.productName,
-    product,
-  }));
+  const saleProductOptions = products
+    .filter((product) => product.quantity > 0)
+    .map((product) => ({
+      value: product._id,
+      label: product.productName,
+      product,
+    }));
 
   // 🔹 Submit handler
   const submitHandler = async (values) => {
@@ -59,8 +66,8 @@ function CreateAccessoriesSaleBill({
         // 🔸 Update existing record
         setCarWashBill((prev) =>
           prev.map((item) =>
-            item.Id === selectedUpdateRecord.Id ? updatedValues : item
-          )
+            item.Id === selectedUpdateRecord.Id ? updatedValues : item,
+          ),
         );
       } else {
         // 🔸 Add new sale record
@@ -85,21 +92,24 @@ function CreateAccessoriesSaleBill({
         ...values,
       }).unwrap();
 
-      showToast(response?.message || "Accessories sale updated successfully!", "success");
-      setIsOpen(false)
-      await refetch()
-
+      showToast(
+        response?.message || "Accessories sale updated successfully!",
+        "success",
+      );
+      setIsOpen(false);
+      await refetch();
     } catch (error) {
       const errorMessage = error?.data?.message || "Failed to update record!";
       showToast(errorMessage, "error");
     }
   };
 
-
   return (
     <div>
       <h1 className="text-[#262626] font-[700] text-2xl mx-auto w-full flex justify-center">
-        {selectedUpdateRecord ? "Update Accessories" : "Accessories Sale Product"}
+        {selectedUpdateRecord
+          ? "Update Accessories"
+          : "Accessories Sale Product"}
       </h1>
 
       <Formik
@@ -108,49 +118,66 @@ function CreateAccessoriesSaleBill({
         onSubmit={selectedUpdateRecord ? updateSaleHandler : submitHandler}
         validationSchema={saleProductValidationSchema}
       >
-        {({ setFieldValue, values }) => (
-          <Form>
-            {/* Category (fixed) */}
-            <CustomInput
-              name="category"
-              type="text"
-              label="Category"
-              value={values.category}
-              disabled
-            />
+        {({ setFieldValue, values }) => {
+          const productCost =
+            products.find((p) => p._id === values.productId)?.cost || 0;
 
-            {/* Product Select */}
-            <CustomSelect
-              name="productId"
-              label="Product Name"
-              option={saleProductOptions}
-              value={values.productId || ""}
-              onChange={(e) => {
-                const selectedProductId = e.target.value;
-                setFieldValue("productId", selectedProductId);
-              }}
-            />
+          const quantity = Number(values.quantitySold) || 0;
+          const sellingPrice = Number(values.sellingPrice) || 0;
 
+          const totalCost = productCost * quantity;
 
-            {/* Quantity */}
-            <CustomInput name="quantitySold" type="number" label="Quantity" />
-
-            {/* Price */}
-            <CustomInput
-              name="sellingPrice"
-              type="number"
-              label="Total Price"
-            />
-
-            {/* Submit Button */}
-            <div className="mt-8 w-full">
-              <CustomButton
-                type="submit"
-                title={selectedUpdateRecord ? "Update" : "Submit"}
+          return (
+            <Form>
+              {/* Category (fixed) */}
+              <CustomInput
+                name="category"
+                type="text"
+                label="Category"
+                value={values.category}
+                disabled
               />
-            </div>
-          </Form>
-        )}
+
+              {/* Product Select */}
+              <CustomSelect
+                name="productId"
+                label="Product Name"
+                option={saleProductOptions}
+                value={values.productId || ""}
+                onChange={(e) => {
+                  const selectedProductId = e.target.value;
+                  setFieldValue("productId", selectedProductId);
+                }}
+              />
+
+              {/* Quantity */}
+              <CustomInput name="quantitySold" type="number" label="Quantity" />
+
+              {/* Price */}
+              <CustomInput
+                name="sellingPrice"
+                type="number"
+                label="Total Price"
+              />
+              {sellingPrice < totalCost && values.sellingPrice !== "" && (
+                <p className="text-red-500 text-sm mt-1">
+                  Alert: Selling price is below total cost ({totalCost})
+                </p>
+              )}
+
+              {/* Submit Button */}
+              <div className="mt-8 w-full">
+                <CustomButton
+                  type="submit"
+                  className={
+                    sellingPrice < totalCost ? "hidden" : " display-block"
+                  }
+                  title={selectedUpdateRecord ? "Update" : "Submit"}
+                />
+              </div>
+            </Form>
+          );
+        }}
       </Formik>
     </div>
   );

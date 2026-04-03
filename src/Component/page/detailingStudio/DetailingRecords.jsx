@@ -1,16 +1,15 @@
 import React, { useEffect, useState } from "react";
-import { FcSalesPerformance } from "react-icons/fc";
-import { GiProfit } from "react-icons/gi";
-import { HiUsers } from "react-icons/hi";
-import { BsCashCoin } from "react-icons/bs";
 import { useDispatch, useSelector } from "react-redux";
-import { useGetAllBillsDetailingQuery } from "../../../features/Api";
-import { fetchUsers } from "../../../features/createSlice";
+
+import { BsCashCoin } from "react-icons/bs";
 import CommissionDetailingMaster from "../detailingStudio/Commission.jsx";
 import DetailingStudioMonthlyRcord from "./DetailingStudioMonthlyRcord.jsx";
 import DetailingStudioTodayRecord from "./DetailingStudioTodayRecord.jsx";
-
-
+import { FcSalesPerformance } from "react-icons/fc";
+import { GiProfit } from "react-icons/gi";
+import { HiUsers } from "react-icons/hi";
+import { fetchUsers } from "../../../features/createSlice";
+import { useGetAllBillsDetailingQuery } from "../../../features/Api";
 
 function DetailingRecords() {
   //🟨 UI State
@@ -87,12 +86,7 @@ function DetailingRecords() {
         setFilterType("day");
       },
     },
-    {
-      icon: <HiUsers size={50} />,
-      heading: "Total Visitors",
-      value: users.length,
-      onClick: () => setActiveRecord("total-user"),
-    },
+   
     {
       icon: <GiProfit size={50} />,
       heading: "Today's Commissions",
@@ -121,7 +115,7 @@ function DetailingRecords() {
     <div>
       {/* ===== Header ===== */}
       <div className="h-[80px] w-full bg-white mt-[70px] mb-8 flex items-center justify-between px-8">
-        <h1 className="text-lg font-[500]">Car Wash Records</h1>
+        <h1 className="text-lg font-[500]">Detailing Studio Records</h1>
         <div className="border-[1px] border-[#262626] p-1 sm:block hidden w-[300px] font-[500] rounded-[8px]">
           <input
             type="text"
@@ -137,7 +131,7 @@ function DetailingRecords() {
           {carWashSaleDetails.map((sale, idx) => (
             <div
               key={idx}
-              className="bg-white lg:w-[250px] md:w-[320px] w-[90%] md:mt-2 mt-5 md:mx-8 lg:mx-0 h-[100px] cursor-pointer rounded-[10px] flex items-center justify-center gap-8 hover:shadow-lg transition"
+              className="bg-white lg:w-[350px] md:w-[320px] w-[90%] md:mt-2 mt-5 md:mx-8 lg:mx-0 h-[100px] cursor-pointer rounded-[10px] flex items-center justify-center gap-8 hover:shadow-lg transition"
               onClick={sale.onClick}
             >
               <div>{sale.icon}</div>

@@ -2,9 +2,11 @@ import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 
 export const carWashBillApi = createApi({
   reducerPath: "carWashApi",
+  tagTypes: ["CarWashBills"],
 
   baseQuery: fetchBaseQuery({
     baseUrl: import.meta.env.VITE_BASE_URL,
+    // Debugging line to check the base URL
     prepareHeaders: (headers) => {
       const token = localStorage.getItem("token");
       if (token) {
@@ -15,7 +17,6 @@ export const carWashBillApi = createApi({
   }),
 
   endpoints: (builder) => ({
-
     // ====================================================================================
     // 🟨 🚗 CAR WASH API
     // ====================================================================================
@@ -24,11 +25,14 @@ export const carWashBillApi = createApi({
         url: "generate-bill",
         method: "POST",
         body: { records: body },
+        
       }),
+      invalidatesTags: ["CarWashBills"],
     }),
 
     getAllBills: builder.query({
       query: (filter) => `carWash-bills?filter=${filter}`,
+      providesTags: ["CarWashBills"],
     }),
 
     getCarWashBillByDate: builder.query({
@@ -36,6 +40,7 @@ export const carWashBillApi = createApi({
         startDate
           ? `carWash-bill-date?date=${new Date(startDate).toISOString()}`
           : "carWash-bill-date",
+        providesTags: ["CarWashBills"],
     }),
 
     updateCommissionStatus: builder.mutation({
@@ -60,6 +65,12 @@ export const carWashBillApi = createApi({
         body,
       }),
     }),
+     getCarWashMonthly: builder.query({
+      query: ({ year, month }) => ({
+        url: `carWash/monthly-data?year=${year}&month=${month}`,
+        method: "GET",
+      }),
+    }),
 
     // ====================================================================================
     // 🟨 🧽 DETAILING STUDIO API
@@ -82,7 +93,12 @@ export const carWashBillApi = createApi({
         body: data, // expects { _id }
       }),
     }),
-
+    getdetailingByMonthly: builder.query({
+      query: ({ year, month }) => ({
+        url: `detailing/monthly-data?year=${year}&month=${month}`,
+        method: "GET",
+      }),
+    }),
     // ====================================================================================
     // 🟨 🛢️ OIL SHOP (PRODUCTS & SALES)
     // ====================================================================================
@@ -94,13 +110,12 @@ export const carWashBillApi = createApi({
       }),
     }),
 
-     getoilShopBillByDate: builder.query({
+    getoilShopBillByDate: builder.query({
       query: (startDate) =>
         startDate
           ? `/bills-by-date?date=${new Date(startDate).toISOString()}`
           : "/sales",
     }),
-
 
     getAllOilShopProducts: builder.query({
       query: () => "all-products",
@@ -147,6 +162,12 @@ export const carWashBillApi = createApi({
         method: "DELETE",
       }),
     }),
+    getOilMonthlyData: builder.query({
+      query: ({ year, month }) => ({
+        url: `/oil/monthly-data?year=${year}&month=${month}`,
+        method: "GET",
+      }),
+    }),
     // ====================================================================================
     // 🟨 🧰 ACCESSORIES API
     // ====================================================================================
@@ -158,10 +179,12 @@ export const carWashBillApi = createApi({
       }),
     }),
 
-      getAccessoriesBillByDate: builder.query({
+    getAccessoriesBillByDate: builder.query({
       query: (startDate) =>
         startDate
-          ? `/accessories-bills-by-date?date=${new Date(startDate).toISOString()}`
+          ? `/accessories-bills-by-date?date=${new Date(
+              startDate
+            ).toISOString()}`
           : "/all-accessories",
     }),
 
@@ -202,7 +225,12 @@ export const carWashBillApi = createApi({
         body,
       }),
     }),
-
+     getAccessoriesMonthlyData: builder.query({
+      query: ({ year, month }) => ({
+        url: `/accessories/monthly-data?year=${year}&month=${month}`,
+        method: "GET",
+      }),
+    }),
 
     // ====================================================================================
     // 🟨 👥 EMPLOYEES API
@@ -238,9 +266,8 @@ export const carWashBillApi = createApi({
       }),
     }),
 
-
     // ====================================================================================
-    // 🟨 🧾 EXPENSE API (Newly Added)
+    // 🟨 🧾 EXPENSE API 
     // ====================================================================================
     addExpense: builder.mutation({
       query: (body) => ({
@@ -255,6 +282,20 @@ export const carWashBillApi = createApi({
         startDate
           ? `/expense-by-date?date=${new Date(startDate).toISOString()}`
           : "/all-expenses",
+    }),
+
+    getMonthlyExpenses: builder.query({
+      query: ({ year, month }) => ({
+        url: `/monthly-expense-data?year=${year}&month=${month}`,
+        method: "GET",
+      }),
+    }),
+
+     getMonthlyDailyExpenses: builder.query({
+      query: ({ year, month }) => ({
+        url: `/monthly-daily-expense-data?year=${year}&month=${month}`,
+        method: "GET",
+      }),
     }),
 
     getExpenses: builder.query({
@@ -275,12 +316,8 @@ export const carWashBillApi = createApi({
         method: "DELETE",
       }),
     }),
-
-
   }),
 });
-
-
 
 // ====================================================================================
 // 🟨 Exported Hooks (auto-generated by RTK Query)
@@ -294,11 +331,13 @@ export const {
   useUpdateCommissionStatusMutation,
   useDeleteBillMutation,
   useUpdateBillMutation,
+  useGetCarWashMonthlyQuery,
 
   //🟨 Detailing
   useGetAllBillsDetailingQuery,
   useGetDetailingBillByDateQuery,
   useUpdateCommissionStatusDetailingMutation,
+  useGetdetailingByMonthlyQuery,
 
   //🟨 Oil Shop
   useAddOilShopProductMutation,
@@ -306,6 +345,7 @@ export const {
   useUpdateOilShopProductMutation,
   useGetoilShopBillByDateQuery,
   useDeleteOilShopProductMutation,
+  useGetOilMonthlyDataQuery,
 
   useAddOilSaleMutation,
   useGetFilteredOilSalesQuery,
@@ -321,6 +361,7 @@ export const {
   useUpdateAccessoriesSaleMutation,
   useDeleteAccessoriesItemsMutation,
   useUpdateAccessoriesItemsMutation,
+  useGetAccessoriesMonthlyDataQuery,
 
   //🟨 Employees
   useAddEmployeeMutation,
@@ -335,5 +376,6 @@ export const {
   useUpdateExpenseMutation,
   useDeleteExpenseMutation,
   useGetExpensesByDateQuery,
-
+  useGetMonthlyExpensesQuery,
+  useGetMonthlyDailyExpensesQuery,
 } = carWashBillApi;

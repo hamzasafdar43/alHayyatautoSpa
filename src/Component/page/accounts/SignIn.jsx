@@ -1,11 +1,13 @@
 import { Form, Formik } from "formik";
-import React from "react";
-import CustomInput from "../../common/CustomInput";
-import CustomButton from "../../common/CustomButton";
 import { Link, useNavigate } from "react-router-dom";
-import { useDispatch } from "react-redux";
+
+import CustomButton from "../../common/CustomButton";
+import CustomInput from "../../common/CustomInput";
+import React from "react";
 import { loginUser } from "../../../features/createSlice";
-import { loginrUserFormValidationSchema } from "../validations/FormValidation";
+import { loginUserFormValidationSchema } from "../validations/FormValidation";
+import { showToast } from "../../common/CustomToast";
+import { useDispatch } from "react-redux";
 
 function SignIn() {
   const dispatch = useDispatch();
@@ -17,16 +19,21 @@ function SignIn() {
   };
 
   const singInHandler = async (values) => {
-    try {
-      const response = await dispatch(loginUser(values));
+  const response = await dispatch(loginUser(values));
 
-      if (response?.payload?.token) {
-        navigate("/dashbord");
-      }
-    } catch (error) {
-      console.log("error", error);
-    }
-  };
+  console.log("response", response);
+
+  if (loginUser.fulfilled.match(response)) {
+    showToast("Login successful", "success");
+
+    setTimeout(() => {
+      navigate("/dashbord");
+    }, 3000);
+
+  } else {
+    showToast(response.payload || "Login failed", "error");
+  }
+};
   return (
     <div className="bg-[#262626] flex flex-col md:flex-row justify-center md:justify-between items-center w-full overflow-y-auto h-screen">
 
@@ -42,7 +49,7 @@ function SignIn() {
         </h1>
       </div>
         <div className="mt-4">
-          <Formik initialValues={initialValuesForm} onSubmit={singInHandler} validationSchema={loginrUserFormValidationSchema}>
+          <Formik initialValues={initialValuesForm} onSubmit={singInHandler} validationSchema={loginUserFormValidationSchema}>
             <Form>
               <div>
                 <CustomInput name="email" type="email" label="Email" />

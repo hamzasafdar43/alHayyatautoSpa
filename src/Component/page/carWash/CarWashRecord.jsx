@@ -1,16 +1,16 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+
+import AllUsers from "../accounts/AllUsers.jsx";
+import { BsCashCoin } from "react-icons/bs";
+import CarWashMonthlyRecord from "./CarWashMonthlyRecord.jsx";
+import Commission from "./Commission.jsx";
 import { FcSalesPerformance } from "react-icons/fc";
 import { GiProfit } from "react-icons/gi";
 import { HiUsers } from "react-icons/hi";
-import { BsCashCoin } from "react-icons/bs";
-import { useGetAllBillsQuery } from "../../../features/Api";
-import { fetchUsers } from "../../../features/createSlice";
 import TodayCarWashBill from "./TodayCarWashbill.jsx";
-import AllUsers from "../accounts/AllUsers.jsx";
-import Commission from "./Commission.jsx";
-import CarWashMonthlyRecord from "./CarWashMonthlyRecord.jsx";
-
+import { fetchUsers } from "../../../features/createSlice";
+import { useGetAllBillsQuery } from "../../../features/Api";
 
 function CarWashRecord() {
 
@@ -82,12 +82,7 @@ function CarWashRecord() {
         setFilterType("day");
       },
     },
-    {
-      icon: <HiUsers size={50} />,
-      heading: "Total Visitors",
-      value: users.length,
-      onClick: () => setActiveRecord("total-user"),
-    },
+
     {
       icon: <GiProfit size={50} />,
       heading: "Today's Commissions",
@@ -132,7 +127,7 @@ function CarWashRecord() {
           {carWashSaleDetails.map((sale, idx) => (
             <div
               key={idx}
-              className="bg-white lg:w-[250px] md:w-[320px] w-[90%] md:mt-2 mt-5 md:mx-8 lg:mx-0 h-[100px] cursor-pointer rounded-[10px] flex items-center justify-center gap-8"
+              className="bg-white lg:w-[350px] md:w-[320px] w-[90%] md:mt-2 mt-5 md:mx-8 lg:mx-0 h-[100px] cursor-pointer rounded-[10px] flex items-center justify-center gap-8"
               onClick={sale.onClick}
             >
               <div>{sale.icon}</div>

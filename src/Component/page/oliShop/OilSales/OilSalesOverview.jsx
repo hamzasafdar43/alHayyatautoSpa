@@ -1,13 +1,12 @@
 import React, { useEffect, useState } from "react";
+
+import { BsCashCoin } from "react-icons/bs";
 import { FcSalesPerformance } from "react-icons/fc";
 import { GiProfit } from "react-icons/gi";
 import { HiUsers } from "react-icons/hi";
-import { BsCashCoin } from "react-icons/bs";
-import { useGetFilteredOilSalesQuery } from "../../../../features/Api";
 import OilMonthlySales from "./OilMonthlySales";
-import OilSalesWeeklySales from "./OilSalesWeeklySales";
 import OilTodaySales from "./OilTodaySales";
-import OilProfitSummary from "./OilProfitSummary"
+import { useGetFilteredOilSalesQuery } from "../../../../features/Api";
 
 function OilSalesOverview() {
   // 🟨 Local State
@@ -87,18 +86,7 @@ function OilSalesOverview() {
       title: "Today Sales",
       value: `PKR ${dailyTotal.toLocaleString()}`,
     },
-    {
-      key: "weekly",
-      icon: <HiUsers size={50} />,
-      title: "Weekly Sales",
-      value: "PKR 0", // future enhancement
-    },
-    {
-      key: "profits",
-      icon: <GiProfit size={50} />,
-      title: "Total Profit",
-      value: `PKR ${monthlyProfit.toLocaleString()}`,
-    },
+    
   ];
 
   return (
@@ -121,7 +109,7 @@ function OilSalesOverview() {
           {summaryCards.map((card) => (
             <div
               key={card.key}
-              className={`bg-white lg:w-[250px] md:w-[320px] w-[90%] md:mt-2 mt-5 md:mx-8 lg:mx-0 h-[100px] rounded-[10px] flex items-center justify-center gap-8 cursor-pointer transition-transform hover:scale-105 ${
+              className={`bg-white lg:w-[550px] md:w-[320px] w-[90%] md:mt-2 mt-5 md:mx-8 lg:mx-0 h-[100px] rounded-[10px] flex items-center justify-center gap-8 cursor-pointer transition-transform hover:scale-105 ${
                 activeView === card.key ? "border-2 border-blue-500" : ""
               }`}
               onClick={() => setActiveView(card.key)}
@@ -142,11 +130,8 @@ function OilSalesOverview() {
           <OilMonthlySales monthlySales={monthlySales} />
         ) : activeView === "today" ? (
           <OilTodaySales dailySales={dailySales} />
-        ) : activeView === "weekly" ? (
-          <OilSalesWeeklySales />
-        ) : (
-          <OilProfitSummary monthlyProfit={monthlyProfit} todayProfit={todayProfit} />
-        )}
+        ) : null
+        }
       </div>
     </div>
   );

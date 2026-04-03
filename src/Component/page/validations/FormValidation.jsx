@@ -16,20 +16,48 @@ export const updateRecordValidationSchema = Yup.object().shape({
 });
 
 
+
+const strongPasswordRegex =
+  /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+
+
+
 export const registerUserFormValidationSchema = Yup.object().shape({
-    name: Yup.string().required("name is required"),
-    email: Yup.string().required("email is required"),
-    phoneNumber: Yup.string().required("phone number is required"),
-    password: Yup.string().required("password is required"),
-  });
+  name: Yup.string()
+    .min(3, "Name must be at least 3 characters")
+    .max(50, "Name is too long")
+    .required("Name is required"),
+
+  email: Yup.string()
+    .email("Enter a valid email address")
+    .required("Email is required"),
+
+  phoneNumber: Yup.string()
+    .matches(
+      /^(\+92|0)?3[0-9]{9}$/,
+      "Enter valid Pakistan phone number"
+    )
+    .required("Phone number is required"),
+
+  password: Yup.string()
+    .required("Password is required")
+    .matches(
+      strongPasswordRegex,
+      "Password must be 8+ characters and include uppercase, lowercase, number & special character"
+    ),
+});
 
 
-  export const loginrUserFormValidationSchema = Yup.object().shape({
- 
-    email: Yup.string().required("email is required"),
-    password: Yup.string().required("password is required"),
-    
-  });
+
+export const loginUserFormValidationSchema = Yup.object().shape({
+  email: Yup.string()
+    .email("Enter a valid email address")
+    .required("Email is required"),
+
+  // ⚠️ For login we DO NOT enforce strong rule again
+  password: Yup.string()
+    .required("Password is required"),
+});
 
 
   export const updateUservalidationSchema = Yup.object().shape({

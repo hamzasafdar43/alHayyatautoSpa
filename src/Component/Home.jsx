@@ -1,15 +1,15 @@
 import React, { useEffect, useRef, useState } from "react";
-import CustomButton from "./common/CustomButton";
-import CarWashBill from "./page/carWash/BillForm";
-import SaleItemsAccessoriesShop from "./page/accessories/AccessoriesSales/CreateAccessoriesSaleBill";
-import GenerateBillDetailingStudio from "./page/detailingStudio/BillForm";
-import Discount from "./page/discount/Discount";
-import { useSubmitCarWashBillMutation } from "../features/Api";
-import { useReactToPrint } from "react-to-print";
-import { showToast } from "./common/CustomToast";
-import BillForm from "./page/carWash/BillForm";
-import CreateOilSaleBill from "./page/oliShop/OilSales/CreateOilSaleBill";
+import { useGetAllAccessoriesItemsQuery, useGetAllBillsDetailingQuery, useGetAllBillsQuery, useGetAllOilShopProductsQuery, useGetCarWashBillByDateQuery, useSubmitCarWashBillMutation } from "../features/Api";
 
+import BillForm from "./page/carWash/BillForm";
+import CarWashBill from "./page/carWash/BillForm";
+import CreateOilSaleBill from "./page/oliShop/OilSales/CreateOilSaleBill";
+import CustomButton from "./common/CustomButton";
+import Discount from "./page/discount/Discount";
+import GenerateBillDetailingStudio from "./page/detailingStudio/BillForm";
+import SaleItemsAccessoriesShop from "./page/accessories/AccessoriesSales/CreateAccessoriesSaleBill";
+import { showToast } from "./common/CustomToast";
+import { useReactToPrint } from "react-to-print";
 
 function Home() {
   const [selectBillForm, setSelectBillForm] = useState("");
@@ -17,7 +17,11 @@ function Home() {
   const [totalBill, setTotalBill] = useState(0);
   const [discount, setDiscount] = useState(0);
 
+ 
+ 
+
   const [generateBill] = useSubmitCarWashBillMutation();
+  
 
   const contentRef = useRef();
   const reactToPrintFn = useReactToPrint({ contentRef });
@@ -48,6 +52,7 @@ function Home() {
 
     setDiscount(discountAmount);
     setTotalBill(total - discountAmount);
+   
   }, [billItems]);
 
   const submitbillHandler = async () => {
@@ -56,6 +61,8 @@ function Home() {
 
       if (response?.message === "All records saved successfully") {
         showToast(response?.message, "success");
+    
+       
         setTimeout(() => {
           setBillItems([]);
           setSelectBillForm("");
